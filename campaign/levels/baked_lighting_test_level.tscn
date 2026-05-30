@@ -1,0 +1,77 @@
+[gd_scene load_steps=10 format=3 uid="uid://dd5on7qh1v8pi"]
+
+[ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_0tl5v"]
+[ext_resource type="LightmapGIData" uid="uid://bx0au8h5n1ql4" path="res://campaign/lighting_information/baked_lighting_test_level.lmbake" id="2_tr61k"]
+[ext_resource type="PackedScene" uid="uid://cdu7ihn6wesf1" path="res://assets/debug/audio_effects_tester.tscn" id="3_vkmyk"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_q42es"]
+lightmap_size_hint = Vector2i(104, 106)
+flip_faces = true
+add_uv2 = true
+size = Vector3(10, 5, 10)
+
+[sub_resource type="Environment" id="Environment_1yj1d"]
+ambient_light_source = 2
+ambient_light_color = Color(0.168627, 0.168627, 0.168627, 1)
+glow_enabled = true
+glow_bloom = 0.02
+glow_blend_mode = 0
+fog_light_color = Color(0.752941, 0, 0.027451, 1)
+fog_density = 0.005
+
+[sub_resource type="BoxMesh" id="BoxMesh_sm278"]
+lightmap_size_hint = Vector2i(14, 21)
+add_uv2 = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_058q1"]
+albedo_texture = ExtResource("1_0tl5v")
+uv1_scale = Vector3(2, 2, 2)
+
+[sub_resource type="SphereMesh" id="SphereMesh_6l5nj"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_4psie"]
+
+[node name="bakedLightingTestLevel" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+mesh = SubResource("BoxMesh_q42es")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1yj1d")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." groups=["light"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.55907, 0.849708, -2.85333)
+shadow_enabled = true
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="." groups=["light"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.73269, 4.37811, 2.43296)
+light_color = Color(0.733333, 0.921569, 0.905882, 1)
+light_energy = 0.5
+light_bake_mode = 1
+shadow_enabled = true
+omni_range = 3.72873
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, -2)
+mesh = SubResource("BoxMesh_sm278")
+surface_material_override/0 = SubResource("StandardMaterial3D_058q1")
+
+[node name="LightmapGI" type="LightmapGI" parent="." groups=["light"]]
+quality = 2
+bounces = 4
+directional = true
+interior = true
+light_data = ExtResource("2_tr61k")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.13777, 2.06131, -1.7906)
+mesh = SubResource("SphereMesh_6l5nj")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("WorldBoundaryShape3D_4psie")
+
+[node name="audioEffects_tester" parent="." instance=ExtResource("3_vkmyk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.58615, 0.639748, 2.67303)

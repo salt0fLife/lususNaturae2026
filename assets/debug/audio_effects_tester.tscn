@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://cdu7ihn6wesf1"]
+
+[ext_resource type="Script" path="res://assets/debug/audio_effects_tester.gd" id="1_4xld1"]
+[ext_resource type="PackedScene" uid="uid://bpymaguf2rw4r" path="res://assets/effects/sound_emitter.tscn" id="2_qxue3"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_2wrek"]
+
+[node name="audioEffects_tester" type="Node3D"]
+script = ExtResource("1_4xld1")
+
+[node name="soundEmitter" parent="." instance=ExtResource("2_qxue3")]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_2wrek")

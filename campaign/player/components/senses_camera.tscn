@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://c4woxbpboh1ky"]
+
+[ext_resource type="Script" path="res://scripts/senses_camera.gd" id="1_mcrow"]
+
+[sub_resource type="Environment" id="Environment_8lrqg"]
+background_mode = 1
+fog_enabled = true
+fog_light_color = Color(0.156863, 0.176471, 0.223529, 1)
+fog_density = 0.2
+adjustment_enabled = true
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_dew6k"]
+blend_mode = 3
+
+[node name="senses_camera" type="Node3D"]
+script = ExtResource("1_mcrow")
+
+[node name="sight_camera" type="Camera3D" parent="."]
+cull_mask = 1048569
+current = true
+
+[node name="smell_camera" type="Camera3D" parent="."]
+cull_mask = 1048567
+environment = SubResource("Environment_8lrqg")
+
+[node name="blackout" type="ColorRect" parent="."]
+material = SubResource("CanvasItemMaterial_dew6k")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

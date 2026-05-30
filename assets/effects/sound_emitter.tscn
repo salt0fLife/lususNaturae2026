@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://bpymaguf2rw4r"]
+
+[ext_resource type="Script" path="res://scripts/sound_emitter.gd" id="1_db3c1"]
+
+[node name="soundEmitter" type="AudioStreamPlayer3D"]
+script = ExtResource("1_db3c1")
+
+[node name="graphics" type="Node3D" parent="."]
+
+[node name="Label3D" type="Label3D" parent="graphics"]
+billboard = 1
+no_depth_test = true
+text = "visible sound"

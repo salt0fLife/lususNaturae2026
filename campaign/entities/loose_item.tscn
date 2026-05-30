@@ -1,0 +1,78 @@
+[gd_scene load_steps=9 format=3 uid="uid://dwb8rqy5utihe"]
+
+[ext_resource type="Script" path="res://scripts/loose_item.gd" id="1_q61v5"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_2weyi"]
+
+[sub_resource type="Gradient" id="Gradient_iexqm"]
+offsets = PackedFloat32Array(0, 0.0253165, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_cjtbe"]
+gradient = SubResource("Gradient_iexqm")
+fill_from = Vector2(1, 0.9)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_llxdb"]
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+specular_mode = 2
+albedo_color = Color(0.454902, 0.831373, 0.945098, 1)
+albedo_texture = SubResource("GradientTexture2D_cjtbe")
+billboard_mode = 2
+distance_fade_min_distance = 15.0
+distance_fade_max_distance = 7.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_j14ka"]
+material = SubResource("StandardMaterial3D_llxdb")
+size = Vector2(0.06, 2)
+orientation = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1teii"]
+cull_mode = 2
+shading_mode = 0
+specular_mode = 2
+disable_fog = true
+albedo_color = Color(0.627451, 0.945098, 0.992157, 1)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+distance_fade_mode = 3
+distance_fade_min_distance = 20.0
+distance_fade_max_distance = 15.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_wpdt1"]
+material = SubResource("StandardMaterial3D_1teii")
+size = Vector2(0.04, 0.04)
+orientation = 2
+
+[node name="loose_item" type="StaticBody3D" groups=["interactable"]]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("1_q61v5")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.186357, 0)
+billboard = 1
+text = "wowzers"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_2weyi")
+
+[node name="senses_helper" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="senses_helper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00007, 0)
+visible = false
+mesh = SubResource("PlaneMesh_j14ka")
+skeleton = NodePath("../..")
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="senses_helper"]
+lifetime = 1.5
+mesh = SubResource("PlaneMesh_wpdt1")
+direction = Vector3(0, 1, 0)
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.2
+initial_velocity_max = 0.2

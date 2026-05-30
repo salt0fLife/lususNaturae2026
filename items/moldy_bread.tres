@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="item_food" load_steps=2 format=3 uid="uid://djfg5gp46oeqm"]
+
+[ext_resource type="Script" path="res://scripts/item_food.gd" id="1_fhbya"]
+
+[resource]
+script = ExtResource("1_fhbya")
+food_type = 2
+food_value = 2
+internal_reference_name = "moldy_bread"
+display_name = "moldy bread"
+item_style = 1
+sounds = 0
+animations = 0
+model_path = "res://assets/items/bread/bread.tscn"
+texture_path = "res://assets/textures/material/DebuggTexture.png"

@@ -1,0 +1,69 @@
+[gd_scene load_steps=13 format=3 uid="uid://dddjtmqsonjvn"]
+
+[ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_wp5ay"]
+[ext_resource type="PackedScene" uid="uid://vaiwu5wehwiw" path="res://campaign/enemies/wendigo.tscn" id="2_tfsy4"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_e6kvw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ar7mf"]
+albedo_texture = ExtResource("1_wp5ay")
+uv1_scale = Vector3(500, 500, 500)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_o6chm"]
+material = SubResource("StandardMaterial3D_ar7mf")
+size = Vector2(500, 500)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7ln70"]
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cnrx1"]
+height = 640
+seamless = true
+noise = SubResource("FastNoiseLite_7ln70")
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_jdqfx"]
+night_sky = SubResource("NoiseTexture2D_cnrx1")
+
+[sub_resource type="Sky" id="Sky_5v6xa"]
+sky_material = SubResource("PhysicalSkyMaterial_jdqfx")
+
+[sub_resource type="Environment" id="Environment_53db1"]
+background_mode = 2
+background_energy_multiplier = 1.5
+sky = SubResource("Sky_5v6xa")
+
+[sub_resource type="BoxMesh" id="BoxMesh_2h8ir"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5jjkc"]
+
+[node name="debug_level" type="Node3D"]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("WorldBoundaryShape3D_e6kvw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_o6chm")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." groups=["light"]]
+transform = Transform3D(0.707107, 0.612372, -0.353553, 0, 0.5, 0.866025, 0.707107, -0.612372, 0.353553, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_53db1")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.495267, 3)
+mesh = SubResource("BoxMesh_2h8ir")
+
+[node name="sleepAreaTest" type="Area3D" parent="." groups=["sleep_area"]]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="sleepAreaTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.491076, 3)
+shape = SubResource("BoxShape3D_5jjkc")
+
+[node name="wendigo" parent="." instance=ExtResource("2_tfsy4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.74858, 0, -3.23181)

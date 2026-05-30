@@ -1,0 +1,26 @@
+[remap]
+
+importer="2d_array_texture"
+type="CompressedTexture2DArray"
+uid="uid://crl53nh7bsoyi"
+path="res://.godot/imported/baked_lighting_test_level.exr-50b1dc9234a23391dd413bc0f496fc57.ctexarray"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://campaign/lighting_information/baked_lighting_test_level.exr"
+dest_files=["res://.godot/imported/baked_lighting_test_level.exr-50b1dc9234a23391dd413bc0f496fc57.ctexarray"]
+
+[params]
+
+compress/mode=3
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/channel_pack=1
+mipmaps/generate=false
+mipmaps/limit=-1
+slices/horizontal=1
+slices/vertical=4

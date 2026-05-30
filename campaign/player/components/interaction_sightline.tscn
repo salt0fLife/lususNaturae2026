@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dyl2fckihvk6a"]
+
+[ext_resource type="Script" path="res://scripts/interaction_sightline.gd" id="1_l4w7n"]
+
+[node name="interaction_sightline" type="Node3D"]
+script = ExtResource("1_l4w7n")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+target_position = Vector3(0, 0, -2)
+collision_mask = 9

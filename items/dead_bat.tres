@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="item_food" load_steps=2 format=3 uid="uid://dfxbmcs30a271"]
+
+[ext_resource type="Script" path="res://scripts/item_food.gd" id="1_ei8jt"]
+
+[resource]
+script = ExtResource("1_ei8jt")
+food_type = 5
+food_value = 3
+internal_reference_name = "dead_bat"
+display_name = "dead bat"
+item_style = 1
+sounds = 3
+animations = 2
+model_path = "res://assets/items/dead_bat/dead_bat.tscn"
+texture_path = "res://assets/textures/material/DebuggTexture.png"

@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://cn6mlvo1wyl8s"]
+
+[node name="basic_smell_trail" type="Node3D"]
+
+[node name="graphics_handler" type="Node" parent="."]

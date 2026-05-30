@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6hxq6dgbv15y"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_rloq3"]
+size = Vector3(0.12, 0.305, 0.185)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_w12he"]
+size = Vector2(0.14, 0.315)
+
+[node name="dead_bat" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_rloq3")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.68159, 0.407517, -0.607754, -0.731735, 0.37959, -0.566106, -1.81965e-08, 0.830567, 0.556919, -0.0924744, -0.0047082, 0)
+mesh = SubResource("PlaneMesh_w12he")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.779218, -0.349051, 0.520561, 0.626753, 0.433961, -0.647192, -1.81965e-08, 0.830567, 0.556919, 0.105265, -0.0047082, 0)
+mesh = SubResource("PlaneMesh_w12he")

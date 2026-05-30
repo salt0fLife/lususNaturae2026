@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7yd1v5jswuas"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_5pwml"]
+radius = 0.05
+height = 0.2
+
+[node name="bread" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1.31134e-07, -1, 0, 1, 1.31134e-07, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_5pwml")

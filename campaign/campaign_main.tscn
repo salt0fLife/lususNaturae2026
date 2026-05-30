@@ -1,0 +1,266 @@
+[gd_scene load_steps=5 format=3 uid="uid://xwre6k638wd1"]
+
+[ext_resource type="Script" path="res://scripts/campaign_main.gd" id="1_3biet"]
+[ext_resource type="PackedScene" uid="uid://o5esi8ctymbf" path="res://menus/inventory_menu.tscn" id="2_np8a5"]
+[ext_resource type="PackedScene" uid="uid://ber4ufrl6tgeo" path="res://menus/action_menu.tscn" id="3_km1sh"]
+[ext_resource type="PackedScene" uid="uid://dacmm1ix3biud" path="res://menus/dialogue_popup_handler.tscn" id="4_5wa0d"]
+
+[node name="campaign_main" type="Node"]
+process_mode = 3
+script = ExtResource("1_3biet")
+
+[node name="WorldHandler" type="Node3D" parent="."]
+process_mode = 1
+
+[node name="playerHandler" type="Node3D" parent="."]
+process_mode = 1
+
+[node name="itemHandler" type="Node3D" parent="."]
+process_mode = 1
+
+[node name="cutsceneHandler" type="Node" parent="."]
+
+[node name="Label" type="Label" parent="."]
+visible = false
+offset_right = 40.0
+offset_bottom = 23.0
+text = "0"
+
+[node name="Label2" type="Label" parent="."]
+visible = false
+offset_left = -1.0
+offset_top = 37.0
+offset_right = 39.0
+offset_bottom = 60.0
+text = "paused"
+
+[node name="dialogue_popup_handler" parent="." instance=ExtResource("4_5wa0d")]
+visible = false
+
+[node name="debug_menu" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="left" type="VFlowContainer" parent="debug_menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.33
+anchor_bottom = 0.485
+offset_right = -0.160004
+offset_bottom = -0.279999
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="paused" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+text = "paused : false"
+
+[node name="time_of_day" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+text = "time : midday"
+
+[node name="day_timer" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+text = "day_timer : 0.0"
+
+[node name="held_item" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+text = "held_item : []"
+
+[node name="health" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+text = "health : 1.0 / 1.0"
+
+[node name="food" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+text = "food : 1.0 / 5.0"
+
+[node name="in_game_days" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+
+[node name="dash_charges" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+text = "dash_charges : 3.0/3.0"
+
+[node name="velocity" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+text = "dash_charges : 3.0/3.0"
+
+[node name="speed" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+text = "dash_charges : 3.0/3.0"
+
+[node name="right" type="HFlowContainer" parent="debug_menu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.33
+anchor_bottom = 0.485
+offset_right = -0.160004
+offset_bottom = -0.279999
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="inventory_menu" parent="." instance=ExtResource("2_np8a5")]
+process_mode = 1
+visible = false
+
+[node name="action_menu" parent="." instance=ExtResource("3_km1sh")]
+visible = false
+
+[node name="pause_menu" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="pause_menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="buttonHandler" type="VBoxContainer" parent="pause_menu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -56.0
+offset_top = -33.0
+offset_right = 56.0
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="resume" type="Button" parent="pause_menu/buttonHandler"]
+layout_mode = 2
+text = "resume"
+
+[node name="save and quit" type="Button" parent="pause_menu/buttonHandler"]
+layout_mode = 2
+text = "save and quit"
+
+[node name="devtools" type="Control" parent="pause_menu"]
+layout_mode = 1
+anchor_left = 0.552083
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="HFlowContainer" type="HFlowContainer" parent="pause_menu/devtools"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="pause_menu/devtools/HFlowContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="pause_menu/devtools/HFlowContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "player stage"
+
+[node name="debugPlayer_scene_select" type="OptionButton" parent="pause_menu/devtools/HFlowContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+allow_reselect = true
+
+[node name="sleepTest" type="Button" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+text = "sleep"
+
+[node name="giveFood" type="Button" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+text = "Pickup Food"
+
+[node name="PanelContainer2" type="PanelContainer" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="pause_menu/devtools/HFlowContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="pause_menu/devtools/HFlowContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+text = "world level"
+
+[node name="OptionButton" type="OptionButton" parent="pause_menu/devtools/HFlowContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+allow_reselect = true
+
+[node name="damage_test" type="Button" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+text = "take 0.2 damage"
+
+[node name="set_checkpoint" type="Button" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+text = "set checkpoint"
+
+[node name="PanelContainer3" type="PanelContainer" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="pause_menu/devtools/HFlowContainer/PanelContainer3"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="pause_menu/devtools/HFlowContainer/PanelContainer3/VBoxContainer"]
+layout_mode = 2
+text = "cutscene selector"
+
+[node name="OptionButton" type="OptionButton" parent="pause_menu/devtools/HFlowContainer/PanelContainer3/VBoxContainer"]
+layout_mode = 2
+allow_reselect = true
+
+[node name="killbind" type="Button" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+text = "instant death"
+
+[node name="tp_ZERO" type="Button" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+text = "tp to world_center"
+
+[node name="PanelContainer4" type="PanelContainer" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="pause_menu/devtools/HFlowContainer/PanelContainer4"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="pause_menu/devtools/HFlowContainer/PanelContainer4/VBoxContainer"]
+layout_mode = 2
+text = "major_point_reached"
+
+[node name="OptionButton" type="OptionButton" parent="pause_menu/devtools/HFlowContainer/PanelContainer4/VBoxContainer"]
+layout_mode = 2
+allow_reselect = true
+
+[node name="PanelContainer5" type="PanelContainer" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="pause_menu/devtools/HFlowContainer/PanelContainer5"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="pause_menu/devtools/HFlowContainer/PanelContainer5/VBoxContainer"]
+layout_mode = 2
+text = "give item"
+
+[node name="OptionButton" type="OptionButton" parent="pause_menu/devtools/HFlowContainer/PanelContainer5/VBoxContainer"]
+layout_mode = 2
+toggle_mode = false
+allow_reselect = true
+
+[node name="playSoundHandler" type="AudioStreamPlayer" parent="."]
+max_polyphony = 32

@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://cbn24ix6fh4o"]
+
+[ext_resource type="Script" path="res://scripts/basic_smoke.gd" id="1_ppcst"]
+
+[node name="basic_smoke" type="Node3D"]
+script = ExtResource("1_ppcst")
+resolution = 15
+gravity = Vector3(0, 10, 0)
+life_time = 0.1
+sin_wave_strength = 4.0
+sin_wave_frequency = 2.0
+
+[node name="graphics_handler" type="Node" parent="."]

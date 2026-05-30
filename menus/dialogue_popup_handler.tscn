@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://dacmm1ix3biud"]
+
+[ext_resource type="Script" path="res://scripts/dialogue_popup_handler.gd" id="1_yhwoe"]
+[ext_resource type="AudioStream" uid="uid://d3hmwakvr7uy3" path="res://assets/sounds/text_voices/voice_popup.ogg" id="2_tu6hx"]
+
+[node name="dialogue_popup_handler" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yhwoe")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.226562
+anchor_top = 0.660494
+anchor_right = 0.786458
+anchor_bottom = 0.882716
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_tu6hx")

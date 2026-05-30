@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://e7st1isjuhr6"]
+
+[ext_resource type="Script" path="res://scripts/follow_camera.gd" id="1_kx5kl"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qt3ib"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+proximity_fade_enabled = true
+proximity_fade_distance = 20.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_57vur"]
+material = SubResource("StandardMaterial3D_qt3ib")
+flip_faces = true
+radius = 10.0
+height = 20.0
+
+[node name="fogShroud" type="Node3D"]
+top_level = true
+script = ExtResource("1_kx5kl")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_57vur")

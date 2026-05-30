@@ -1,0 +1,143 @@
+[gd_scene load_steps=18 format=3 uid="uid://cr72kg6xrvq30"]
+
+[ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_konvq"]
+[ext_resource type="Script" path="res://scripts/launcher.gd" id="2_ib67a"]
+[ext_resource type="PackedScene" uid="uid://vaiwu5wehwiw" path="res://campaign/enemies/wendigo.tscn" id="3_i438i"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_eeh8o"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7fg8f"]
+albedo_color = Color(0, 0.619608, 0.862745, 1)
+albedo_texture = ExtResource("1_konvq")
+uv1_scale = Vector3(500, 500, 500)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_vwy2x"]
+material = SubResource("StandardMaterial3D_7fg8f")
+size = Vector2(500, 500)
+
+[sub_resource type="Gradient" id="Gradient_qn7b5"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.929825, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.902226, 0.564936, 0.84959, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wb2l4"]
+noise_type = 0
+frequency = 0.0443
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pfrfr"]
+height = 640
+seamless = true
+color_ramp = SubResource("Gradient_qn7b5")
+noise = SubResource("FastNoiseLite_wb2l4")
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_b4btt"]
+night_sky = SubResource("NoiseTexture2D_pfrfr")
+
+[sub_resource type="Sky" id="Sky_5262a"]
+sky_material = SubResource("PhysicalSkyMaterial_b4btt")
+
+[sub_resource type="Environment" id="Environment_fknbc"]
+background_mode = 2
+background_energy_multiplier = 1.5
+sky = SubResource("Sky_5262a")
+
+[sub_resource type="BoxMesh" id="BoxMesh_bc7q6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g4po2"]
+albedo_texture = ExtResource("1_konvq")
+uv1_scale = Vector3(10, 10, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4cnlg"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_qy2qs"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_82s1q"]
+albedo_color = Color(0.713726, 0.737255, 0.341176, 1)
+
+[node name="debug_level_v2" type="Node3D"]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("WorldBoundaryShape3D_eeh8o")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_vwy2x")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." groups=["light"]]
+transform = Transform3D(0.707107, 0.612372, -0.353553, 0, 0.5, 0.866025, 0.707107, -0.612372, 0.353553, 0, 0, 0)
+layers = 8
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_fknbc")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.495267, 3)
+mesh = SubResource("BoxMesh_bc7q6")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+material_override = SubResource("StandardMaterial3D_g4po2")
+use_collision = true
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 24, -38, 0)
+radius = 45.0
+height = 18.0
+sides = 22
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 59, -38, 0)
+radius = 45.0
+height = 18.0
+sides = 22
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 96, -38, 0)
+radius = 45.0
+height = 18.0
+sides = 22
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 10.5, -9)
+size = Vector3(45, 22, 1)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 15.0786, 5, 65.5)
+size = Vector3(32, 11, 1)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 45, 5, 89.0637)
+size = Vector3(45, 11, 1)
+
+[node name="CSGCylinder3D4" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.7399, 4, 27.5848)
+radius = 8.0
+height = 14.0
+sides = 64
+
+[node name="CSGCylinder3D5" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5569, 4, 81.5848)
+radius = 8.0
+height = 14.0
+sides = 64
+
+[node name="launcher" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.83931, 0, -0.565607)
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("2_ib67a")
+add_vel = Vector3(50, 10, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="launcher"]
+shape = SubResource("BoxShape3D_4cnlg")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="launcher"]
+mesh = SubResource("BoxMesh_qy2qs")
+surface_material_override/0 = SubResource("StandardMaterial3D_82s1q")
+
+[node name="wendigo" parent="." instance=ExtResource("3_i438i")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.66777, 0, 33.3379)
+
+[connection signal="body_entered" from="launcher" to="launcher" method="_on_body_entered"]

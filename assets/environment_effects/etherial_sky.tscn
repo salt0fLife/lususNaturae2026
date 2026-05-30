@@ -1,0 +1,47 @@
+[gd_scene load_steps=9 format=3 uid="uid://b6vmsjtcxfwuw"]
+
+[ext_resource type="Script" path="res://scripts/follow_camera.gd" id="1_dbkor"]
+
+[sub_resource type="Gradient" id="Gradient_2tmks"]
+offsets = PackedFloat32Array(0, 0.758621, 1)
+colors = PackedColorArray(0.0625092, 0.0598661, 0.125257, 1, 0.0701404, 0.0673302, 0.136933, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_frfm6"]
+frequency = 0.432
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_egqff"]
+width = 1024
+color_ramp = SubResource("Gradient_2tmks")
+noise = SubResource("FastNoiseLite_frfm6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4eaii"]
+shading_mode = 0
+albedo_texture = SubResource("NoiseTexture2D_egqff")
+proximity_fade_enabled = true
+proximity_fade_distance = 100.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_5e8pv"]
+material = SubResource("StandardMaterial3D_4eaii")
+flip_faces = true
+radius = 50.0
+height = 100.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_voaum"]
+shading_mode = 0
+proximity_fade_enabled = true
+proximity_fade_distance = 100.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ppw4f"]
+material = SubResource("StandardMaterial3D_voaum")
+size = Vector2(10000, 10000)
+
+[node name="etherial_sky" type="Node3D"]
+script = ExtResource("1_dbkor")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("SphereMesh_5e8pv")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 0, 500, 0)
+mesh = SubResource("PlaneMesh_ppw4f")

@@ -1,0 +1,337 @@
+[gd_scene load_steps=14 format=3 uid="uid://oebbukcesi5l"]
+
+[ext_resource type="Script" path="res://scripts/player_01.gd" id="1_bt3g6"]
+[ext_resource type="PackedScene" uid="uid://dyl2fckihvk6a" path="res://campaign/player/components/interaction_sightline.tscn" id="2_r5a8l"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lvskq"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_lhoed"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ou7rr"]
+size = Vector3(0.17, 1, 0.235)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_taea1"]
+albedo_color = Color(0.27451, 0.380392, 0.52549, 1)
+
+[sub_resource type="Animation" id="Animation_e1gjg"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("graphics/hipPivot/MeshInstance3D3:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0.15118)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("graphics/hipPivot/MeshInstance3D3:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.255418, 0.492294, 0.108236)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("graphics/hipPivot/MeshInstance3D2:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.264207, 0.502344, 0.138069)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("graphics/hipPivot/MeshInstance3D2:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, -0.142925)]
+}
+
+[sub_resource type="Animation" id="Animation_ua1n6"]
+resource_name = "idle"
+length = 4.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("graphics/hipPivot/MeshInstance3D3:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2, 4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0.15118), Vector3(0, 0, 0.168075), Vector3(0, 0, 0.15118)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("graphics/hipPivot/MeshInstance3D3:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2, 4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.255418, 0.492294, 0.108236), Vector3(0.255749, 0.482628, 0.108236), Vector3(0.255418, 0.492294, 0.108236)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("graphics/hipPivot/MeshInstance3D2:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 2, 4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.264207, 0.502344, 0.138069), Vector3(-0.259105, 0.497575, 0.138069), Vector3(-0.264207, 0.502344, 0.138069)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("graphics/hipPivot/MeshInstance3D2:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 2, 4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, -0.142925), Vector3(0, 0, -0.170484), Vector3(0, 0, -0.142925)]
+}
+
+[sub_resource type="Animation" id="Animation_ja3qq"]
+resource_name = "recenter_from_left"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("graphics/hipPivot/MeshInstance3D3:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0.785398, 0.155404), Vector3(-0.0915161, 0.262926, 0.130811), Vector3(0, 0, 0.155404)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("graphics/hipPivot/MeshInstance3D3:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.277017, 0.489877, -0.1098), Vector3(0.262673, 0.489877, 0.0586665), Vector3(0.255501, 0.489877, 0.108236)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("graphics/hipPivot/MeshInstance3D2:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(1.38982e-09, 0.785398, -0.149815), Vector3(-0.0695364, 0.393703, -0.178668), Vector3(0, 0, -0.149815)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("graphics/hipPivot/MeshInstance3D2:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.171788, 0.501152, 0.273346), Vector3(-0.21736, 0.537554, 0.205708), Vector3(-0.262931, 0.501152, 0.138069)]
+}
+
+[sub_resource type="Animation" id="Animation_ut17r"]
+resource_name = "recenter_from_right"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("graphics/hipPivot/MeshInstance3D3:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(4.61278e-09, -0.807232, 0.155404), Vector3(-0.0753939, -0.404833, 0.187669), Vector3(0, 0, 0.155404)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("graphics/hipPivot/MeshInstance3D3:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.148569, 0.489877, 0.293846), Vector3(0.202035, 0.538937, 0.143858), Vector3(0.255501, 0.489877, 0.108236)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("graphics/hipPivot/MeshInstance3D2:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(5.97731e-09, -0.785398, -0.149815), Vector3(-0.149573, -0.397381, -0.0873527), Vector3(0, 0, -0.149815)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("graphics/hipPivot/MeshInstance3D2:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.234141, 0.501152, -0.0950504), Vector3(-0.248536, 0.501152, 0.0502634), Vector3(-0.262931, 0.501152, 0.138069)]
+}
+
+[sub_resource type="Animation" id="Animation_4wjwa"]
+resource_name = "walk"
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("graphics/hipPivot/MeshInstance3D3:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.322416, -0.0398819, 0.0259069), Vector3(-0.413768, -0.041314, 0.0551686), Vector3(0.322416, -0.0398819, 0.0259069)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("graphics/hipPivot/MeshInstance3D3:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 0.75, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0.220132, 0.4714, -0.0286373), Vector3(0.220132, 0.4714, 0.334508), Vector3(0.220132, 0.567559, 0.152935), Vector3(0.220132, 0.4714, -0.0286373)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("graphics/hipPivot/MeshInstance3D2:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.205427, 0.484491, 0.257185), Vector3(-0.205427, 0.573889, 0.132815), Vector3(-0.205427, 0.484491, 0.00844592), Vector3(-0.205427, 0.484491, 0.257185)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("graphics/hipPivot/MeshInstance3D2:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.30079, 1.9022e-11, 0.00101228), Vector3(0.446909, -2.54342e-11, 0.00101228), Vector3(-0.30079, 1.9022e-11, 0.00101228)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_27tsg"]
+_data = {
+"RESET": SubResource("Animation_e1gjg"),
+"idle": SubResource("Animation_ua1n6"),
+"recenter_from_left": SubResource("Animation_ja3qq"),
+"recenter_from_right": SubResource("Animation_ut17r"),
+"walk": SubResource("Animation_4wjwa")
+}
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_a6gt1"]
+
+[node name="player01" type="CharacterBody3D"]
+collision_layer = 6
+script = ExtResource("1_bt3g6")
+SPEED = 10.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_lvskq")
+
+[node name="graphics" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
+mesh = SubResource("CapsuleMesh_lhoed")
+skeleton = NodePath("../..")
+
+[node name="cameraHandler" type="Node3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -0.25)
+
+[node name="Camera3D" type="Camera3D" parent="graphics/cameraHandler"]
+
+[node name="interaction_sightline" parent="graphics/cameraHandler" instance=ExtResource("2_r5a8l")]
+
+[node name="hipPivot" type="Node3D" parent="graphics"]
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="graphics/hipPivot"]
+transform = Transform3D(0.989803, 0.142439, 0, -0.142439, 0.989803, 0, 0, 0, 1, -0.264207, 0.502344, 0.138069)
+mesh = SubResource("BoxMesh_ou7rr")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_taea1")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="graphics/hipPivot"]
+transform = Transform3D(0.988594, -0.150605, 0, 0.150605, 0.988594, 0, 0, 0, 1, 0.255418, 0.492294, 0.108236)
+mesh = SubResource("BoxMesh_ou7rr")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_taea1")
+
+[node name="legAnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_27tsg")
+}
+
+[node name="special_area_sense" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="special_area_sense"]
+shape = SubResource("SphereShape3D_a6gt1")

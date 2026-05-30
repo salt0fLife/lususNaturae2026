@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="item_sword" load_steps=2 format=3 uid="uid://yhtdug35dsn6"]
+
+[ext_resource type="Script" path="res://scripts/item_sword.gd" id="1_g67wk"]
+
+[resource]
+script = ExtResource("1_g67wk")
+damage = 1
+internal_reference_name = "short_sword"
+display_name = "short sword"
+item_style = 2
+sounds = 2
+animations = 1
+model_path = "res://assets/items/short_sword/short_sword.glb"
+texture_path = "res://assets/textures/material/DebuggTexture.png"

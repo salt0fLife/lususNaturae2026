@@ -1,0 +1,62 @@
+[gd_scene load_steps=2 format=3 uid="uid://ccratukrutpkd"]
+
+[ext_resource type="Script" path="res://scripts/settings_menu.gd" id="1_tnagl"]
+
+[node name="settings" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tnagl")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TabContainer" type="TabContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0234375
+anchor_top = 0.131173
+anchor_right = 0.974826
+anchor_bottom = 0.958333
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="controls" type="Control" parent="Panel/TabContainer"]
+layout_mode = 2
+
+[node name="graphics" type="Control" parent="Panel/TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="back" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0138889
+anchor_top = 0.0169753
+anchor_right = 0.112722
+anchor_bottom = 0.100469
+offset_right = 0.143997
+offset_bottom = -0.104
+text = "back"
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -129.5
+offset_right = 129.5
+offset_bottom = 77.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 56
+text = "SETTINGS"
