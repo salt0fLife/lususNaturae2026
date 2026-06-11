@@ -67,3 +67,76 @@ func new_dialogue_box(text : String, custom_time : float = 0.0) -> void:
 		return
 	emit_signal("dialogue", text, custom_time)
 	pass
+
+##world stuff
+enum {
+	DIRT_KEY,
+	GRASS_KEY,
+	METAL_KEY,
+	STONE_KEY,
+	WOOD_KEY
+}
+
+enum {
+	STEP_SOUNDS,
+}
+
+const surface_lookup = { #this way i can bundle more info in if i need
+	"dirt" : {
+		STEP_SOUNDS : DIRT_KEY,
+	},
+	"stone" : {
+		STEP_SOUNDS : STONE_KEY,
+	},
+	"grass" : {
+		STEP_SOUNDS : GRASS_KEY,
+	},
+	"metal" : {
+		STEP_SOUNDS : METAL_KEY,
+	},
+	"wood" : {
+		STEP_SOUNDS : WOOD_KEY,
+	},
+	"default" : {
+		STEP_SOUNDS : STONE_KEY
+	}
+	
+}
+
+const surface_step_sounds = {
+	DIRT_KEY : ["res://assets/sounds/footsteps/dirt/footstepDirt1.wav",
+	"res://assets/sounds/footsteps/dirt/footstepStone2.wav"
+	],
+	GRASS_KEY : [
+		"res://assets/sounds/footsteps/grassFootsteps/grassFootstep1.ogg",
+		"res://assets/sounds/footsteps/grassFootsteps/grassFootstep2.ogg",
+		"res://assets/sounds/footsteps/grassFootsteps/grassFootstep3.ogg",
+		"res://assets/sounds/footsteps/grassFootsteps/grassFootstep4.ogg",
+		"res://assets/sounds/footsteps/grassFootsteps/grassFootstep5.ogg"
+	],
+	METAL_KEY : [
+		"res://assets/sounds/footsteps/metal/footstepMatal3.wav"
+	],
+	STONE_KEY : [
+		"res://assets/sounds/footsteps/stone/footstepStone1.wav",
+		"res://assets/sounds/footsteps/stone/footstepStone2.wav",
+		"res://assets/sounds/footsteps/stone/footstepStone4.wav"
+	],
+	WOOD_KEY : [
+		"res://assets/sounds/footsteps/wood/footstepWood1.wav",
+		"res://assets/sounds/footsteps/wood/footstepWood2.wav",
+		"res://assets/sounds/footsteps/wood/footstepWood3.wav",
+		"res://assets/sounds/footsteps/wood/footstepWood4.wav",
+		"res://assets/sounds/footsteps/wood/footstepWood5.wav",
+		"res://assets/sounds/footsteps/wood/footstepWood6.wav"
+	],
+}
+
+
+
+##
+
+
+
+
+

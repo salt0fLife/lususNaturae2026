@@ -7,6 +7,7 @@ extends CharacterBody3D
 @onready var camera = $graphics/cameraHandler/senses_camera
 @onready var anim = $graphics/cameraHandler/fp_hands_wip/AnimationPlayer
 @onready var held_item_handler = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/held_item_handler/node3d
+@onready var item_sounds = $graphics/item_sounds
 
 #attributes
 @export_group("attributes")
@@ -60,13 +61,12 @@ var last_wall_run_normal = Vector3.ZERO
 ##graphics
 var desired_CH_height: float = 1.5
 var desired_CH_rotation_z: float = 0.0
-
+var combat_stance = 0.0
 
 func _ready():
 	interaction_sightline.connect("interacted", _on_successful_interaction)
 	PlayerInformation.connect("teleport", tp)
 	anim.connect("animation_finished", _on_anim_finished)
-	anim.play("eat_bread")
 	PlayerInformation.connect("dropped_item", _on_dropped_item)
 	PlayerInformation.connect("update_held_item", update_held_item_graphics)
 	update_held_item_graphics()
@@ -146,6 +146,10 @@ func air_jump() -> void:
 	#graphics.air_dash(Vector3.UP)
 
 func _process(delta):
+	if combat_stance > 0.0:
+		combat_stance -= delta
+		if combat_stance < 0.0:
+			combat_stance = 0.0
 	if crouching:
 		cameraHandler.position.y = lerp(cameraHandler.position.y, 1.12,delta*12.0)
 	else:
@@ -157,7 +161,7 @@ func _process(delta):
 		anim.speed_scale = 1.0
 	
 	##timers and such
-	if sprinting and is_on_floor() and Input.get_vector("left", "right", "up", "down"):
+	if sprinting:# and Input.get_vector("left", "right", "up", "down"):
 		sprinting_timer += delta
 		#cameraHandler.position.y = lerp(cameraHandler.position.y, 1.4,delta*2.0)
 	else:
@@ -193,7 +197,10 @@ func get_movement_anim(movement : String) -> String:
 	match movement:
 		"idle":
 			if held_item_data == []:
-				return "idle_empty"
+				if combat_stance > 0.0:
+					return "idle_empty_shown"
+				else:
+					return "idle_empty"
 			else:
 				match held_item_data[Items.INDEX_ANIMATIONS]:
 					Items.animation.BREAD_ANIM:
@@ -204,6 +211,7 @@ func get_movement_anim(movement : String) -> String:
 						return "idle_holding_bread-metarig_001"
 		"sprinting":
 			if held_item_data == []:
+				#return "idle_empty_shown"
 				return "run_empty-metarig_001"
 			else:
 				match held_item_data[Items.INDEX_ANIMATIONS]:
@@ -211,6 +219,7 @@ func get_movement_anim(movement : String) -> String:
 						return "run_holding_bread"
 					Items.animation.SWORD_ANIM:
 						return "run_holding_sword"
+						#return "idle_holding_sword"
 					_:
 						return "run_holding_sword"
 		"jump":
@@ -262,34 +271,49 @@ var action_animations = [
 	"draw_bread_fancifully",
 	"draw_bread",
 	"draw_sword_fancifully",
+	"swing_sword_2",
+	"swing_sword_1",
+	"punch_empty_1",
+	"punch_empty_2",
+	"drop_bread"
 ]
 
 var movement_scaling_anims = {
 	"run_empty" : 7.5,
-	
 }
 
-func play_anim(key, interrupting = false, blend_time = 0.2):
+func play_anim(key: String, interrupting: bool = false, blend_time: float = 0.2, speed : float = 1.0):
 	if anim.current_animation == key:
 		return
 	if action_animations.has(key): #action animations always interrupt action animations
-		anim.play(key,blend_time)
+		anim.play(key,blend_time, speed)
 		print("playing anim " + key)
 		return
 	if action_animations.has(anim.current_animation) and !interrupting:
 		return
-	anim.play(key,blend_time)
+	anim.play(key,blend_time,speed)
 	print("playing anim " + key)
 	pass
 
+var airborn = false
 func _physics_process(delta):
 	# Add the gravity.
 	if not is_on_floor():
+		if !airborn:
+			airborn = true
+			#become airborn
+		#combat_stance = 3.5
+		if combat_stance == 0.0:
+			combat_stance = 1.0
 		if !dash_timer > 0.0:
 			velocity.y -= gravity * delta
 		else:
 			velocity.y -= velocity.y * (1.0 - abs(dash_vel.y)) * delta
 	else:
+		if airborn:
+			airborn = false
+			#landed
+			graphics.land()
 		air_jumps = max_air_jumps
 		wall_run_timer = 0.0
 
@@ -301,7 +325,9 @@ func _physics_process(delta):
 			#play_anim(get_movement_anim("jump"))
 		elif is_on_wall():
 			var normal = get_wall_normal()
-			velocity.y = jump_strength
+			lunge()
+			velocity.y += jump_strength
+			#velocity += get_look_dir()*clamp(velocity.length(), 0.0, jump_strength)
 			velocity += normal * jump_strength
 			graphics.wall_jump(normal)
 			wall_run_timer = 0.0
@@ -339,6 +365,7 @@ func _physics_process(delta):
 				velocity.x += ((crouch_speed * direction.x) - velocity.x) * delta * acceleration
 				velocity.z += ((crouch_speed * direction.z) - velocity.z) * delta * acceleration
 			elif sprinting:
+				graphics.running(delta)
 				var speed = Vector2(velocity.x,velocity.z).length()
 				play_anim(get_movement_anim("sprinting"))
 				if !speed > sprint_speed:
@@ -358,6 +385,7 @@ func _physics_process(delta):
 					#velocity.x += (speed*direction.x - velocity.x) * delta * acceleration
 					#velocity.z += (speed*direction.z - velocity.z) * delta * acceleration
 			else:
+				graphics.walking(delta)
 				play_anim(get_movement_anim("idle"))
 				velocity.x += ((walk_speed * direction.x) - velocity.x) * delta * acceleration
 				velocity.z += ((walk_speed * direction.z) - velocity.z) * delta * acceleration
@@ -373,7 +401,7 @@ func _physics_process(delta):
 			var w_n = get_wall_normal()
 			last_wall_run_normal = w_n
 			play_anim(get_movement_anim("wall_run"))
-			graphics.wall_running(w_n, delta, wr_power)
+			graphics.wall_running(w_n, delta, wr_power, get_slide_collision(0).get_collider(0).get_groups())
 			velocity -= w_n * delta * velocity.length() * 25.0 * wr_power * Vector3(1.0,0.0,1.0) #stick to wall
 			velocity = update_velocity_air(direction,velocity,delta)
 		else:
@@ -443,23 +471,34 @@ func attempt_loose_item_pickup(path_to : String) -> void:
 	node.call_deferred("queue_free")
 	print("picked up " + str(data[0]))
 
-func use_held_item():
+func use_held_item(special = false):
 	var data = PlayerInformation.get_held_item_data()
 	if data.is_empty():
 		print("punched")
+		combat_stance = 3.5
+		if special:
+			play_anim("punch_empty_2")
+		else:
+			play_anim("punch_empty_1")
 		return
 	var type = data[3]
 	match type:
 		Items.type.FOOD:
-			if PlayerInformation.food >= PlayerInformation.max_food:
-				print("cant eat any more you are full")
-				return
-			anim.play("eat_bread")
-			#print("ate " + str(data[0]))
-			#var sound = PlayerInformation.get_held_item_sound("eat")
-			#print("played sound * " + sound + " *")
-			#PlayerInformation.set_inventory_slot(PlayerInformation.held_item_index, [])
-			#PlayerInformation.eat_food(data[4])
+			if !special:
+				if PlayerInformation.food >= PlayerInformation.max_food:
+					print("cant eat any more you are full")
+					return
+				anim.play("eat_bread")
+			else:
+				play_anim("punch_empty_2")
+		Items.type.SWORD:
+			var attack_speed = data[Items.INDEX_DATA][0]
+			print("swung sword")
+			play_held_item_sound("swing", attack_speed)
+			if special:
+				play_anim("swing_sword_2", true, 0.0, attack_speed)
+			else:
+				play_anim("swing_sword_1", true, 0.0, attack_speed)
 
 func update_player_information() -> void:
 	PlayerInformation.position = position
@@ -482,18 +521,33 @@ func can_vault() -> bool:
 func _on_anim_finished(key) -> void:
 	match key:
 		"eat_bread":
-			var data = PlayerInformation.get_held_item_data()
-			print("ate " + str(data[0]))
-			var sound = PlayerInformation.get_held_item_sound("eat")
-			print("played sound * " + sound + " *")
-			PlayerInformation.set_inventory_slot(PlayerInformation.held_item_index, [])
-			PlayerInformation.eat_food(data[4])
-	
-	
+			consume_held_item()
+		"swing_sword_1":
+			swing_held_item()
+		"swing_sword_2":
+			swing_held_item()
 	if action_animations.has(key):
-		anim.play(get_movement_anim("idle"))
+		#anim.play(get_movement_anim("idle"))
+		pass
 	else:
 		anim.play(key)
+	pass
+
+
+##functions to be called in animations
+func consume_held_item() -> void:
+	var data = PlayerInformation.get_held_item_data()
+	print("ate " + str(data[0]))
+	#var sound = PlayerInformation.get_held_item_sound("eat")
+	#print("played sound * " + sound + " *")
+	play_held_item_sound("bite")
+	PlayerInformation.set_inventory_slot(PlayerInformation.held_item_index, [])
+	PlayerInformation.eat_food(data[4])
+
+func swing_held_item() -> void:
+	var data = PlayerInformation.get_held_item_data()
+	var type_data = data[Items.INDEX_DATA]
+	print(type_data[1])
 	pass
 
 func _on_dropped_item(_data, _pos) -> void:
@@ -506,18 +560,22 @@ func update_held_item_graphics() -> void:
 	
 	var item_data = PlayerInformation.get_held_item_data()
 	if item_data == []:
-		play_anim("idle_empty",true)
+		play_anim(get_movement_anim("idle"),true)
+		#interupts drop animation :/
 		return
 	#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]
 	var path = item_data[6]
 	var g = load(path).instantiate()
 	held_item_handler.add_child(g)
 	
-	var sound = PlayerInformation.get_held_item_sound("pickup")
-	if sound == "":
-		print("item had no pickup sound :/")
-	else:
-		print("playing sound  * " + sound + " *")
+	play_held_item_sound("pickup")
+	#var sound = PlayerInformation.get_held_item_sound("pickup")
+	#if sound == "":
+		#print("item had no pickup sound :/")
+	#else:
+		##print("playing sound  * " + sound + " *")
+		#item_sounds.stream = load(sound)
+		#item_sounds.play()
 	
 	var anim = item_data[Items.INDEX_ANIMATIONS]
 	match anim: #for drawing animation
@@ -528,3 +586,11 @@ func update_held_item_graphics() -> void:
 		_:
 			play_anim("draw_bread", true, 0.0)
 
+func play_held_item_sound(key : String, speed: float = 1.0) -> void:
+	var s = PlayerInformation.get_held_item_sound(key)
+	if s == "":
+		return
+	item_sounds.pitch_scale = speed
+	item_sounds.stream = load(s)
+	item_sounds.play()
+	

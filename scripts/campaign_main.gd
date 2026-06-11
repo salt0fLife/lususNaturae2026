@@ -257,6 +257,8 @@ func _input(_event):
 		return
 	if Input.is_action_just_pressed("use_item"):
 		use_held_item()
+	if Input.is_action_just_pressed("use_item_special"):
+		use_held_item(true)
 	if Input.is_action_just_pressed("drop_item"):
 		PlayerInformation.drop_held_item()
 	if Input.is_action_just_pressed("inventory"):
@@ -462,6 +464,7 @@ func update_debug_graphics() -> void:
 	$debug_menu/left/speed.text = "speed = " + str(PlayerInformation.velocity.length())
 	pass
 
+
 func get_time_of_day() -> String:
 	var tod = "midday"
 	if day_timer > day_length*0.5:
@@ -498,9 +501,9 @@ func _on_player_take_damage(amount : float) -> void:
 	PlayerInformation.health -= amount
 	pass
 
-func use_held_item() -> void:
+func use_held_item(special = false) -> void:
 	for p in playerHandler.get_children(false):
-		p.use_held_item()
+		p.use_held_item(special)
 
 var item_scene = preload("res://campaign/entities/loose_item.tscn")
 func _on_dropped_item(data : Array, pos : Vector3) -> void:

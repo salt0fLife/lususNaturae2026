@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_g67wk")
 damage = 1
+attack_speed = 1.0
 internal_reference_name = "short_sword"
 display_name = "short sword"
 item_style = 2

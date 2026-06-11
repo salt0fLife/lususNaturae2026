@@ -154,11 +154,11 @@ func get_held_item_sound(sound_key : String) -> String:
 	 #["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]
 	var sk = data[2]
 	if !Items.sounds.has(sk):
-		print("use of invalid sound key " + str(sk))
-		print(Items.sounds)
+		printerr("use of invalid sound key " + str(sk))
 		return ""
 	
 	var sounds = Items.sounds[sk]
 	if !sounds.has(sound_key):
+		printerr("item does not include sound " + str(sound_key))
 		return ""
 	return sounds[sound_key]

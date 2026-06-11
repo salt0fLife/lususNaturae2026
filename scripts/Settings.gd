@@ -11,4 +11,5 @@ var controls = {
 var graphics = {
 	"ssao" : false,
 	"ssr" : false, 
+	"FOV" : 75.0,
 }

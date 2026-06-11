@@ -31,9 +31,16 @@ func _update_inventory_graphics():
 	var cell_size = (PI*2.0 * ((1.0/nos)))
 	
 	for i in range(0,nos):
+		var held_item_data = PlayerInformation.inventory[i]
+		var item_style = Items.style.NORMAL
+		var item_name = "empty"
+		if !held_item_data.is_empty():
+			var item_data = Items.list[held_item_data[0]]
+			item_name = item_data[Items.INDEX_NAME]
+			item_style = item_data[Items.INDEX_STYLE]
 		var t = Label.new()
-		t.text = str(PlayerInformation.inventory[i]) + " (" + str(i+1)+")"
-		
+		t.text = str(item_name) + " (" + str(i+1)+")"
+		t.set("theme_override_colors/font_color", Items.style_colors[item_style])
 		var centered_angle = PI*2.0 * -((1.0/nos)*i)-cell_size*0.5# + (PI*2.0 * ((1.0/number_of_slots)*1)*0.5)
 		var middle_ray = Vector2(1.0,1.0)
 		middle_ray.x *= cos(centered_angle)

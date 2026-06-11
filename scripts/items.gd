@@ -8,6 +8,19 @@ enum style { #for fonts and effects
 	BLESSED,
 }
 
+const style_colors = [
+	#TAINTED,
+	Color.DIM_GRAY,
+	#NORMAL,
+	Color.GRAY,
+	#RARE,
+	Color.CADET_BLUE,
+	#EVIL,
+	Color.BROWN,
+	#BLESSED,
+	Color.PALE_GOLDENROD,
+]
+
 enum type { #types
 	FOOD, #[food_value : int, food_type]
 	THROWABLE,
@@ -44,7 +57,7 @@ var list = { #["display_name", item_style, sounds, item_type, data, texture_path
 
 var sounds = {
 	sound.BREAD_SOUNDS : {
-		"pickup" : "picked_up_bread",
+		"pickup" : "res://assets/sounds/item_sounds/draw_bread.ogg",
 		"eat" : "ate bread specifically",
 		"dropped" : "dropped bread"
 	},
@@ -52,9 +65,11 @@ var sounds = {
 		
 	},
 	sound.SWORD_SOUNDS : {
-		
+		"pickup" : "res://assets/sounds/item_sounds/draw_short_sword.ogg",
+		"swing" : "res://assets/sounds/item_sounds/swing_short_sword.ogg"
 	},
 	sound.DBAT_SOUNDS : {
+		"pickup" : "res://assets/sounds/item_sounds/draw_dbat.ogg",
 		"eat" : "ate a dead bat specifically"
 	},
 }

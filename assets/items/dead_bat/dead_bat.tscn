@@ -18,3 +18,8 @@ mesh = SubResource("PlaneMesh_w12he")
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.779218, -0.349051, 0.520561, 0.626753, 0.433961, -0.647192, -1.81965e-08, 0.830567, 0.556919, 0.105265, -0.0047082, 0)
 mesh = SubResource("PlaneMesh_w12he")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(0.688899, -0.182542, 0.701496, -0.11828, 0.926491, 0.357246, -0.715142, -0.32908, 0.616668, 0, 0, 0)
+spot_range = 20.0856
+spot_angle = 28.2223

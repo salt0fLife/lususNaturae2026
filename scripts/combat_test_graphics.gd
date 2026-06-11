@@ -1,6 +1,7 @@
 extends Node3D
 
 @onready var audio_player = $AudioStreamPlayer
+@onready var voice_audio_player = $AudioStreamPlayer2
 func vault() -> void:
 	audio_player.stream = load("res://assets/sounds/footsteps/snow/snow5.wav")
 	audio_player.play()
@@ -14,6 +15,12 @@ func wall_jump(normal : Vector3) -> void:
 
 func jump() -> void:
 	camera_rot_vel += Vector3(0.02,0.0,0.0)
+	voice_audio_player.stream = load("res://assets/sounds/player_movement/player_jump.ogg")
+	voice_audio_player.play()
+	if floor_check.is_colliding():
+		var hit = floor_check.get_collider()
+		var groups = hit.get_groups()
+		step_sound(groups)
 
 func air_dash(direction : Vector3) -> void:
 	direction = direction * transform.basis
@@ -30,7 +37,12 @@ var camera_rot_vel : Vector3 = Vector3.ZERO
 @onready var last_frame_camera_rot = Vector2(rotation.y, cameraHandler.rotation.x)
 @onready var anim = $cameraHandler/fp_hands_wip/AnimationPlayer
 func _process(delta):
-	camera_rot_vel += -(camera.rotation -camera_bone.rotation)* delta
+	if wall_run_active:
+		wall_run_active = false
+	elif $wall_run_sounds.playing:
+		$wall_run_sounds.stop()
+	
+	camera_rot_vel += -(camera.rotation) *delta #-camera_bone.rotation)* delta
 	camera_rot_vel -= camera_rot_vel * delta * 10.0
 	camera.rotation += camera_rot_vel
 	speed_appeal(delta)
@@ -78,17 +90,27 @@ func _process(delta):
 		ik_right.stop()
 	
 
-func wall_running(normal : Vector3, delta : float, power : float) -> void: # called every frame when running
-	return
-	#normal = normal * transform.basis
-	#camera_rot_vel -= (Vector3(normal.y,0.0,normal.x) * 0.15 * delta * (power*2.0 - 1.0))
-	#camera_rot_vel -= Vector3(normal.y,0.0,normal.x) * 0.15 * delta * power
+var wall_run_active = false
+func wall_running(normal : Vector3, delta : float, power : float, groups : Array) -> void: # called every frame when running
+	wall_run_active = true
+	if !$wall_run_sounds.playing:
+		$wall_run_sounds.play()
+	val += delta * power
+	if val > 1.0:
+		val -= 1.0
+		step = 0.0
+	if val*3.0 > step:
+		step += 1.0
+		step_sound(groups)
+	normal = normal * transform.basis
+	camera_rot_vel -= (Vector3(normal.y,0.0,normal.x) * 0.15 * delta * (power*2.0 - 1.0))
+	camera_rot_vel -= Vector3(normal.y,0.0,normal.x) * 0.15 * delta * power
 	pass
 
 func speed_appeal(delta : float) -> void:
 	var vel = $"..".velocity
 	var speed = vel.length()
-	var base_fov = 80.0
+	var base_fov = Settings.graphics["FOV"]
 	var max_fov_change = 50.0
 	speed = clamp(speed,7.5,150.0)
 	var appeal = speed / 150.0
@@ -141,3 +163,64 @@ func update_using_senses() -> void:
 	else:
 		for am in arm_meshes:
 			am.set_surface_override_material(0, null)
+
+var val = 0.0
+var step = 0.0
+func walking(delta) -> void:
+	val += delta * 1.0
+	var strength = 0.5
+	if val > 1.0:
+		val -= 1.0
+		step = 0.5
+	if val*2.0 > step:
+		step += 1.0
+		if floor_check.is_colliding():
+			var hit = floor_check.get_collider()
+			var groups = hit.get_groups()
+			step_sound(groups)
+	#camera.position.x = lerp(camera.position.x, sin(val*PI), delta*8.0)
+	hands.position.x += delta * sin(val*PI*2.0) * strength
+	hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength
+	pass
+
+func running(delta) -> void:
+	val += delta * 1.5
+	var strength = 1.0
+	if val > 1.0:
+		val -= 1.0
+		step = 0.0
+	if val*2.0 > step:
+		step += 1.0
+		if floor_check.is_colliding():
+			var hit = floor_check.get_collider()
+			var groups = hit.get_groups()
+			step_sound(groups)
+	#camera.position.x = lerp(camera.position.x, sin(val*PI), delta*8.0)
+	hands.position.x += delta * sin(val*PI*2.0) * strength
+	hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5
+
+@onready var floor_check = $"../floor_check"
+func step_sound(groups = []) -> void:
+	for g in groups:
+		if Global.surface_lookup.has(g):
+			var info = Global.surface_lookup[g]
+			var sound = Global.surface_step_sounds[info[Global.STEP_SOUNDS]].pick_random()
+			audio_player.stream = load(sound)
+			audio_player.play()
+			print(g)
+			return
+	#did not find so use default
+	var sound = Global.surface_step_sounds[Global.surface_lookup["default"][Global.STEP_SOUNDS]].pick_random()
+	audio_player.stream = load(sound)
+	audio_player.play()
+	print("default")
+	pass
+
+func land() -> void:
+	camera_rot_vel.x -= 0.025
+	voice_audio_player.stream = load("res://assets/sounds/player_movement/player_land.ogg")
+	voice_audio_player.play()
+	if floor_check.is_colliding():
+		var hit = floor_check.get_collider()
+		var groups = hit.get_groups()
+		step_sound(groups)
