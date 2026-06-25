@@ -18,6 +18,7 @@ script = ExtResource("1_mcrow")
 [node name="sight_camera" type="Camera3D" parent="."]
 cull_mask = 1048569
 current = true
+far = 10000.0
 
 [node name="smell_camera" type="Camera3D" parent="."]
 cull_mask = 1048567

@@ -32,6 +32,11 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
 shader_parameter/texture_albedo = ExtResource("7_nox7n")
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_0ggqi"]
 resource_name = "fp_hands_wip_male_genericMesh_004"
@@ -261,6 +266,11 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
 shader_parameter/texture_albedo = ExtResource("10_1tio2")
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c2b53"]
 resource_name = "shirt"
@@ -469,6 +479,7 @@ bones/52/rotation = Quaternion(-0.707107, 0, 0, 0.707107)
 surface_material_override/0 = SubResource("ShaderMaterial_jbduu")
 
 [node name="bodyMin_004" type="MeshInstance3D" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="1"]
+visible = false
 mesh = SubResource("ArrayMesh_0ggqi")
 skin = SubResource("Skin_yasc2")
 surface_material_override/0 = SubResource("ShaderMaterial_xeag3")
@@ -477,6 +488,7 @@ surface_material_override/0 = SubResource("ShaderMaterial_xeag3")
 surface_material_override/0 = SubResource("ShaderMaterial_jbduu")
 
 [node name="bodyMin_006" type="MeshInstance3D" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="3"]
+visible = false
 mesh = SubResource("ArrayMesh_4n458")
 skin = SubResource("Skin_yasc2")
 surface_material_override/0 = SubResource("ShaderMaterial_7vpn5")
@@ -485,6 +497,7 @@ surface_material_override/0 = SubResource("ShaderMaterial_7vpn5")
 surface_material_override/0 = SubResource("ShaderMaterial_qge1q")
 
 [node name="shirt_002" type="MeshInstance3D" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="5"]
+visible = false
 mesh = SubResource("ArrayMesh_54xsp")
 skin = SubResource("Skin_yasc2")
 surface_material_override/0 = SubResource("ShaderMaterial_ff0w0")

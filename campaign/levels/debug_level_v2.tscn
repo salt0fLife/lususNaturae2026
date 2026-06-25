@@ -7,18 +7,33 @@
 [ext_resource type="Shader" path="res://assets/shaders/stylized_outline.gdshader" id="5_h4ob3"]
 [ext_resource type="PackedScene" uid="uid://bo6hlg4idhwmx" path="res://campaign/entities/ash_bat.tscn" id="6_bio1y"]
 [ext_resource type="PackedScene" uid="uid://cs8myhbkslptu" path="res://assets/debug/style_test_player.tscn" id="7_l6xv6"]
-[ext_resource type="PackedScene" uid="uid://djqnu5331416o" path="res://assets/environment_effects/world_clouds.tscn" id="8_5q5ws"]
+[ext_resource type="PackedScene" uid="uid://byjn5yc1m1okl" path="res://addons/SunshineVolumetricClouds/CloudsPrefab.tscn" id="8_jxdw7"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_eeh8o"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7fg8f"]
-albedo_color = Color(0, 0.619608, 0.862745, 1)
-albedo_texture = ExtResource("1_konvq")
-uv1_scale = Vector3(500, 500, 500)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fim7g"]
+render_priority = 0
+shader = ExtResource("4_ttfoh")
+shader_parameter/albedo = Color(0.294118, 0.533333, 0.796078, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1000, 1000, 1000)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
+shader_parameter/texture_albedo = ExtResource("1_konvq")
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_vwy2x"]
-material = SubResource("StandardMaterial3D_7fg8f")
-size = Vector2(500, 500)
+material = SubResource("ShaderMaterial_fim7g")
+size = Vector2(1000, 1000)
 
 [sub_resource type="Gradient" id="Gradient_qn7b5"]
 interpolation_mode = 2
@@ -37,6 +52,7 @@ color_ramp = SubResource("Gradient_qn7b5")
 noise = SubResource("FastNoiseLite_wb2l4")
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_b4btt"]
+ground_color = Color(0.188235, 0.215686, 0.254902, 1)
 night_sky = SubResource("NoiseTexture2D_pfrfr")
 
 [sub_resource type="Sky" id="Sky_5262a"]
@@ -90,6 +106,11 @@ shader_parameter/uv1_scale = null
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="SphereMesh" id="SphereMesh_mhg1a"]
 material = SubResource("ShaderMaterial_vyboe")
@@ -107,6 +128,11 @@ shader_parameter/uv1_scale = null
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="SphereMesh" id="SphereMesh_v2b8e"]
 material = SubResource("ShaderMaterial_wnpme")
@@ -270,6 +296,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.5725, 1.14726, 27.5889)
 [node name="style_test_player" parent="." instance=ExtResource("7_l6xv6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 29)
 
-[node name="WorldClouds" parent="." instance=ExtResource("8_5q5ws")]
+[node name="CloudsSystem" parent="." node_paths=PackedStringArray("sunLight", "worldEnvironment") instance=ExtResource("8_jxdw7")]
+updateConstantly = true
+sunLight = NodePath("../DirectionalLight3D")
+worldEnvironment = NodePath("../WorldEnvironment")
+windSpeed = 0.002
+detailNoiseScale = 2.656
+overrideAmbientLight = true
+ambientColorDefault = Color(0.345098, 0.372549, 0.486275, 1)
+useFogDefault = false
+fogColorDefault = Color(0.518, 0.553, 0.608, 1)
 
 [connection signal="body_entered" from="launcher" to="launcher" method="_on_body_entered"]

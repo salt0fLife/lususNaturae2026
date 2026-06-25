@@ -25,6 +25,11 @@ shader_parameter/uv1_scale = null
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_w4f65"]
 material = SubResource("ShaderMaterial_0xld4")
@@ -43,6 +48,11 @@ shader_parameter/uv1_scale = null
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="BoxMesh" id="BoxMesh_mywa3"]
 material = SubResource("ShaderMaterial_6hver")
@@ -61,6 +71,11 @@ shader_parameter/uv1_scale = null
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="BoxMesh" id="BoxMesh_qjbsf"]
 material = SubResource("ShaderMaterial_qkl6g")
@@ -680,6 +695,11 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
 shader_parameter/texture_albedo = ExtResource("5_dv75t")
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hvm7m"]
 render_priority = 0
@@ -844,6 +864,11 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_jvqhu"]
 resource_name = "player_01_wip_rig_test_Plane_008"
@@ -878,6 +903,11 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ldw8t"]
 render_priority = 0
@@ -925,6 +955,11 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
 shader_parameter/texture_albedo = ExtResource("8_414ep")
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_qgqpf"]
 resource_name = "player_01_wip_rig_test_Plane_016"
@@ -959,6 +994,11 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_6te2c"]
 resource_name = "player_01_wip_rig_test_Plane_015"
@@ -994,6 +1034,11 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
 shader_parameter/texture_albedo = ExtResource("8_414ep")
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gr4ts"]
 render_priority = 0
@@ -1036,6 +1081,11 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
 shader_parameter/texture_albedo = ExtResource("8_414ep")
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lc2l3"]
 render_priority = 0
@@ -1051,6 +1101,11 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
 shader_parameter/texture_albedo = ExtResource("8_414ep")
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ap14e"]
 resource_name = "metal"
@@ -1125,6 +1180,11 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
 shader_parameter/texture_albedo = ExtResource("7_8v4oo")
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_3q7h3"]
 resource_name = "player_01_wip_rig_test_NurbsPath_087"
@@ -1160,6 +1220,11 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
 shader_parameter/texture_albedo = ExtResource("7_8v4oo")
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xg87b"]
 render_priority = 0
@@ -1229,6 +1294,11 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
 shader_parameter/texture_albedo = ExtResource("9_220dy")
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bx8g7"]
 render_priority = 0
@@ -1329,6 +1399,11 @@ shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
 shader_parameter/texture_albedo = ExtResource("10_i4pyu")
+shader_parameter/CloudDitherPower = 200.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vtc0s"]
 render_priority = 0
