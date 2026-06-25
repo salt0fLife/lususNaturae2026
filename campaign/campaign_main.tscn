@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://xwre6k638wd1"]
+[gd_scene load_steps=6 format=3 uid="uid://xwre6k638wd1"]
 
 [ext_resource type="Script" path="res://scripts/campaign_main.gd" id="1_3biet"]
 [ext_resource type="PackedScene" uid="uid://o5esi8ctymbf" path="res://menus/inventory_menu.tscn" id="2_np8a5"]
 [ext_resource type="PackedScene" uid="uid://ber4ufrl6tgeo" path="res://menus/action_menu.tscn" id="3_km1sh"]
 [ext_resource type="PackedScene" uid="uid://dacmm1ix3biud" path="res://menus/dialogue_popup_handler.tscn" id="4_5wa0d"]
+[ext_resource type="Script" path="res://scripts/loading_screen.gd" id="5_02oip"]
 
 [node name="campaign_main" type="Node"]
 process_mode = 3
@@ -16,6 +17,9 @@ process_mode = 1
 process_mode = 1
 
 [node name="itemHandler" type="Node3D" parent="."]
+process_mode = 1
+
+[node name="entityHandler" type="Node3D" parent="."]
 process_mode = 1
 
 [node name="cutsceneHandler" type="Node" parent="."]
@@ -261,6 +265,58 @@ text = "give item"
 layout_mode = 2
 toggle_mode = false
 allow_reselect = true
+
+[node name="PanelContainer6" type="PanelContainer" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="pause_menu/devtools/HFlowContainer/PanelContainer6"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="pause_menu/devtools/HFlowContainer/PanelContainer6/VBoxContainer"]
+layout_mode = 2
+text = "spawn entity"
+
+[node name="OptionButton" type="OptionButton" parent="pause_menu/devtools/HFlowContainer/PanelContainer6/VBoxContainer"]
+layout_mode = 2
+toggle_mode = false
+allow_reselect = true
+
+[node name="reset_level" type="Button" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+text = "kill all entities"
+
+[node name="loading_screen" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_02oip")
+
+[node name="ColorRect" type="ColorRect" parent="loading_screen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="ProgressBar" type="ProgressBar" parent="loading_screen"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -93.0
+offset_top = -13.0
+offset_right = 94.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="playSoundHandler" type="AudioStreamPlayer" parent="."]
 max_polyphony = 32

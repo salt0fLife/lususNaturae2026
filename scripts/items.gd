@@ -26,6 +26,7 @@ enum type { #types
 	THROWABLE,
 	SWORD,
 	BOOK,
+	GUN,
 }
 
 enum sound { #sounds
@@ -33,12 +34,14 @@ enum sound { #sounds
 	ROCK_SOUNDS,
 	SWORD_SOUNDS,
 	DBAT_SOUNDS,
+	GUN_SOUNDS,
 }
 
 enum animation { #animations
 	BREAD_ANIM,
 	SWORD_ANIM,
 	DBAT_ANIM,
+	GUN_ANIM,
 }
 
 enum food_type { #food types
@@ -72,6 +75,10 @@ var sounds = {
 		"pickup" : "res://assets/sounds/item_sounds/draw_dbat.ogg",
 		"eat" : "ate a dead bat specifically"
 	},
+	sound.GUN_SOUNDS : {
+		"pickup" : "res://assets/sounds/item_sounds/draw_gun.ogg",
+		"shoot" : "res://assets/sounds/item_sounds/fire_gun.ogg"
+	}
 }
 
 func _ready():
@@ -99,7 +106,8 @@ enum {#["display_name", item_style, sounds, item_type, data, texture_path, model
 	INDEX_DATA,
 	INDEX_TEXTURE,
 	INDEX_MODEL,
-	INDEX_ANIMATIONS
+	INDEX_ANIMATIONS,
+	INDEX_HAS_DEFORMATIONS
 }
 
 

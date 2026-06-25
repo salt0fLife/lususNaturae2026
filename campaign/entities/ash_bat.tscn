@@ -1,0 +1,75 @@
+[gd_scene load_steps=6 format=3 uid="uid://bo6hlg4idhwmx"]
+
+[ext_resource type="Script" path="res://scripts/ash_bat.gd" id="1_kswri"]
+[ext_resource type="PackedScene" uid="uid://db7de0jfxd8s0" path="res://assets/enemies_wip/bat_creature_blockout.glb" id="2_mjcdv"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_bftgm"]
+radius = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_6014g"]
+size = Vector3(0.05, 0.05, 0.2)
+
+[sub_resource type="SphereMesh" id="SphereMesh_tgw0f"]
+radius = 0.2
+height = 0.4
+
+[node name="ash_bat" type="CharacterBody3D" groups=["entity"]]
+collision_layer = 36
+script = ExtResource("1_kswri")
+flap_speed = 10.0
+flap_strength = 15.0
+dampening = 0.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_bftgm")
+
+[node name="graphics" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.166629, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.165)
+visible = false
+mesh = SubResource("BoxMesh_6014g")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="graphics"]
+visible = false
+mesh = SubResource("SphereMesh_tgw0f")
+
+[node name="bat_creature_blockout" parent="graphics" instance=ExtResource("2_mjcdv")]
+
+[node name="Skeleton3D" parent="graphics/bat_creature_blockout/Armature" index="0"]
+bones/0/rotation = Quaternion(0.306601, 1.13468e-07, 3.65497e-08, 0.951838)
+bones/1/rotation = Quaternion(1.49012e-08, 1.06581e-14, 5.32907e-15, 1)
+bones/2/rotation = Quaternion(-0.452964, 0.116913, -0.444983, 0.763639)
+bones/3/rotation = Quaternion(0.0936541, 0.00276813, 0.0609032, 0.993736)
+bones/4/rotation = Quaternion(-0.455568, -0.111089, 0.443861, 0.763613)
+bones/5/rotation = Quaternion(0.0714119, 0.00404018, -0.117987, 0.990436)
+bones/6/rotation = Quaternion(0.283633, 0.865248, 0.211647, -0.355111)
+bones/7/rotation = Quaternion(-0.131067, -0.0473771, -0.0695572, 0.987795)
+bones/8/rotation = Quaternion(0.0062099, 2.93845e-08, 0.0338636, 0.999407)
+bones/9/rotation = Quaternion(0.121696, 0.0409452, 0.839231, 0.528398)
+bones/10/rotation = Quaternion(0.119262, 0.00106545, 0.657484, 0.743969)
+bones/11/rotation = Quaternion(0.0868253, -0.00124688, 0.469192, 0.878817)
+bones/12/rotation = Quaternion(0.0395136, -0.0117316, 0.205906, 0.977703)
+bones/13/rotation = Quaternion(0.131159, -3.05952e-08, 0.704577, 0.697401)
+bones/14/rotation = Quaternion(-0.283633, 0.865248, 0.211646, 0.355112)
+bones/15/rotation = Quaternion(-0.131067, 0.0473771, 0.0695571, 0.987795)
+bones/16/rotation = Quaternion(0.0062099, -3.03091e-08, -0.0338635, 0.999407)
+bones/17/rotation = Quaternion(0.121696, -0.0409453, -0.839231, 0.528398)
+bones/18/rotation = Quaternion(0.119262, -0.00106544, -0.657484, 0.743969)
+bones/19/rotation = Quaternion(0.0868253, 0.00124689, -0.469192, 0.878817)
+bones/20/rotation = Quaternion(0.0395135, 0.0117316, -0.205906, 0.977703)
+bones/21/rotation = Quaternion(0.131159, 1.74294e-08, -0.704577, 0.697401)
+bones/22/rotation = Quaternion(0.944646, 3.91115e-08, 1.12611e-07, -0.328091)
+bones/23/rotation = Quaternion(-0.0219922, 0.0284717, 0.0979565, 0.99454)
+bones/24/rotation = Quaternion(-0.0372949, 0.019715, 0.0474084, 0.997984)
+bones/25/rotation = Quaternion(0.0498865, 0.0064073, 0.0283632, 0.998331)
+bones/26/rotation = Quaternion(-0.0234434, -0.0249261, -0.0187813, 0.999238)
+bones/27/rotation = Quaternion(0.0633124, -0.0252101, -0.0946175, 0.993178)
+bones/28/rotation = Quaternion(0.013544, -0.000872661, -0.0713079, 0.997362)
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+target_position = Vector3(0, -10, 0)
+
+[editable path="graphics/bat_creature_blockout"]

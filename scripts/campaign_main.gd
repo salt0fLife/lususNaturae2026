@@ -3,6 +3,8 @@ extends Node
 @onready var playerHandler = $playerHandler
 @onready var itemHandler = $itemHandler
 @onready var cutsceneHandler = $cutsceneHandler
+@onready var entityHandler = $entityHandler
+@onready var loading_screen = $loading_screen
 
 #game variables
 var day_timer: float = 0.0
@@ -21,6 +23,7 @@ func _ready():
 	Global.connect("dialogue", _on_dialogue)
 	Global.connect("change_level", change_level)
 	Global.connect("reached_major_point", _on_major_point_reached)
+	Global.connect("spawn_entity_signal", spawn_entity)
 	$pause_menu/buttonHandler/resume.connect("button_down", set_paused.bind(false))
 	$"pause_menu/buttonHandler/save and quit".connect("button_down", save_and_quit)
 	
@@ -37,9 +40,10 @@ func _ready():
 		start_game()
 
 func start_game():
-	var level_data = Global.levels[level]
-	var level_scene = load(level_data[0]).instantiate()
-	worldHandler.add_child(level_scene)
+	#var level_data = Global.levels[level]
+	#var level_scene = load(level_data[0]).instantiate()
+	#worldHandler.add_child(level_scene)
+	change_level(level)
 	change_player(player_stage)
 	load_current_level_persistent_data()
 
@@ -70,24 +74,44 @@ const default_story_info = {
 }
 
 func change_level(level_key : String) -> void:
+	if changing_level:
+		printerr("already loading different level")
+		return
+	set_paused(true)
 	update_persistent_levels_data()
 	for old in worldHandler.get_children(false):
 		old.queue_free()
-	
 	level = level_key
-	var level_data = Global.levels[level]
-	var level_scene = load(level_data[0]).instantiate()
-	worldHandler.add_child(level_scene)
+	level_to_change_too = Global.levels[level][0]
+	ResourceLoader.load_threaded_request(Global.levels[level][0])
+	changing_level = true
 	
+	#level = level_key
+	#var level_data = Global.levels[level]
+	#var level_scene = load(level_data[0]).instantiate()
+	#worldHandler.add_child(level_scene)
+	#
+	#load_current_level_persistent_data()
+
+func set_level_to_scene(scene : PackedScene) -> void:
+	var level_scene = scene.instantiate()
+	worldHandler.add_child(level_scene)
 	load_current_level_persistent_data()
 
 func load_current_level_persistent_data():
-	for old in itemHandler.get_children(false):
-		old.queue_free()
+	for old_i in itemHandler.get_children(false):
+		old_i.queue_free()
+	for old_e in entityHandler.get_children(false):
+		old_e.queue_free()
 	
 	var data = [[],[]]
 	if Global.levels_persistent_data.has(level):
 		data = Global.levels_persistent_data[level]
+	else:
+		for w in worldHandler.get_children():
+			if w.has_method("default_settup"):
+				w.call("default_settup")
+				print("default_level_settup")
 	
 	for i in data[0]:
 		_on_dropped_item(i[1],i[0])
@@ -100,7 +124,17 @@ func load_current_level_persistent_data():
 	if data.size() > 2:
 		for e in data[2]:
 			#entities
-			pass
+			#spawn_entity(e[0],e[1])
+			var scene = spawn_entity(e[0])
+			scene.set_data(e[1])
+
+func spawn_entity(key : String, position : Vector3 = Vector3.ZERO):
+	if !Global.entities.has(key):
+		return null
+	var e = load(Global.entities[key][0]).instantiate()
+	entityHandler.add_child(e)
+	e.position = position
+	return e
 
 func change_player(stage : int) -> void:
 	for old in playerHandler.get_children(false):
@@ -176,7 +210,8 @@ func save_game_data():
 	"min_sleep_food" : PlayerInformation.min_sleep_food,
 	"health" : PlayerInformation.health,
 	"max_health" : PlayerInformation.max_health,
-	"in_game_days" : in_game_days
+	"in_game_days" : in_game_days,
+	"version" : Global.version
 	}
 	
 	#game_data = JSON.stringify(game_data)
@@ -221,10 +256,39 @@ func update_persistent_levels_data() -> void:
 	for li in itemHandler.get_children(false):
 		var data = [li.position, li.data]
 		loose_items_save += [data]
-	Global.levels_persistent_data[level] = [loose_items_save,decals_save]
+	
+	var entity_save = []
+	for e in entityHandler.get_children(false):
+		var data = e.get_data()
+		entity_save += [data]
+	
+	
+	Global.levels_persistent_data[level] = [loose_items_save,decals_save,entity_save]
+	
+
+var changing_level:bool = false
+var level_to_change_too:StringName = ""
+
 
 var sub_second_counter = 0.0
 func _process(delta):
+	if changing_level:
+		if !ResourceLoader.has_cached(level_to_change_too):
+			print("well thats a problem")
+		var progress = []
+		var status = ResourceLoader.load_threaded_get_status(level_to_change_too, progress)
+		print("level status : " + str(progress[0]))
+		loading_screen.visible = true
+		loading_screen.update_progress(progress[0])
+		if ResourceLoader.THREAD_LOAD_LOADED:#progress[0] >= 1.0:
+			changing_level = false
+			set_level_to_scene(ResourceLoader.load_threaded_get(level_to_change_too))
+			level_to_change_too = ""
+			set_paused(false)
+			loading_screen.visible = false
+			return #finished loading
+	
+	
 	update_debug_graphics()
 	if paused:
 		$Label2.text = "paused"
@@ -317,6 +381,7 @@ func play_cutscene(key : String) -> void:
 	var data = Global.cutscenes[key]
 	var scene = load(data[0]).instantiate()
 	cutsceneHandler.add_child(scene)
+	scene.connect("end", end_cutscene)
 	cutscene_timer = data[1]
 	in_cutscene = true
 	Global.cutscenes_watched.append(key)
@@ -347,6 +412,7 @@ var player_stages = PlayerInformation.player_scenes.keys()
 var level_keys = Global.levels.keys()
 var cutscene_keys = Global.cutscenes.keys()
 var item_list_keys = Items.list.keys()
+var entity_keys = Global.entities.keys()
 func setup_dev_controls():
 	var stage_selector = $pause_menu/devtools/HFlowContainer/PanelContainer/VBoxContainer/debugPlayer_scene_select
 	for stage in player_stages:
@@ -375,6 +441,11 @@ func setup_dev_controls():
 		give_item_menu.add_item(ik)
 	give_item_menu.connect("item_selected", _on_give_item_key_selected)
 	
+	var spawn_entity_menu = $pause_menu/devtools/HFlowContainer/PanelContainer6/VBoxContainer/OptionButton
+	for se in Global.entities.keys():
+		spawn_entity_menu.add_item(se)
+	spawn_entity_menu.connect("item_selected", _on_spawn_entity_key_selected)
+	
 	$pause_menu/devtools/HFlowContainer/sleepTest.connect("button_down", player_sleep)
 	
 	$pause_menu/devtools/HFlowContainer/giveFood.connect("button_down", PlayerInformation.pickup_item.bind(["dead_bat"]))
@@ -386,6 +457,15 @@ func setup_dev_controls():
 	$pause_menu/devtools/HFlowContainer/killbind.connect("button_down", PlayerInformation.die)
 	
 	$pause_menu/devtools/HFlowContainer/tp_ZERO.connect("button_down", PlayerInformation.tp.bind(Vector3.ZERO))
+	
+	$pause_menu/devtools/HFlowContainer/reset_level.connect("button_down", _on_kill_all_entities)
+
+func _on_kill_all_entities() -> void:
+	for i in get_tree().get_nodes_in_group("entity"):
+		if i.has_method("die"):
+			i.die()
+		else:
+			i.call_deferred("queue_free")
 
 func _on_give_item_key_selected(i : int) -> void:
 	PlayerInformation.pickup_item([item_list_keys[i]])
@@ -399,6 +479,9 @@ func _on_player_scene_selected(i : int) -> void:
 
 func _on_level_key_selected(i : int) -> void:
 	change_level(level_keys[i])
+
+func _on_spawn_entity_key_selected(i : int) -> void:
+	spawn_entity(entity_keys[i], PlayerInformation.position)
 
 var inventory_open = false
 

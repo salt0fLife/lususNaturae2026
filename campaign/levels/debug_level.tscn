@@ -1,6 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://dddjtmqsonjvn"]
+[gd_scene load_steps=14 format=3 uid="uid://dddjtmqsonjvn"]
 
 [ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_wp5ay"]
+[ext_resource type="Script" path="res://assets/debug/debug_level.gd" id="1_x8cdl"]
 [ext_resource type="PackedScene" uid="uid://vaiwu5wehwiw" path="res://campaign/enemies/wendigo.tscn" id="2_tfsy4"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_e6kvw"]
@@ -37,6 +38,7 @@ sky = SubResource("Sky_5v6xa")
 [sub_resource type="BoxShape3D" id="BoxShape3D_5jjkc"]
 
 [node name="debug_level" type="Node3D"]
+script = ExtResource("1_x8cdl")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 

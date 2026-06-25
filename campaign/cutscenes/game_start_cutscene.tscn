@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://c684udmkab8ro"]
+[gd_scene load_steps=2 format=3 uid="uid://c684udmkab8ro"]
+
+[ext_resource type="Script" path="res://scripts/game_start_cutscene.gd" id="1_4alpf"]
 
 [node name="game_start_cutscene" type="Node"]
+script = ExtResource("1_4alpf")
 
 [node name="temp" type="Control" parent="."]
 layout_mode = 3

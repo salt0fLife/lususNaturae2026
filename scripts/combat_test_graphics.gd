@@ -37,6 +37,9 @@ var camera_rot_vel : Vector3 = Vector3.ZERO
 @onready var last_frame_camera_rot = Vector2(rotation.y, cameraHandler.rotation.x)
 @onready var anim = $cameraHandler/fp_hands_wip/AnimationPlayer
 func _process(delta):
+	camera.position = lerp(camera.position, Vector3.ZERO, delta*4.0)
+	
+	
 	if wall_run_active:
 		wall_run_active = false
 	elif $wall_run_sounds.playing:
@@ -94,7 +97,9 @@ var wall_run_active = false
 func wall_running(normal : Vector3, delta : float, power : float, groups : Array) -> void: # called every frame when running
 	wall_run_active = true
 	if !$wall_run_sounds.playing:
-		$wall_run_sounds.play()
+		var t = (1.0 - power) * 5.0 - 0.017 #because yeah sure
+		$wall_run_sounds.play(t)
+		print("wallrunning time " + str(t) + " : wallrunning power " + str(power))
 	val += delta * power
 	if val > 1.0:
 		val -= 1.0
@@ -147,7 +152,7 @@ func wall_check_right(delta):
 
 func _ready():
 	PlayerInformation.connect("changed_using_senses", update_using_senses)
-	update_using_senses()
+	#update_using_senses()
 	pass
 
 @onready var arm_meshes = [
@@ -181,6 +186,7 @@ func walking(delta) -> void:
 	#camera.position.x = lerp(camera.position.x, sin(val*PI), delta*8.0)
 	hands.position.x += delta * sin(val*PI*2.0) * strength
 	hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength
+	camera.rotation.y -= delta * sin(val*PI*2.0) * strength * PI*0.01
 	pass
 
 func running(delta) -> void:
@@ -198,6 +204,8 @@ func running(delta) -> void:
 	#camera.position.x = lerp(camera.position.x, sin(val*PI), delta*8.0)
 	hands.position.x += delta * sin(val*PI*2.0) * strength
 	hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5
+	camera.rotation.y -= delta * sin(val*PI*2.0) * strength * PI*0.005
+	camera.rotation.x -= delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5* PI*0.05
 
 @onready var floor_check = $"../floor_check"
 func step_sound(groups = []) -> void:
@@ -207,13 +215,11 @@ func step_sound(groups = []) -> void:
 			var sound = Global.surface_step_sounds[info[Global.STEP_SOUNDS]].pick_random()
 			audio_player.stream = load(sound)
 			audio_player.play()
-			print(g)
 			return
 	#did not find so use default
 	var sound = Global.surface_step_sounds[Global.surface_lookup["default"][Global.STEP_SOUNDS]].pick_random()
 	audio_player.stream = load(sound)
 	audio_player.play()
-	print("default")
 	pass
 
 func land() -> void:
@@ -224,3 +230,7 @@ func land() -> void:
 		var hit = floor_check.get_collider()
 		var groups = hit.get_groups()
 		step_sound(groups)
+
+func shoot() -> void:
+	camera_rot_vel += Vector3(PI*0.005,0.0,0.0)
+	pass

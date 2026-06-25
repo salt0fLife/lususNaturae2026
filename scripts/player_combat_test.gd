@@ -8,6 +8,7 @@ extends CharacterBody3D
 @onready var anim = $graphics/cameraHandler/fp_hands_wip/AnimationPlayer
 @onready var held_item_handler = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/held_item_handler/node3d
 @onready var item_sounds = $graphics/item_sounds
+@onready var skeleton = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D
 
 #attributes
 @export_group("attributes")
@@ -153,7 +154,7 @@ func _process(delta):
 	if crouching:
 		cameraHandler.position.y = lerp(cameraHandler.position.y, 1.12,delta*12.0)
 	else:
-		cameraHandler.position.y = lerp(cameraHandler.position.y, 1.5,delta*12.0)
+		cameraHandler.position.y = lerp(cameraHandler.position.y, 1.65,delta*12.0)
 	if movement_scaling_anims.keys().has(anim.current_animation):
 		var speed = Vector2(velocity.x,velocity.z).length()
 		anim.speed_scale = (speed/movement_scaling_anims[anim.current_animation])*0.25 + 0.75
@@ -200,13 +201,15 @@ func get_movement_anim(movement : String) -> String:
 				if combat_stance > 0.0:
 					return "idle_empty_shown"
 				else:
-					return "idle_empty"
+					return "idle_empty_shown"
 			else:
 				match held_item_data[Items.INDEX_ANIMATIONS]:
 					Items.animation.BREAD_ANIM:
 						return "idle_holding_bread-metarig_001"
 					Items.animation.SWORD_ANIM:
 						return "idle_holding_sword"
+					Items.animation.GUN_ANIM:
+						return "idle_holding_gun"
 					_:
 						return "idle_holding_bread-metarig_001"
 		"sprinting":
@@ -220,6 +223,8 @@ func get_movement_anim(movement : String) -> String:
 					Items.animation.SWORD_ANIM:
 						return "run_holding_sword"
 						#return "idle_holding_sword"
+					Items.animation.GUN_ANIM:
+						return "idle_holding_gun"
 					_:
 						return "run_holding_sword"
 		"jump":
@@ -237,6 +242,8 @@ func get_movement_anim(movement : String) -> String:
 				match held_item_data[Items.INDEX_ANIMATIONS]:
 					Items.animation.SWORD_ANIM:
 						return "idle_holding_sword"
+					Items.animation.GUN_ANIM:
+						return "idle_holding_gun"
 					_:
 						return "falling_holding_bread"
 		"vault":
@@ -275,7 +282,9 @@ var action_animations = [
 	"swing_sword_1",
 	"punch_empty_1",
 	"punch_empty_2",
-	"drop_bread"
+	"drop_bread",
+	"draw_gun",
+	"shoot_gun"
 ]
 
 var movement_scaling_anims = {
@@ -325,12 +334,12 @@ func _physics_process(delta):
 			#play_anim(get_movement_anim("jump"))
 		elif is_on_wall():
 			var normal = get_wall_normal()
-			lunge()
-			velocity.y += jump_strength
-			#velocity += get_look_dir()*clamp(velocity.length(), 0.0, jump_strength)
+			#lunge()
+			velocity.y = jump_strength
+			velocity += get_look_dir()*clamp(velocity.length(), 0.0, jump_strength*0.25)
 			velocity += normal * jump_strength
 			graphics.wall_jump(normal)
-			wall_run_timer = 0.0
+			wall_run_timer *= 0.75
 			wall_run_cooldown = 0.2
 		else:
 			air_jump()
@@ -404,6 +413,7 @@ func _physics_process(delta):
 			graphics.wall_running(w_n, delta, wr_power, get_slide_collision(0).get_collider(0).get_groups())
 			velocity -= w_n * delta * velocity.length() * 25.0 * wr_power * Vector3(1.0,0.0,1.0) #stick to wall
 			velocity = update_velocity_air(direction,velocity,delta)
+			velocity.y += (clamp(get_look_dir().y, -0.5, 0.5) * wr_power) *delta *acceleration
 		else:
 			velocity = update_velocity_air(direction, velocity, delta)
 			play_anim(get_movement_anim("falling"))
@@ -424,6 +434,11 @@ func _physics_process(delta):
 		#velocity.z -= velocity.z * delta * floor_friction
 	elif !dash_timer > 0.0:
 		play_anim(get_movement_anim("falling"))
+	
+	if !dash_timer > 0.0:
+		velocity = velocity.normalized() * clamp(velocity.length(), 0.0, 25.0)
+	
+	
 	move_and_slide()
 	update_player_information()
 
@@ -499,6 +514,22 @@ func use_held_item(special = false):
 				play_anim("swing_sword_2", true, 0.0, attack_speed)
 			else:
 				play_anim("swing_sword_1", true, 0.0, attack_speed)
+		Items.type.GUN:
+			play_held_item_sound("shoot")
+			play_anim("shoot_gun",true,0.0)
+			graphics.shoot()
+			shoot_held_item()
+
+func shoot_held_item() -> void:
+	var data = PlayerInformation.get_held_item_data()[Items.INDEX_DATA]
+	var hits = get_hitscan_info()
+	
+	for h in hits:
+		if h[0].has_method("take_damage"):
+			print("applied " +str(data[1]) + " damage of type " + str(data[2]))
+			h[0].take_damage(data[1],data[2]) #(amount, type)
+			pass
+	pass
 
 func update_player_information() -> void:
 	PlayerInformation.position = position
@@ -548,26 +579,31 @@ func swing_held_item() -> void:
 	var data = PlayerInformation.get_held_item_data()
 	var type_data = data[Items.INDEX_DATA]
 	print(type_data[1])
+	
 	pass
 
 func _on_dropped_item(_data, _pos) -> void:
 	anim.play("drop_bread")
 	pass
 
+var held_item_models = []
 func update_held_item_graphics() -> void:
-	for old in held_item_handler.get_children(false):
+	for old in held_item_models:#.get_children(false):
 		old.queue_free()
-	
+	held_item_models = []
 	var item_data = PlayerInformation.get_held_item_data()
 	if item_data == []:
 		play_anim(get_movement_anim("idle"),true)
 		#interupts drop animation :/
 		return
 	#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]
-	var path = item_data[6]
+	var path = item_data[Items.INDEX_MODEL]
 	var g = load(path).instantiate()
-	held_item_handler.add_child(g)
-	
+	if item_data[Items.INDEX_HAS_DEFORMATIONS]:
+		skeleton.add_child(g)
+	else:
+		held_item_handler.add_child(g)
+	held_item_models += [g]
 	play_held_item_sound("pickup")
 	#var sound = PlayerInformation.get_held_item_sound("pickup")
 	#if sound == "":
@@ -583,6 +619,8 @@ func update_held_item_graphics() -> void:
 			play_anim("draw_bread_fancifully", true, 0.0)
 		Items.animation.SWORD_ANIM:
 			play_anim("draw_sword_fancifully", true, 0.0)
+		Items.animation.GUN_ANIM:
+			play_anim("draw_gun",true,0.0)
 		_:
 			play_anim("draw_bread", true, 0.0)
 
@@ -594,3 +632,25 @@ func play_held_item_sound(key : String, speed: float = 1.0) -> void:
 	item_sounds.stream = load(s)
 	item_sounds.play()
 	
+func perform_action(key : String) -> void:
+	play_anim(key, true, 0.2, 1.0)
+	pass
+
+
+#combat_stuff
+func get_hits_hitscan() -> Array: #[[hit, poi, norm],[hit, poi, norm]]
+	
+	return []
+
+func get_hits_melee() -> Array:
+	
+	
+	return []
+
+func get_hitscan_info() -> Array:
+	if $graphics/cameraHandler/senses_camera/combat_checks/hitscan.is_colliding():
+		var hit = $graphics/cameraHandler/senses_camera/combat_checks/hitscan.get_collider()
+		var poi = $graphics/cameraHandler/senses_camera/combat_checks/hitscan.get_collision_point()
+		var norm = $graphics/cameraHandler/senses_camera/combat_checks/hitscan.get_collision_normal()
+		return [[hit,poi,norm]]
+	return []

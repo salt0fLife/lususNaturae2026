@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="item_gun" load_steps=2 format=3 uid="uid://cc01u46iou2r1"]
+
+[ext_resource type="Script" path="res://scripts/item_gun.gd" id="1_4njpm"]
+
+[resource]
+script = ExtResource("1_4njpm")
+damage = 1000
+attack_speed = 1.0
+damage_type = 1
+internal_reference_name = "debug_gun"
+display_name = "future gun"
+item_style = 4
+sounds = 4
+animations = 3
+model_path = "res://assets/items/sci_fi_gun/future_gun.tscn"
+has_deformations = true
+texture_path = "res://assets/textures/material/DebuggTexture.png"

@@ -1,0 +1,39 @@
+[gd_scene load_steps=9 format=3 uid="uid://djqnu5331416o"]
+
+[ext_resource type="Script" path="res://scripts/world_clouds.gd" id="1_h7d18"]
+[ext_resource type="Shader" path="res://assets/shaders/world_clouds.gdshader" id="2_aj0yr"]
+
+[sub_resource type="Gradient" id="Gradient_tauw2"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bbybx"]
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_wgkk8"]
+color_ramp = SubResource("Gradient_tauw2")
+noise = SubResource("FastNoiseLite_bbybx")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8227s"]
+render_priority = 0
+shader = ExtResource("2_aj0yr")
+shader_parameter/density = 3.0
+shader_parameter/cloud_scale = 0.215
+shader_parameter/max_steps = 156
+shader_parameter/step_distance = 0.02
+shader_parameter/cloud_texture_1 = SubResource("NoiseTexture3D_wgkk8")
+
+[sub_resource type="QuadMesh" id="QuadMesh_aoogs"]
+material = SubResource("ShaderMaterial_8227s")
+
+[sub_resource type="BoxMesh" id="BoxMesh_b3fck"]
+
+[node name="WorldClouds" type="Node3D"]
+script = ExtResource("1_h7d18")
+
+[node name="camera_tracker" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="camera_tracker"]
+mesh = SubResource("QuadMesh_aoogs")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+mesh = SubResource("BoxMesh_b3fck")

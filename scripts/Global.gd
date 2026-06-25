@@ -4,6 +4,7 @@ extends Node
 #ie, day_timer, all monster statistics, questlines, etc...
 
 var save_filepath = "" #specifically the path to the save you are playing on
+var version = "early-dev"
 
 signal change_level
 func change_level_from_key(key : String) -> void:
@@ -24,7 +25,8 @@ const levels: Dictionary = {
 	"level_001" : ["res://campaign/levels/level_001.tscn"],
 	"lighting_test" : ["res://campaign/levels/baked_lighting_test_level.tscn"],
 	"dark_rooms" : ["res://campaign/levels/dark_rooms.tscn"],
-	"stone_forest" : ["res://campaign/levels/stone_forest.tscn"]
+	"stone_forest" : ["res://campaign/levels/stone_forest.tscn"],
+	"warzone_laboratory" : ["res://campaign/levels/warzone_laboratory.tscn"]
 }
 
 var levels_persistent_data: Dictionary = {
@@ -32,13 +34,21 @@ var levels_persistent_data: Dictionary = {
 }
 
 const cutscenes: Dictionary = {
-	"new_game_start" : ["res://campaign/cutscenes/game_start_cutscene.tscn", 4.0], #path seconds long
+	"new_game_start" : ["res://campaign/cutscenes/game_start_cutscene.tscn", 30.0], #path seconds long
 	"fall_into_world" : ["res://campaign/cutscenes/falling_into_world_cutscene.tscn", 4.0]
 }
 
 var progression:int = 0 #keeps track of various important events
 
 var cutscenes_watched: Array = []
+
+const entities: Dictionary = {
+	"royal_guard" : ["res://campaign/enemies/royal_guard.tscn"]
+}
+
+signal spawn_entity_signal
+func spawn_entity(key, position : Vector3 = Vector3.ZERO) -> void:
+	emit_signal("spawn_entity_signal", key, position)
 
 
 func get_abreviated_time(seconds : int) -> String:
@@ -136,7 +146,29 @@ const surface_step_sounds = {
 
 ##
 
+enum damage_types{ #any kind of damage you can think of, this is the location for all tags
+	SLICE,
+	PUNCTURE,
+	BLUDGEON,
+	HOLY,
+	ROT,
+	POISON,
+	MAGIC,
+	BLEED,
+	BURN,
+	FROST
+}
 
+#categories for resistances, weaknesses and such
+const physical_damage_types = [
+	damage_types.SLICE, 
+	damage_types.PUNCTURE,
+	damage_types.BLUDGEON
+]
 
+const purifying_damage_types = [
+	damage_types.HOLY,
+	damage_types.BURN
+]
 
 

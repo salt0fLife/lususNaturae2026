@@ -11,5 +11,5 @@ display_name = "short sword"
 item_style = 2
 sounds = 2
 animations = 1
-model_path = "res://assets/items/short_sword/short_sword.glb"
+model_path = "res://assets/items/short_sword/short_sword.tscn"
 texture_path = "res://assets/textures/material/DebuggTexture.png"
