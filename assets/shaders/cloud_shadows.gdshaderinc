@@ -21,7 +21,7 @@ global uniform sampler3D SunshineClouds_LargeScaleNoiseTexture;
 global uniform sampler2D SunshineClouds_HeightWeightGradient;
 
 group_uniforms DensityControls;
-uniform float CloudDitherPower = 200.0;
+uniform float CloudDitherPower = 10.0;
 uniform float CloudCutoffAdjust = -0.795;
 uniform float CloudDensity = 1.49;
 uniform float CloudOpacity: hint_range(0,1) = 1.0;
@@ -47,8 +47,10 @@ float samplecloudmap(vec3 pos, float time) {
 	//if (largeScaleNoise > 1.0){return 0.0;}
 	heightScale = texture(SunshineClouds_HeightWeightGradient, vec2(heightScale, 0.0)).r;
 	
-	float noise = textureLod(SunshineClouds_BaseNoiseTexture, pos * (SunshineClouds_CloudsBaseNoiseScale) + vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time * SunshineClouds_WindSpeed, 1.0).r 
-	+ textureLod(SunshineClouds_DetailNoiseTexture, pos * (SunshineClouds_CloudsDetailNoiseScale) - (vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time * SunshineClouds_WindSpeed / 3.0), 1.0).r * SunshineClouds_CloudsDetailNoisePower;
+	float noise = textureLod(SunshineClouds_BaseNoiseTexture, pos * (SunshineClouds_CloudsBaseNoiseScale) + vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time * SunshineClouds_WindSpeed, 1.0).r; 
+	//+ textureLod(SunshineClouds_DetailNoiseTexture, pos * (SunshineClouds_CloudsDetailNoiseScale) - (vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time * SunshineClouds_WindSpeed / 3.0), 1.0).r * SunshineClouds_CloudsDetailNoisePower;
+	//BE does not need to be as detailed ^^^
+	
 	
 	noise -= largeScaleNoise;
 	//noise = posCutoff;
@@ -90,8 +92,21 @@ void light()
 		}
 		//origin.y = max(origin.y, SunshineClouds_CloudsFloor + 200.0);
 		float cloud_shadow = (1.0 - clamp(samplecloudmap(origin, TIME) * CloudDensity, 0.0, 1.0));
+		//cloud_shadow = 1.0;
+		//BE all below vvv
+		vec3 cur_pos = origin;
+		//float ground_exposure = 0.0;
+		//for (int i = 0; i < 64; i++) {
+			//cur_pos += SunshineClouds_SunDirection*400.0;
+			//cloud_shadow -= (clamp(samplecloudmap(origin, TIME) * CloudDensity, 0.0, 1.0))*0.0625*(1.0 - (float(i)/64.0))*0.5;
+		//}
+		//cloud_shadow = ground_exposure;
+		//BE all above ^^^
+		
+		
 		float shadow = mix(ATTENUATION, cast_shadow * (clamp(cloud_shadow * 3.0 - 1.0, 0.0, 1.0) * CLOUD_SHADOW_STRENGTH), CloudOpacity);
 		DIFFUSE_LIGHT +=  clamp(dot(NORMAL, LIGHT), 0.0, 1.0) * shadow * LIGHT_COLOR;
+		//SPECULAR_LIGHT +=  clamp(dot(NORMAL, LIGHT), 0.0, 1.0) * shadow * LIGHT_COLOR;
 	}
 	else{
 		DIFFUSE_LIGHT += clamp(dot(NORMAL, LIGHT), 0.0, 1.0) * ATTENUATION * LIGHT_COLOR;

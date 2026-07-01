@@ -1,8 +1,28 @@
-[gd_scene load_steps=6 format=3 uid="uid://dqlh6bs8vof4i"]
+[gd_scene load_steps=8 format=3 uid="uid://dqlh6bs8vof4i"]
 
 [ext_resource type="Environment" uid="uid://dgwki8y1f6sbc" path="res://addons/SunshineVolumetricClouds/ExampleWorldEnvironment.tres" id="1_6dkif"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_material.gdshader" id="2_n4la0"]
 [ext_resource type="Material" uid="uid://cgbvtmogjj0j7" path="res://addons/SunshineVolumetricClouds/WorldShadows/CloudsShadowMaterialTest.tres" id="2_ttao7"]
 [ext_resource type="PackedScene" uid="uid://byjn5yc1m1okl" path="res://addons/SunshineVolumetricClouds/CloudsPrefab.tscn" id="3_rcng6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4qgo0"]
+render_priority = 0
+shader = ExtResource("2_n4la0")
+shader_parameter/albedo = Color(0.466667, 0.356863, 0.435294, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3nrao"]
 
@@ -25,6 +45,7 @@ directional_shadow_max_distance = 10000.0
 environment = ExtResource("1_6dkif")
 
 [node name="Platform" type="CSGBox3D" parent="."]
+material_override = SubResource("ShaderMaterial_4qgo0")
 size = Vector3(30000, 1, 30000)
 material = ExtResource("2_ttao7")
 
@@ -74,6 +95,7 @@ surface_material_override/0 = ExtResource("2_ttao7")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.891007, 0.147805, 0.429256, 0, 0.945519, -0.325568, -0.453991, 0.290083, 0.842463, 4.517, 1.323, 9.946)
+current = true
 fov = 90.0
 far = 15000.0
 
@@ -86,3 +108,7 @@ sunColorDefault = Color(0.964706, 0.94902, 0.933333, 1)
 overrideAmbientLight = true
 ambientColorDefault = Color(0.0470588, 0.0745098, 0.0941176, 1)
 fogColorDefault = Color(0.815686, 0.843137, 0.866667, 1)
+
+[node name="Camera3D2" type="Camera3D" parent="."]
+transform = Transform3D(0.827032, 0, 0.562156, 0, 1, 0, -0.562156, 0, 0.827032, 0, 70.3755, 0)
+far = 8000.0

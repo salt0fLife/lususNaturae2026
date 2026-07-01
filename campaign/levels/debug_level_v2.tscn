@@ -164,6 +164,7 @@ mesh = SubResource("PlaneMesh_vwy2x")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." groups=["light"]]
 transform = Transform3D(0.707107, 0.612372, -0.353553, 0, 0.5, 0.866025, 0.707107, -0.612372, 0.353553, 0, 0, 0)
 layers = 8
+light_color = Color(0.894118, 0.843137, 0.803922, 1)
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -300,10 +301,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 29)
 updateConstantly = true
 sunLight = NodePath("../DirectionalLight3D")
 worldEnvironment = NodePath("../WorldEnvironment")
-windSpeed = 0.002
-detailNoiseScale = 2.656
+windSpeed = 0.001
+cloudsFloor = -1000.0
+cloudsCeiling = 1000.0
+detailNoiseScale = 4.476
+detailNoisePower = 0.753
+largeScaleNoiseScale = 0.416
+sunColorDefault = Color(0.894118, 0.843137, 0.803922, 1)
 overrideAmbientLight = true
-ambientColorDefault = Color(0.345098, 0.372549, 0.486275, 1)
+ambientColorDefault = Color(0.282353, 0.305882, 0.403922, 1)
 useFogDefault = false
 fogColorDefault = Color(0.518, 0.553, 0.608, 1)
 

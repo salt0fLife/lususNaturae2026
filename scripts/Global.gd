@@ -26,7 +26,8 @@ const levels: Dictionary = {
 	"lighting_test" : ["res://campaign/levels/baked_lighting_test_level.tscn"],
 	"dark_rooms" : ["res://campaign/levels/dark_rooms.tscn"],
 	"stone_forest" : ["res://campaign/levels/stone_forest.tscn"],
-	"warzone_laboratory" : ["res://campaign/levels/warzone_laboratory.tscn"]
+	"warzone_laboratory" : ["res://campaign/levels/warzone_laboratory.tscn"],
+	"canyon_cave_entrance" : ["res://campaign/levels/canyon_cave_entrance.tscn"]
 }
 
 var levels_persistent_data: Dictionary = {

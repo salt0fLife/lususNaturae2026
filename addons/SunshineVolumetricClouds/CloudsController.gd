@@ -2,6 +2,8 @@
 @icon("res://addons/SunshineVolumetricClouds/SunshineIcon.svg")
 extends Node
 class_name CloudsController;
+#great dither value 2.583
+
 
 @export var updateConstantly = false;
 @export var sunLight : DirectionalLight3D;

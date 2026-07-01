@@ -28,7 +28,6 @@ global uniform sampler3D SunshineClouds_DetailNoiseTexture;
 global uniform sampler3D SunshineClouds_LargeScaleNoiseTexture;
 global uniform sampler2D SunshineClouds_HeightWeightGradient;
 
-
 group_uniforms SmoothingControls;
 // Offsets the origin depth by a dither matrix multiplied by this and the step distance, prevents banding.
 uniform float StartingPointNoisePower: hint_range(0,40) = 10;
@@ -75,7 +74,7 @@ const mat4 dither_matrix = mat4(
 void vertex() {
 	//time = TIME;
 	//POSITION = vec4(VERTEX + vec3(0,0,-10), 1.0);
-	POSITION = vec4(VERTEX.xy, 1.0, 1.0);
+	POSITION = vec4(VERTEX.xy, 0.0, 1.0); //BE changed from vec4(VERTEX.xy, 1.0, 1.0);
 }
 
 float samplecloudmap(vec3 pos, float time) {
@@ -97,6 +96,7 @@ float samplecloudmap(vec3 pos, float time) {
 	heightScale = texture(SunshineClouds_HeightWeightGradient, vec2(heightScale, 0.0)).r;
 
 	float noise = textureLod(SunshineClouds_BaseNoiseTexture, pos * (SunshineClouds_CloudsBaseNoiseScale) + vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time * SunshineClouds_WindSpeed, 100.0).r
+	//+ textureLod(SunshineClouds_DetailNoiseTexture, pos * (SunshineClouds_CloudsDetailNoiseScale)*0.2 - (vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time * SunshineClouds_WindSpeed / 3.0), 100.0).r * SunshineClouds_CloudsDetailNoisePower*0.5
 	+ textureLod(SunshineClouds_DetailNoiseTexture, pos * (SunshineClouds_CloudsDetailNoiseScale) - (vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time * SunshineClouds_WindSpeed / 3.0), 100.0).r * SunshineClouds_CloudsDetailNoisePower;
 
 
@@ -112,6 +112,11 @@ float samplecloudmap(vec3 pos, float time) {
 	return noise;
 }
 
+float sampleCloudColor(vec3 pos, float time) { //BE
+	float noise = textureLod(SunshineClouds_BaseNoiseTexture, pos * (SunshineClouds_CloudsBaseNoiseScale) + vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time*1.5 * SunshineClouds_WindSpeed, 100.0).r;
+	
+	return noise;
+}
 
 float ease_out_quad(float start, float end, float value){
 	end -= start;
@@ -131,7 +136,6 @@ void fragment() {
 	//if (linear_depth > 5900.0){
 		//linear_depth = 30000.0;
 	//}
-
 	vec3 ro_world = INV_VIEW_MATRIX[3].xyz;
 	vec4 clipPos = vec4((FRAGCOORD.xy / VIEWPORT_SIZE.xy) * 2.0 - 1.0, FRAGCOORD.z, 1.0);
 	vec4 viewPos = INV_PROJECTION_MATRIX * clipPos;
@@ -152,13 +156,18 @@ void fragment() {
 	vec3 cur_pos = origin;
 	float cur_distance = 0.0;
 	float currentDensity = 0.0;
+	float currentColorMult = 0.0; //BE
 	float thisDensity = 0.0;
 	vec3 currentColor = vec3(0.5);
 	float cutoffvalue = 0.0;
 
-	if (cur_pos.y < SunshineClouds_CloudsFloor && view_dir.y < 0.0 || cur_pos.y > SunshineClouds_CloudsCeiling && view_dir.y > 0.0){discard;}
-
+	//if (cur_pos.y < SunshineClouds_CloudsFloor && view_dir.y < 0.0 || cur_pos.y > SunshineClouds_CloudsCeiling && view_dir.y > 0.0){discard;}
+	//BE commented out layer above ^^^
+	//now you can see clouds below :D
+	//also performance hit lol
+	
 	for (int i = 0; i < StepCount; i++) {
+		currentColorMult += sampleCloudColor(cur_pos, time)*0.01; //BE
 		cur_distance += mix(StepDistanceClose, StepDistanceFar, ease_out_quad(0.0,1.0,float(i) / float(StepCount)));
 		cur_pos = origin + view_dir * cur_distance;
 
@@ -169,12 +178,18 @@ void fragment() {
 		cutoffvalue = max(max(cur_distance - linear_depth, currentDensity - DensityCutoff), CheckOutOfBounds(cur_pos, view_dir));
 		if (cutoffvalue > 0.1){break;}
 	}
+	//BE vvv 
+	//so lighting is calculated less
+	if (currentDensity < 0.001){
+		discard;
+	}
+	//BE ^^^
 	float shadow = 0.0;
 	cur_pos += SunshineClouds_SunDirection * dither;
-	for (int j = 0; j < LightingStepCount; j++) {
-		shadow += (samplecloudmap(cur_pos, time) * CloudDensity);
+	for (int j = 0; j < LightingStepCount; j++) { //BE
+		shadow += (samplecloudmap(cur_pos, time) * CloudDensity * (float(LightingStepCount*4-j)/float(LightingStepCount*4))*0.5 ); // BE
 
-		cur_pos += SunshineClouds_SunDirection * LightingStepDistance;
+		cur_pos += SunshineClouds_SunDirection * LightingStepDistance * (1.0 + float(j)*0.005);
 	}
 	shadow /= float(LightingStepCount);
 //	currentDensity = clamp(currentDensity, 0.0, 1.0);
@@ -184,6 +199,9 @@ void fragment() {
 		//discard;
 	//}
 	vec3 color = mix(SunshineClouds_AmbientColor.rgb, SunshineClouds_SunColor.rgb, clamp(1.0 - shadow, 0.0, 1.0));
+	
+	color = mix(color, SunshineClouds_AmbientColor.rgb, currentColorMult); //BE
+	
 	//float fogStrength = mix(0.0, 1.0, clamp(cur_distance / CloudFogMaxDistance, 0.0, 1.0));
 	//color = mix(color, CloudFogColor, fogStrength);
 	if (SunshineClouds_UseFog){

@@ -221,10 +221,10 @@ func get_movement_anim(movement : String) -> String:
 					Items.animation.BREAD_ANIM:
 						return "run_holding_bread"
 					Items.animation.SWORD_ANIM:
-						return "run_holding_sword"
+						return "run_holding_sword_fancifully"
 						#return "idle_holding_sword"
 					Items.animation.GUN_ANIM:
-						return "idle_holding_gun"
+						return "run_holding_gun"
 					_:
 						return "run_holding_sword"
 		"jump":

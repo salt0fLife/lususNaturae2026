@@ -189,8 +189,9 @@ func walking(delta) -> void:
 	camera.rotation.y -= delta * sin(val*PI*2.0) * strength * PI*0.01
 	pass
 
+@export var running_speed_mult = 1.0
 func running(delta) -> void:
-	val += delta * 1.5
+	val += delta * 1.5 * running_speed_mult
 	var strength = 1.0
 	if val > 1.0:
 		val -= 1.0
@@ -202,8 +203,12 @@ func running(delta) -> void:
 			var groups = hit.get_groups()
 			step_sound(groups)
 	#camera.position.x = lerp(camera.position.x, sin(val*PI), delta*8.0)
-	hands.position.x += delta * sin(val*PI*2.0) * strength
-	hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5
+	#hands.position.x += delta * sin(val*PI*2.0) * strength
+	#hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5
+	camera.position.x += delta * sin(val*PI*2.0) * strength
+	camera.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5
+	hands.position.x += delta * sin(val*PI*2.0) * strength*0.5
+	hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5*0.5
 	camera.rotation.y -= delta * sin(val*PI*2.0) * strength * PI*0.005
 	camera.rotation.x -= delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5* PI*0.05
 
