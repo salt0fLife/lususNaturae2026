@@ -9,6 +9,7 @@ extends CharacterBody3D
 @onready var held_item_handler = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/held_item_handler/node3d
 @onready var item_sounds = $graphics/item_sounds
 @onready var skeleton = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D
+@onready var weapon_node = $graphics/cameraHandler/senses_camera/weapon_node
 
 #attributes
 @export_group("attributes")
@@ -507,9 +508,14 @@ func use_held_item(special = false):
 			else:
 				play_anim("punch_empty_2")
 		Items.type.SWORD:
-			var attack_speed = data[Items.INDEX_DATA][0]
+			var sword_data = data[Items.INDEX_DATA]
+			var attack_speed = sword_data[0]
+			var damage_amount = sword_data[1]
+			var damage_type = sword_data[2]
+			var vfx_method_name = sword_data[3]
 			print("swung sword")
 			play_held_item_sound("swing", attack_speed)
+			weapon_node.slash_close(damage_amount,damage_type,vfx_method_name,special)
 			if special:
 				play_anim("swing_sword_2", true, 0.0, attack_speed)
 			else:
@@ -522,14 +528,9 @@ func use_held_item(special = false):
 
 func shoot_held_item() -> void:
 	var data = PlayerInformation.get_held_item_data()[Items.INDEX_DATA]
-	var hits = get_hitscan_info()
-	
-	for h in hits:
-		if h[0].has_method("take_damage"):
-			print("applied " +str(data[1]) + " damage of type " + str(data[2]))
-			h[0].take_damage(data[1],data[2]) #(amount, type)
-			pass
-	pass
+	var damage_type = data[2]
+	var damage_amount = data[1]
+	weapon_node.shoot_bullet_hitscan(damage_amount,damage_type)
 
 func update_player_information() -> void:
 	PlayerInformation.position = position
@@ -563,7 +564,6 @@ func _on_anim_finished(key) -> void:
 	else:
 		anim.play(key)
 	pass
-
 
 ##functions to be called in animations
 func consume_held_item() -> void:
@@ -624,6 +624,7 @@ func update_held_item_graphics() -> void:
 		_:
 			play_anim("draw_bread", true, 0.0)
 
+
 func play_held_item_sound(key : String, speed: float = 1.0) -> void:
 	var s = PlayerInformation.get_held_item_sound(key)
 	if s == "":
@@ -637,20 +638,3 @@ func perform_action(key : String) -> void:
 	pass
 
 
-#combat_stuff
-func get_hits_hitscan() -> Array: #[[hit, poi, norm],[hit, poi, norm]]
-	
-	return []
-
-func get_hits_melee() -> Array:
-	
-	
-	return []
-
-func get_hitscan_info() -> Array:
-	if $graphics/cameraHandler/senses_camera/combat_checks/hitscan.is_colliding():
-		var hit = $graphics/cameraHandler/senses_camera/combat_checks/hitscan.get_collider()
-		var poi = $graphics/cameraHandler/senses_camera/combat_checks/hitscan.get_collision_point()
-		var norm = $graphics/cameraHandler/senses_camera/combat_checks/hitscan.get_collision_normal()
-		return [[hit,poi,norm]]
-	return []

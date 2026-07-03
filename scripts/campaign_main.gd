@@ -5,6 +5,7 @@ extends Node
 @onready var cutsceneHandler = $cutsceneHandler
 @onready var entityHandler = $entityHandler
 @onready var loading_screen = $loading_screen
+@onready var decalHandler = $decalHandler
 
 #game variables
 var day_timer: float = 0.0
@@ -24,6 +25,7 @@ func _ready():
 	Global.connect("change_level", change_level)
 	Global.connect("reached_major_point", _on_major_point_reached)
 	Global.connect("spawn_entity_signal", spawn_entity)
+	Global.connect("create_decal_signal", create_decal)
 	$pause_menu/buttonHandler/resume.connect("button_down", set_paused.bind(false))
 	$"pause_menu/buttonHandler/save and quit".connect("button_down", save_and_quit)
 	
@@ -43,7 +45,7 @@ func start_game():
 	#var level_data = Global.levels[level]
 	#var level_scene = load(level_data[0]).instantiate()
 	#worldHandler.add_child(level_scene)
-	change_level(level)
+	change_level(level, false)
 	change_player(player_stage)
 	load_current_level_persistent_data()
 
@@ -73,12 +75,13 @@ const default_story_info = {
 	"progression" = 0,
 }
 
-func change_level(level_key : String) -> void:
+func change_level(level_key : String, update_persistent_data = true) -> void:
 	if changing_level:
 		printerr("already loading different level")
 		return
 	set_paused(true)
-	update_persistent_levels_data()
+	if update_persistent_data:
+		update_persistent_levels_data()
 	for old in worldHandler.get_children(false):
 		old.queue_free()
 	level = level_key
@@ -99,12 +102,16 @@ func set_level_to_scene(scene : PackedScene) -> void:
 	load_current_level_persistent_data()
 
 func load_current_level_persistent_data():
+	loading_screen.visible = true
+	loading_screen.update_mode(true, "recreating level data")
 	for old_i in itemHandler.get_children(false):
-		old_i.queue_free()
+		old_i.call_deferred("queue_free")
 	for old_e in entityHandler.get_children(false):
-		old_e.queue_free()
+		old_e.call_deferred("queue_free")
+	for old_d in decalHandler.get_children(false):
+		old_d.queue_free() #should never have their own processes
 	
-	var data = [[],[]]
+	var data = [[],[[],[]]]
 	if Global.levels_persistent_data.has(level):
 		data = Global.levels_persistent_data[level]
 	else:
@@ -117,9 +124,18 @@ func load_current_level_persistent_data():
 		_on_dropped_item(i[1],i[0])
 	
 	if data.size() > 1:
-		for d in data[1]:
-			#decals
-			pass
+		#for d in data[1]:
+		#decals
+		var d = data[1]
+		#print("loaded decals vvv\n\n")
+		#print(d)
+		if d.size() > 1:
+			for pi in range(0,d[0].size()):
+				var s = load(d[0][pi]) #the scene
+				for t in d[1][pi]: #every transform of the scene
+					var s_i = s.instantiate()
+					s_i.transform = t
+					decalHandler.add_child(s_i)
 	
 	if data.size() > 2:
 		for e in data[2]:
@@ -127,6 +143,8 @@ func load_current_level_persistent_data():
 			#spawn_entity(e[0],e[1])
 			var scene = spawn_entity(e[0])
 			scene.set_data(e[1])
+	loading_screen.visible = false
+	loading_screen.update_mode(false, "recreating level data")
 
 func spawn_entity(key : String, position : Vector3 = Vector3.ZERO):
 	if !Global.entities.has(key):
@@ -135,6 +153,11 @@ func spawn_entity(key : String, position : Vector3 = Vector3.ZERO):
 	entityHandler.add_child(e)
 	e.position = position
 	return e
+
+func create_decal(node) -> void: #just for visuals
+	if decalHandler.get_child_count(false) > 512:
+		decalHandler.get_child(0).queue_free()
+	decalHandler.add_child(node)
 
 func change_player(stage : int) -> void:
 	for old in playerHandler.get_children(false):
@@ -151,7 +174,6 @@ func change_player(stage : int) -> void:
 func load_data_from_save():
 	var saved_data = SaveHandler.load_file(Global.save_filepath,"generic_save.dat")
 	#saved_data = JSON.parse_string(saved_data)
-	print(saved_data)
 	if saved_data == null:
 		saved_data = default_save_data.duplicate(true)
 	PlayerInformation.velocity = saved_data["velocity"]
@@ -196,6 +218,7 @@ func load_data_from_save():
 	
 
 func save_game_data():
+	
 	##generic_save
 	var game_data = {
 	"velocity" : PlayerInformation.velocity,
@@ -217,6 +240,9 @@ func save_game_data():
 	#game_data = JSON.stringify(game_data)
 	SaveHandler.save_file(Global.save_filepath,"generic_save.dat", game_data)
 	
+	##world
+	update_persistent_levels_data()
+	SaveHandler.save_file(Global.save_filepath,"levels_persistent.dat", Global.levels_persistent_data)
 	
 	##preview
 	var summary = "you played the demo version!" + "\nyou also played for about " + Global.get_abreviated_time(seconds_played)
@@ -236,9 +262,6 @@ func save_game_data():
 	SaveHandler.save_file(Global.save_filepath,"inventory.dat", inventory_data)
 	
 	
-	##world
-	update_persistent_levels_data()
-	SaveHandler.save_file(Global.save_filepath,"levels_persistent.dat", Global.levels_persistent_data)
 	
 	
 	##story
@@ -252,7 +275,18 @@ func update_persistent_levels_data() -> void:
 	if in_cutscene:
 		return
 	var loose_items_save = []
-	var decals_save = []
+	var decals_save = [[],[]]
+	
+	for dc in decalHandler.get_children(false):
+		var path = dc.scene_file_path
+		if decals_save[0].has(path):
+			var i = decals_save.find(path)
+			decals_save[1][i] += [dc.transform] #it exists so adds to list
+		else: #does not exist yet so adds entries for both
+			decals_save[0] += [path]
+			decals_save[1] += [[dc.transform]]
+	#print("saved decals : " + str(decals_save))
+	
 	for li in itemHandler.get_children(false):
 		var data = [li.position, li.data]
 		loose_items_save += [data]
@@ -264,7 +298,6 @@ func update_persistent_levels_data() -> void:
 	
 	
 	Global.levels_persistent_data[level] = [loose_items_save,decals_save,entity_save]
-	
 
 var changing_level:bool = false
 var level_to_change_too:StringName = ""
@@ -404,6 +437,7 @@ func set_paused(val := true):
 func save_and_quit() -> void:
 	get_tree().paused = false
 	save_game_data()
+	await get_tree().process_frame
 	get_tree().call_deferred("change_scene_to_file", "res://menus/main_menu.tscn")
 
 ##dev controls

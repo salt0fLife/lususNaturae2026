@@ -39,9 +39,11 @@ class_name CloudsController;
 
 func _ready():
 	if (!Engine.is_editor_hint()):
-		AddShaderVariables();
-		UpdateGlobalVariableTextures();
-		UpdateGlobalVariables();
+		if !Global.settup_clouds:
+			AddShaderVariables()
+			Global.settup_clouds = true
+		UpdateGlobalVariableTextures()
+		UpdateGlobalVariables()
 
 func AddShaderVariables():
 	var HeightWeightGradient = ResourceLoader.load("res://addons/SunshineVolumetricClouds/HeightWeightGradient.tres");

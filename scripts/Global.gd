@@ -6,6 +6,8 @@ extends Node
 var save_filepath = "" #specifically the path to the save you are playing on
 var version = "early-dev"
 
+var settup_clouds = false #to minimize errors because its annoying
+
 signal change_level
 func change_level_from_key(key : String) -> void:
 	emit_signal("change_level", key)
@@ -51,6 +53,9 @@ signal spawn_entity_signal
 func spawn_entity(key, position : Vector3 = Vector3.ZERO) -> void:
 	emit_signal("spawn_entity_signal", key, position)
 
+signal create_decal_signal
+func create_decal(node) -> void:
+	emit_signal("create_decal_signal", node)
 
 func get_abreviated_time(seconds : int) -> String:
 	var abrev_time = ""
@@ -80,6 +85,13 @@ func new_dialogue_box(text : String, custom_time : float = 0.0) -> void:
 	pass
 
 ##world stuff
+
+func get_surface_info(groups : Array) -> Dictionary:
+	for g in groups:
+		if surface_lookup.has(g):
+			return surface_lookup[g]
+	return surface_lookup["default"]
+
 enum {
 	DIRT_KEY,
 	GRASS_KEY,

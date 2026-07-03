@@ -14,7 +14,13 @@ func wall_jump(normal : Vector3) -> void:
 	audio_player.play()
 
 func jump() -> void:
-	camera_rot_vel += Vector3(0.02,0.0,0.0)
+	#camera_rot_vel += Vector3(0.02,0.0,0.0)
+	camera_rot_vel.x -= 0.01
+	hands_pos_vel.y -= 1.0*2.5
+	hands_rot_vel.x += 0.2*PI*2.5
+	
+	
+	#hands_pos_vel += Vector3(0.0,1.0,0.0)
 	voice_audio_player.stream = load("res://assets/sounds/player_movement/player_jump.ogg")
 	voice_audio_player.play()
 	if floor_check.is_colliding():
@@ -29,6 +35,14 @@ func air_dash(direction : Vector3) -> void:
 	audio_player.play()
 
 var camera_rot_vel : Vector3 = Vector3.ZERO
+var hands_rot_vel : Vector3 = Vector3.ZERO
+var hands_pos_vel : Vector3 = Vector3.ZERO
+@export var hands_return_power = 20.0
+@export var hands_return_damp = 1.0
+@export var hands_rot_return_power = 20.0
+@export var hands_rot_return_damp = 1.0
+
+
 @onready var camera = $cameraHandler/senses_camera
 @onready var cameraHandler = $cameraHandler
 @onready var hands = $cameraHandler/fp_hands_wip
@@ -53,18 +67,30 @@ func _process(delta):
 	var camera_rot = Vector2(rotation.y, cameraHandler.rotation.x)
 	
 	var dif = camera_rot - last_frame_camera_rot
-	hands.rotation.y += dif.x*0.2
+	hands.rotation.y += dif.x*0.2*0.25 #looks better for some reason
 	hands.rotation.x -= dif.y*0.2
-	hands.position.x += dif.x*0.25
+	hands.position.x += dif.x*0.1
 	hands.position.y += dif.y*0.1
 	
 	last_frame_camera_rot = camera_rot
 	
-	hands.position.x = clamp(hands.position.x, -0.5,0.5)
+	hands.position.x = clamp(hands.position.x, -0.1,0.1)
 	hands.position.y = clamp(hands.position.y, -0.1,0.1)
-	hands.position = lerp(hands.position, Vector3(0.0,0.0,0.14), delta*16.0)
-	hands.rotation.x = clamp(lerp_angle(hands.rotation.x, 0.0, delta*16.0),-PI*0.1,PI*0.1)
-	hands.rotation.y = clamp(lerp_angle(hands.rotation.y, 0.0, delta*16.0),-PI*0.1,PI*0.1)
+	
+	hands_pos_vel += (Vector3(0.0,0.0,0.14)-hands.position)*delta*hands_return_power
+	hands_pos_vel -= hands_pos_vel*delta*hands_return_damp
+	hands.position += hands_pos_vel * delta
+	
+	hands_rot_vel -= hands.rotation*delta *hands_rot_return_power
+	hands_rot_vel -= hands_rot_vel*delta*hands_rot_return_damp
+	hands.rotation += hands_rot_vel * delta
+	
+	hands.rotation.x = clamp(hands.rotation.x,-PI*0.1,PI*0.1)
+	hands.rotation.y = clamp(hands.rotation.y,-PI*0.1,PI*0.1)
+	
+	#hands.position = lerp(hands.position, Vector3(0.0,0.0,0.14), delta*16.0)
+	#hands.rotation.x = clamp(lerp_angle(hands.rotation.x, 0.0, delta*16.0),-PI*0.1,PI*0.1)
+	#hands.rotation.y = clamp(lerp_angle(hands.rotation.y, 0.0, delta*16.0),-PI*0.1,PI*0.1)
 	
 	#camera.rotation = camera_bone.rotation
 	
@@ -228,7 +254,10 @@ func step_sound(groups = []) -> void:
 	pass
 
 func land() -> void:
-	camera_rot_vel.x -= 0.025
+	camera_rot_vel.x -= 0.02
+	hands_pos_vel.y -= 1.0*2.0
+	hands_rot_vel.x -= 0.2*PI*5.0
+	#hands_rot_vel.x += 0.1
 	voice_audio_player.stream = load("res://assets/sounds/player_movement/player_land.ogg")
 	voice_audio_player.play()
 	if floor_check.is_colliding():
@@ -237,5 +266,6 @@ func land() -> void:
 		step_sound(groups)
 
 func shoot() -> void:
-	camera_rot_vel += Vector3(PI*0.005,0.0,0.0)
+	camera_rot_vel.x += PI*0.005
+	camera_rot_vel.y += randf_range(-PI*0.002,PI*0.002)
 	pass

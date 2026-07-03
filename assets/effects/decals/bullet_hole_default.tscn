@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://ckbg7if3gaqic"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_bhayd"]
+size = Vector2(0.02, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_u4w1u"]
+size = Vector3(0.005, 0.05, 0.005)
+
+[sub_resource type="PrismMesh" id="PrismMesh_7y3rt"]
+size = Vector3(0.01, 0.02, 0.005)
+
+[node name="bullet_hole_default" type="Node3D"]
+transform = Transform3D(2.76, 0, 0, 0, 2.76, 0, 0, 0, 2.76, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00247489, 0)
+mesh = SubResource("PlaneMesh_bhayd")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025754, 0)
+mesh = SubResource("BoxMesh_u4w1u")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0516312, 0)
+mesh = SubResource("PrismMesh_7y3rt")
