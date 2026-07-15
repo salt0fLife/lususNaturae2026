@@ -1,7 +1,7 @@
 extends Node3D
 
 
-func slash_close(damage_amount : int, damage_type : int, vfx_method : StringName, special : bool) -> void:
+func slash_close(damage_amount : int, damage_type : int, vfx_method : StringName, special : bool, attack_speed : float) -> void:
 	var hits = []
 	var hit_positions : PackedVector3Array = []
 	for r in $slash_close.get_children(false):
@@ -16,12 +16,12 @@ func slash_close(damage_amount : int, damage_type : int, vfx_method : StringName
 			h.take_damage(damage_amount,damage_type)
 	
 	if has_method(vfx_method):
-		call(vfx_method, special, hit_positions)
+		call(vfx_method, special, hit_positions, attack_speed)
 	pass
 
 @onready var slash_mesh = $effects/standard_slash/MeshInstance3D
 @onready var slash_mat = $effects/standard_slash/MeshInstance3D.get_active_material(0)
-func standard_slash(towards_right : bool, impact_points : PackedVector3Array) -> void:
+func standard_slash(towards_right : bool, impact_points : PackedVector3Array,speed: float = 1.0) -> void:
 	print("standard_slash")
 	if towards_right:
 		slash_mesh.rotation.z = -0.17
@@ -29,7 +29,7 @@ func standard_slash(towards_right : bool, impact_points : PackedVector3Array) ->
 		slash_mesh.rotation.z = 0.17+PI
 	var tween = get_tree().create_tween()
 	slash_mat.set("shader_parameter/progress", 0.0)
-	tween.tween_property(slash_mat, "shader_parameter/progress", 1.0, 0.25)
+	tween.tween_property(slash_mat, "shader_parameter/progress", 1.0, 1.0/speed)
 	
 	
 
@@ -49,13 +49,17 @@ func shoot_bullet_hitscan(damage_amount : int, damage_type : int) -> void:
 			print("applied " +str(damage_amount) + " damage of type " + str(damage_type))
 			h[0].take_damage(damage_amount,damage_type) #(amount, type)
 		else:
-			var decal = load("res://assets/effects/decals/bullet_hole_default.tscn").instantiate()
+			var surface_info = Global.get_surface_info(h[0].get_groups())
+			var decal_path = Global.bullet_hit_effects[surface_info[Global.BULLET_HIT_EFFECT]][0] #the last [0] gets decal instead of particles
+			if decal_path == "":
+				return
+			var decal = load(decal_path).instantiate()#load("res://assets/effects/decals/bullet_hole_default.tscn").instantiate()
 			decal.position = h[1]
 			var norm = h[2]
 			decal.rotation.y = atan2(norm.x, norm.z)
 			decal.rotation.x = atan2(sqrt(norm.z*norm.z+norm.x*norm.x),norm.y)
 			Global.create_decal(decal)
-			print("hit surface with info of " + str(Global.get_surface_info(h[0].get_groups())))
+			#print("hit surface with info of " + str(Global.get_surface_info(h[0].get_groups())))
 	pass
 
 ##visual effects

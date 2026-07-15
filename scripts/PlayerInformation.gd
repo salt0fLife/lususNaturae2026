@@ -10,11 +10,19 @@ var velocity := Vector3.ZERO
 var sprinting: bool = false
 var crouching: bool = false
 
+signal change_player
+func change_player_scene(key : int) -> void:
+	if !player_scenes.has(key):
+		printerr("called change_player_scene with non valid key")
+		return
+	emit_signal("change_player", key)
+
 const player_scenes = {
 	01 : ["res://campaign/player/player_01.tscn"],
 	99 : ["res://campaign/player/player_99.tscn"],
 	00 : ["res://campaign/player/player_character_test_model.tscn"],
 	-1 : ["res://campaign/player/player_combat_test.tscn"],
+	-2 : ["res://campaign/player/emerge_from_ground_player.tscn"]
 }
 
 
@@ -24,6 +32,10 @@ var max_health: float = 5.0
 var food: int = 1
 var max_food: int = 5
 var min_sleep_food: int = 4
+var sun_sickness: float = 0.0 #builds up when in sunlight goes down in shade
+
+var world_time: float = 0.0 #i know its funny to store here but it fits
+#
 
 var wall_sliding_timer:float = 0.0
 var max_dash:float = 3.0

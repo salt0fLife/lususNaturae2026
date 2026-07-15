@@ -2,6 +2,7 @@ extends Node3D
 
 # 1 is seen by both, all terrain entity models,etc. 2 is only seen with inhanced senses, 
 # 3 is seen with human senses (ie sound and feel), 4 is only seen by eyes (ie any lights in the scene)
+var using_senses = false
 
 func _ready():
 	update_senses()
@@ -12,6 +13,9 @@ func _input(event):
 		PlayerInformation.set_using_senses(!PlayerInformation.using_senses)
 
 func update_senses() -> void:
+	if using_senses == PlayerInformation.using_senses:
+		return
+	using_senses = PlayerInformation.using_senses
 	#var t = get_tree().create_tween()
 	#t.tween_property($blackout, "color", Color.BLACK, 0.1)
 	#await t.finished

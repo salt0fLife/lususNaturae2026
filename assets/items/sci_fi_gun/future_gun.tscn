@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://dgk5tecovo80k"]
+[gd_scene load_steps=11 format=3 uid="uid://dgk5tecovo80k"]
 
 [ext_resource type="Texture2D" uid="uid://j54kgglcochs" path="res://assets/items/sci_fi_gun/sci_fi_gun_with_armature_pistol_BaseColor.png" id="1_8y7li"]
 [ext_resource type="Texture2D" uid="uid://bnyw3kitp0wju" path="res://assets/items/sci_fi_gun/sci_fi_gun_with_armature_pistol_Metallic.png-pistol_Roughness.png" id="2_sa1g7"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_material.gdshader" id="3_tvxrm"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o35cf"]
 resource_name = "pistol"
@@ -237,12 +238,36 @@ bind/51/name = &"camera"
 bind/51/bone = -1
 bind/51/pose = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0cy46"]
+render_priority = 0
+shader = ExtResource("3_tvxrm")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = 0.543
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = null
+shader_parameter/metallic = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/NdotL = 0.064
+shader_parameter/texture_albedo = ExtResource("1_8y7li")
+shader_parameter/texture_metallic = ExtResource("2_sa1g7")
+shader_parameter/texture_roughness = ExtResource("2_sa1g7")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_dx53x"]
 blend_mode = 1
 
 [node name="debug_gun" type="MeshInstance3D"]
 mesh = SubResource("ArrayMesh_138cc")
 skin = SubResource("Skin_amlwc")
+surface_material_override/0 = SubResource("ShaderMaterial_0cy46")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3

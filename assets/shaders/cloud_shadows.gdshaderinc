@@ -1,4 +1,7 @@
 //global uniform vec3 SunshineClouds_SunDirection;
+
+uniform float NdotL;
+
 global uniform vec2 SunshineClouds_WindDirection;
 global uniform float SunshineClouds_WindSpeed;
 
@@ -35,6 +38,8 @@ const mat4 dither_matrix = mat4(
   vec4(1.0, 0.5, 0.875,  0.375)
 );
 
+
+
 float samplecloudmap(vec3 pos, float time) {
 	float heightSample = smoothstep(SunshineClouds_CloudsCeiling,SunshineClouds_CloudsCeiling - 100.0, pos.y);
 	float heightScale = (pos.y - SunshineClouds_CloudsFloor) / (SunshineClouds_CloudsCeiling - SunshineClouds_CloudsFloor);
@@ -64,6 +69,33 @@ float samplecloudmap(vec3 pos, float time) {
 	//noise -= distance(pos.y, clamp(pos.y, CloudFloor, CloudCeiling));
 	//noise *= posCutoff;
 	return noise;
+}
+
+float D_GGX(float cos_theta_m, float alpha)
+{
+float alpha2 = alpha * alpha;
+float d = 1.0 + (alpha2 - 1.0) * cos_theta_m * cos_theta_m;
+return alpha2 / (PI * d * d);
+}
+
+float G_GGX_2cos(float cos_theta_m, float alpha)
+{
+float k = 0.5 * alpha;
+return 0.5 / (cos_theta_m * (1.0 - k) + k);
+}
+
+vec3 F0(float metallic_c, float specular_c, vec3 albedo_c)
+{
+float dielectric = 0.16 * specular_c * specular_c;
+return mix(vec3(dielectric), albedo_c, vec3(metallic_c));
+}
+
+
+float SchlickFresnel(float u)
+{
+float m = 1.0 - u;
+float m2 = m * m;
+return m2 * m2 * m;
 }
 
 void light()
@@ -110,5 +142,28 @@ void light()
 	}
 	else{
 		DIFFUSE_LIGHT += clamp(dot(NORMAL, LIGHT), 0.0, 1.0) * ATTENUATION * LIGHT_COLOR;
+		float Ro = ((1.0 - 0.5)/1.0 + 0.5);
+		Ro *= Ro;
+		
 	}
+	
+	// Specular light.
+	vec3 halfway = normalize(VIEW + LIGHT);
+	float NdotH = max(dot(NORMAL, halfway), 0.0);
+	float LdotH = max(dot(LIGHT, halfway), 0.0);
+	float NdotV = max(dot(NORMAL, VIEW), 0.0);
+	
+	float alpha_ggx = ROUGHNESS * ROUGHNESS;
+	float D = D_GGX(NdotH, alpha_ggx);
+	float G = G_GGX_2cos(NdotL, alpha_ggx) * G_GGX_2cos(NdotV, alpha_ggx);    
+	
+	vec3 f0 = F0(METALLIC, SPECULAR_AMOUNT, ALBEDO);
+	float cLdotH5 = SchlickFresnel(LdotH);
+	vec3 F = mix(vec3(cLdotH5), vec3(1.0), f0);
+	
+	vec3 specular_brdf_NL = NdotL * D * F * G;
+	
+	float specular_blob_intensity = 0.25;
+	SPECULAR_LIGHT += specular_brdf_NL * LIGHT_COLOR * specular_blob_intensity * ATTENUATION;
+	
 }

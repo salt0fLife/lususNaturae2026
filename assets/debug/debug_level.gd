@@ -1,6 +1,11 @@
 extends Node3D
+@export var level_to_enter:StringName = "debug"
+@export var exit_pos: Vector3
+@export var exit_rot: Vector2
 
+var tool_tip = "exit laboratory"
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+func interact():
+	var data = [level_to_enter,exit_pos,exit_rot]
+	return [Global.interact_returns.ENTER_DOOR,data]
+

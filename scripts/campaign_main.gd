@@ -8,12 +8,12 @@ extends Node
 @onready var decalHandler = $decalHandler
 
 #game variables
-var day_timer: float = 0.0
+var day_timer: float = 500.1
 var day_length: float = 1000.0
 var seconds_played = 0
 
 var level = "debug"
-var player_stage = 01
+var player_stage = -2
 var in_game_days = 0
 
 # Called when the node enters the scene tree for the first time.
@@ -22,10 +22,13 @@ func _ready():
 	PlayerInformation.connect("perished", _on_player_death)
 	PlayerInformation.connect("changed_using_senses", _on_changed_using_senses)
 	Global.connect("dialogue", _on_dialogue)
+	Global.connect("new_tooltip", _on_tooltip)
 	Global.connect("change_level", change_level)
 	Global.connect("reached_major_point", _on_major_point_reached)
 	Global.connect("spawn_entity_signal", spawn_entity)
 	Global.connect("create_decal_signal", create_decal)
+	Global.connect("play_cutscene_signal", play_cutscene)
+	PlayerInformation.connect("change_player", change_player)
 	$pause_menu/buttonHandler/resume.connect("button_down", set_paused.bind(false))
 	$"pause_menu/buttonHandler/save and quit".connect("button_down", save_and_quit)
 	
@@ -53,9 +56,9 @@ const default_save_data = {
 	"velocity" : Vector3.ZERO,
 	"position" : Vector3.ZERO,
 	"rotation" : Vector2.ZERO,
-	"player_stage" : 01,
+	"player_stage" : -2,
 	"level" : "debug",
-	"day_timer" : 0.0,
+	"day_timer" : 500.1,
 	"seconds_played" : 0,
 	"food" : 2,
 	"min_sleep_food" : 4,
@@ -66,13 +69,14 @@ const default_save_data = {
 }
 
 const default_inventory_data = {
-	"inventory" :[[],[],[],["moldy_bread"],["moldy_bread"]],
+	"inventory" :[[],[],[],[],[]],
 	"held_item_index" : 0
 	}
 
 const default_story_info = {
 	"cutscenes_watched" = [],
 	"progression" = 0,
+	"major_points_reached" = []
 }
 
 func change_level(level_key : String, update_persistent_data = true) -> void:
@@ -214,8 +218,9 @@ func load_data_from_save():
 	if story_info == null:
 		story_info = default_story_info.duplicate(true)
 	Global.cutscenes_watched = story_info["cutscenes_watched"]
-	Global.progression = story_info["progression"]
 	
+	Global.progression = story_info["progression"]
+	Global.major_points_reached = story_info["major_points_reached"]
 
 func save_game_data():
 	
@@ -268,6 +273,7 @@ func save_game_data():
 	var story_info = {
 		"cutscenes_watched" : Global.cutscenes_watched,
 		"progression" : Global.progression,
+		"major_points_reached" : Global.major_points_reached,
 	}
 	SaveHandler.save_file(Global.save_filepath,"story_info.dat", story_info)
 
@@ -319,7 +325,7 @@ func _process(delta):
 			level_to_change_too = ""
 			set_paused(false)
 			loading_screen.visible = false
-			return #finished loading
+			#return #finished loading
 	
 	
 	update_debug_graphics()
@@ -339,6 +345,8 @@ func _process(delta):
 	if day_timer > day_length:
 		day_timer -= day_length
 		in_game_days += 1
+	PlayerInformation.world_time = (day_timer/day_length) #IMPORTANT
+	
 	
 	sub_second_counter += delta
 	while sub_second_counter > 1.0: #allows for accurate counting through harsh stuttering
@@ -417,7 +425,8 @@ func play_cutscene(key : String) -> void:
 	scene.connect("end", end_cutscene)
 	cutscene_timer = data[1]
 	in_cutscene = true
-	Global.cutscenes_watched.append(key)
+	if !Global.cutscenes_watched.has(key):
+		Global.cutscenes_watched.append(key)
 
 func end_cutscene() -> void:
 	in_cutscene = false
@@ -493,6 +502,12 @@ func setup_dev_controls():
 	$pause_menu/devtools/HFlowContainer/tp_ZERO.connect("button_down", PlayerInformation.tp.bind(Vector3.ZERO))
 	
 	$pause_menu/devtools/HFlowContainer/reset_level.connect("button_down", _on_kill_all_entities)
+	
+	$pause_menu/devtools/HFlowContainer/PanelContainer7/VBoxContainer/HSlider.connect("value_changed", set_time_of_day)
+	
+
+func set_time_of_day(val : float) -> void: #0.0 -> 1.0
+	day_timer = day_length*val
 
 func _on_kill_all_entities() -> void:
 	for i in get_tree().get_nodes_in_group("entity"):
@@ -643,10 +658,11 @@ func purge_world() -> void:
 
 ##checkpoints and dying
 func _on_player_death() -> void:
-	print("loading last checkpoint")
-	purge_world()
-	load_data_from_save()
-	start_game()
+	print("player_died")
+	#print("loading last checkpoint")
+	#purge_world()
+	#load_data_from_save()
+	#start_game()
 
 func _on_checkpoint_reached() -> void:
 	print("checkpoint reached")
@@ -677,9 +693,14 @@ func play_sound(path) -> void: #so there is not a bagillion sound_nodes for ever
 func _on_major_point_reached(key : int) -> void:
 	print("major point reached, key = " + str(key))
 	match key:
-		Global.major_points.SKY_FALL : 
+		Global.major_points.SKY_FALL: 
 			play_cutscene("fall_into_world")
 			PlayerInformation.tp(Vector3.ZERO)
 			level = "stone_forest"
 			pass
 	pass
+
+
+
+func _on_tooltip(text) -> void:
+	$tooltip.set_new_tooltip(text)

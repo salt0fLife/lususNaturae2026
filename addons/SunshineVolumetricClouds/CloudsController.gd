@@ -36,6 +36,8 @@ class_name CloudsController;
 @export var ambientColorDefault : Color = Color(0, 0, 0);
 @export var useFogDefault : bool = true;
 @export var fogColorDefault : Color = Color(1, 1, 1);
+@export var sunColorMult : Color = Color(1.0,1.0,1.0);
+
 
 func _ready():
 	if (!Engine.is_editor_hint()):
@@ -81,10 +83,18 @@ func AddShaderVariables():
 	RenderingServer.global_shader_parameter_add("SunshineClouds_CloudsFloor", RenderingServer.GLOBAL_VAR_TYPE_FLOAT, 80.0);
 	RenderingServer.global_shader_parameter_add("SunshineClouds_CloudsCeiling", RenderingServer.GLOBAL_VAR_TYPE_FLOAT, 2000.0);
 
+@export var frames_between_updates : int = 15
+var frame_counter = 0
 func _process(delta):
-	if (Engine.is_editor_hint() || updateConstantly):
-		UpdateGlobalVariableTextures();
-		UpdateGlobalVariables();
+	if Engine.is_editor_hint():
+		if updateConstantly:
+			UpdateGlobalVariableTextures();
+			UpdateGlobalVariables();
+	else:
+		frame_counter += 1
+		if frame_counter > frames_between_updates:
+			frame_counter = 0.0
+			UpdateGlobalVariables()
 
 func UpdateGlobalVariableTextures():
 	if (gradientControlTexture == null):
@@ -117,7 +127,7 @@ func UpdateGlobalVariables():
 	
 	if (sunLight != null):
 		RenderingServer.global_shader_parameter_set("SunshineClouds_SunDirection", sunLight.global_transform.basis.z);
-		sunColorDefault = sunLight.light_color * sunLight.light_energy;
+		sunColorDefault = sunLight.light_color * sunLight.light_energy*sunColorMult;
 	
 	if (worldEnvironment != null && worldEnvironment.environment != null):
 		useFogDefault = worldEnvironment.environment.fog_enabled;
@@ -125,7 +135,6 @@ func UpdateGlobalVariables():
 		
 		if (!overrideAmbientLight && worldEnvironment.environment.ambient_light_source == Environment.AMBIENT_SOURCE_COLOR):
 			ambientColorDefault = worldEnvironment.environment.ambient_light_color * worldEnvironment.environment.ambient_light_energy;
-	
 	RenderingServer.global_shader_parameter_set("SunshineClouds_SunColor", sunColorDefault);
 	RenderingServer.global_shader_parameter_set("SunshineClouds_UseFog", useFogDefault);
 	RenderingServer.global_shader_parameter_set("SunshineClouds_FogColor", fogColorDefault);

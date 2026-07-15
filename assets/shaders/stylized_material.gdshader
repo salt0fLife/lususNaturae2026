@@ -2,7 +2,7 @@
 
 shader_type spatial;
 render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_toon,specular_schlick_ggx;
-uniform vec4 albedo : source_color;
+uniform vec4 albedo : source_color = vec4(1.0,1.0,1.0,1.0);
 uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
 uniform float point_size : hint_range(0,128);
 uniform float roughness : hint_range(0,1);
@@ -11,9 +11,9 @@ uniform vec4 metallic_texture_channel;
 uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
 uniform float specular;
 uniform float metallic;
-uniform vec3 uv1_scale;
+uniform vec3 uv1_scale = vec3(1.0,1.0,1.0);
 uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
+uniform vec3 uv2_scale = vec3(1.0,1.0,1.0);
 uniform vec3 uv2_offset;
 #include "res://assets/shaders/cloud_shadows.gdshaderinc"
 
@@ -27,9 +27,9 @@ void fragment() {
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
 	ALBEDO = albedo.rgb * albedo_tex.rgb;
 	float c_n = (NORMAL.x + NORMAL.y+NORMAL.z) * 0.333333;
-	if (((sin(c_n * PI*2.0) + dot(NORMAL, CAMERA_DIRECTION_WORLD-NODE_POSITION_WORLD)) > roughness)){
-		ALBEDO += ALBEDO * metallic;
-	}
+	//if (((sin(c_n * PI*2.0) + dot(NORMAL, CAMERA_DIRECTION_WORLD-NODE_POSITION_WORLD)) > roughness)){
+		//ALBEDO += ALBEDO * metallic;
+	//}
 	
 	
 	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);

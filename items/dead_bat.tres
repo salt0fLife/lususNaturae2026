@@ -12,4 +12,5 @@ item_style = 1
 sounds = 3
 animations = 2
 model_path = "res://assets/items/dead_bat/dead_bat.tscn"
+has_deformations = false
 texture_path = "res://assets/textures/material/DebuggTexture.png"

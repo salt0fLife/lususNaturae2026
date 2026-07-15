@@ -77,6 +77,11 @@ func select_save(indx : int) -> void:
 		$"Control/Panel/save info/Label3".set("theme_override_colors/font_color", Color.RED)
 	else:
 		$"Control/Panel/save info/Label3".set("theme_override_colors/font_color", Color.LIGHT_GRAY)
+	
+	##DEBUG SAVE_INFO
+	var save_filepath = saves_list[selected_save][1]
+	var story_info = SaveHandler.load_file(save_filepath,"story_info.dat")
+	$"Control/Panel/save info/RichTextLabel".text = str(story_info)
 
 func play_selected_save() -> void:
 	if selected_save < 0:

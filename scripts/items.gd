@@ -98,7 +98,7 @@ func populate_list(): ##NOTE MAY NOT WORK ON EXPORT
 	
 	print(list)
 
-enum {#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]
+enum {#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations, has_deformations]
 	INDEX_NAME,
 	INDEX_STYLE,
 	INDEX_SOUNDS,

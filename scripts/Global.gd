@@ -8,6 +8,8 @@ var version = "early-dev"
 
 var settup_clouds = false #to minimize errors because its annoying
 
+
+
 signal change_level
 func change_level_from_key(key : String) -> void:
 	emit_signal("change_level", key)
@@ -15,10 +17,17 @@ func change_level_from_key(key : String) -> void:
 signal reached_major_point
 func major_point_reached(key : int) -> void:
 	emit_signal("reached_major_point", key)
+	if major_points_reached.has(key):
+		major_points_reached.append(key)
 
 enum major_points {
-	SKY_FALL
+	SKY_FALL, #discontinued :/
+	WAKEUP,
+	EXITED_LABORATORY,
+	GATE_WARDEN_DEFEATED,
 }
+
+var major_points_reached = []
 
 const levels: Dictionary = {
 	"debug" : ["res://campaign/levels/debug_level.tscn"],
@@ -29,7 +38,9 @@ const levels: Dictionary = {
 	"dark_rooms" : ["res://campaign/levels/dark_rooms.tscn"],
 	"stone_forest" : ["res://campaign/levels/stone_forest.tscn"],
 	"warzone_laboratory" : ["res://campaign/levels/warzone_laboratory.tscn"],
-	"canyon_cave_entrance" : ["res://campaign/levels/canyon_cave_entrance.tscn"]
+	"canyon_cave_entrance" : ["res://campaign/levels/canyon_cave_entrance.tscn"],
+	"abandoned_laboratory" : ["res://campaign/levels/abandoned_laboratory.tscn"],
+	"laboratory_courtyard" : ["res://campaign/levels/laboratory_courtyard.tscn"],
 }
 
 var levels_persistent_data: Dictionary = {
@@ -38,8 +49,15 @@ var levels_persistent_data: Dictionary = {
 
 const cutscenes: Dictionary = {
 	"new_game_start" : ["res://campaign/cutscenes/game_start_cutscene.tscn", 30.0], #path seconds long
-	"fall_into_world" : ["res://campaign/cutscenes/falling_into_world_cutscene.tscn", 4.0]
+	"fall_into_world" : ["res://campaign/cutscenes/falling_into_world_cutscene.tscn", 4.0],
+	"gate_warden_introduction" : ["res://campaign/cutscenes/falling_into_world_cutscene.tscn", 1.0],
 }
+
+signal play_cutscene_signal
+func play_cutscene(key : StringName) -> void:
+	emit_signal("play_cutscene_signal", key)
+	if !cutscenes_watched.has(key):
+		cutscenes_watched.append(key)
 
 var progression:int = 0 #keeps track of various important events
 
@@ -74,6 +92,7 @@ var in_game_mouse = false #mouse visible while playing, ie in inventory
 
 enum interact_returns {
 	PICKUP_ITEM, #includes path_to loose_item node
+	ENTER_DOOR, #[level_key, position, rotation(vec2)]
 	DO_NOTHING, #no action needed (should be pretty rare)
 }
 
@@ -83,6 +102,12 @@ func new_dialogue_box(text : String, custom_time : float = 0.0) -> void:
 		return
 	emit_signal("dialogue", text, custom_time)
 	pass
+
+signal new_tooltip
+func tooltip(text : String) -> void:
+	if text == "":
+		return
+	emit_signal("new_tooltip", text)
 
 ##world stuff
 
@@ -102,28 +127,40 @@ enum {
 
 enum {
 	STEP_SOUNDS,
+	BULLET_HIT_EFFECT,
 }
 
 const surface_lookup = { #this way i can bundle more info in if i need
 	"dirt" : {
 		STEP_SOUNDS : DIRT_KEY,
+		BULLET_HIT_EFFECT : DIRT_KEY,
 	},
 	"stone" : {
 		STEP_SOUNDS : STONE_KEY,
+		BULLET_HIT_EFFECT : STONE_KEY,
 	},
 	"grass" : {
 		STEP_SOUNDS : GRASS_KEY,
+		BULLET_HIT_EFFECT : DIRT_KEY,
 	},
 	"metal" : {
 		STEP_SOUNDS : METAL_KEY,
+		BULLET_HIT_EFFECT : STONE_KEY,
 	},
 	"wood" : {
 		STEP_SOUNDS : WOOD_KEY,
+		BULLET_HIT_EFFECT : STONE_KEY,
 	},
 	"default" : {
-		STEP_SOUNDS : STONE_KEY
+		STEP_SOUNDS : STONE_KEY,
+		BULLET_HIT_EFFECT : DIRT_KEY,
 	}
 	
+}
+
+const bullet_hit_effects = {
+	STONE_KEY : ["res://assets/effects/decals/bullet_hole_default.tscn", ""],
+	DIRT_KEY : ["",""],
 }
 
 const surface_step_sounds = {
@@ -168,7 +205,7 @@ enum damage_types{ #any kind of damage you can think of, this is the location fo
 	POISON,
 	MAGIC,
 	BLEED,
-	BURN,
+	FIRE,
 	FROST
 }
 
@@ -181,7 +218,7 @@ const physical_damage_types = [
 
 const purifying_damage_types = [
 	damage_types.HOLY,
-	damage_types.BURN
+	damage_types.FIRE
 ]
 
 

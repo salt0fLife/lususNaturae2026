@@ -59,10 +59,12 @@ uniform int StepCount = 150;
 uniform float LightingStepDistance = 20.0;
 uniform int LightingStepCount = 25;
 
+uniform float step_stretch_BE = 1.0;
 
 group_uniforms Textures;
 uniform sampler2D depth_texture : source_color, hint_depth_texture;
 // used to create a ramp than controls the vertical axis on the clouds, lets you author clouds a little more detailed, to blend between different types lerp this using c# or gdscript to another gradient.
+
 
 const mat4 dither_matrix = mat4(
   vec4(0.0625, 0.5625, 0.1875,  0.6875),
@@ -70,6 +72,18 @@ const mat4 dither_matrix = mat4(
   vec4(0.25, 0.75, 0.125, 0.625),
   vec4(1.0, 0.5, 0.875,  0.375)
 );
+//const mat4 dither_matrix = mat4(
+  //vec4(0.0,    0.25,  0.125,  0.375),
+  //vec4(0.5,    0.75,  0.625,  0.875),
+  //vec4(0.1875, 0.4375,0.0625, 0.3125),
+  //vec4(0.6875, 0.9375,   0.5625, 0.8125)
+//);
+//const mat4 dither_matrix = mat4(
+  //vec4(0.0,  0.0625, 0.125, 0.1875),
+  //vec4(0.25, 0.3125, 0.375, 0.4375),
+  //vec4(0.5,  0.5625, 0.625, 0.6875),
+  //vec4(0.75, 0.8125, 0.875, 0.9375)
+//);
 
 void vertex() {
 	//time = TIME;
@@ -165,11 +179,16 @@ void fragment() {
 	//BE commented out layer above ^^^
 	//now you can see clouds below :D
 	//also performance hit lol
-	
 	for (int i = 0; i < StepCount; i++) {
 		currentColorMult += sampleCloudColor(cur_pos, time)*0.01; //BE
 		cur_distance += mix(StepDistanceClose, StepDistanceFar, ease_out_quad(0.0,1.0,float(i) / float(StepCount)));
-		cur_pos = origin + view_dir * cur_distance;
+		cur_pos = origin + view_dir * cur_distance*step_stretch_BE;
+		//BE ^^^2
+		//BE dithering offset stuff for raycast
+		//cur_pos += vec3(dither, -dither, -dither)*0.4;
+		//BE end
+		
+		
 
 		thisDensity = samplecloudmap(cur_pos, time)  * CloudDensity;
 		currentColor = mix(currentColor, SunshineClouds_SunColor.rgb, thisDensity);
@@ -188,8 +207,10 @@ void fragment() {
 	cur_pos += SunshineClouds_SunDirection * dither;
 	for (int j = 0; j < LightingStepCount; j++) { //BE
 		shadow += (samplecloudmap(cur_pos, time) * CloudDensity * (float(LightingStepCount*4-j)/float(LightingStepCount*4))*0.5 ); // BE
-
 		cur_pos += SunshineClouds_SunDirection * LightingStepDistance * (1.0 + float(j)*0.005);
+		if (shadow > 21.0){
+			break;
+		}
 	}
 	shadow /= float(LightingStepCount);
 //	currentDensity = clamp(currentDensity, 0.0, 1.0);

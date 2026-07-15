@@ -58,6 +58,7 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/NdotL = 0.003
 shader_parameter/texture_albedo = ExtResource("1_hp47x")
 shader_parameter/CloudDitherPower = 200.0
 shader_parameter/CloudCutoffAdjust = -0.795

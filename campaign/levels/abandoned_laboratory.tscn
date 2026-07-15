@@ -1,0 +1,141 @@
+[gd_scene load_steps=7 format=3 uid="uid://b2glhb34fwrf4"]
+
+[ext_resource type="Script" path="res://assets/debug/debug_level.gd" id="1_8kf6x"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_material.gdshader" id="1_xvdje"]
+[ext_resource type="Texture2D" uid="uid://bxiyf2g11khkd" path="res://assets/textures/material/cracked_concrete.png" id="2_qf42k"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yjgx5"]
+render_priority = 0
+shader = ExtResource("1_xvdje")
+shader_parameter/albedo = Color(0.780392, 0.764706, 0.741176, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/NdotL = null
+shader_parameter/texture_albedo = ExtResource("2_qf42k")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_esk5l"]
+size = Vector3(0.1, 2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_4cm88"]
+size = Vector3(0.1, 2, 1)
+
+[node name="abandoned_laboratory" type="Node3D"]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+material_override = SubResource("ShaderMaterial_yjgx5")
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, 2, 0)
+flip_faces = true
+size = Vector3(7.5, 4, 8)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2, 0)
+flip_faces = true
+size = Vector3(3, 4, 15)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5, 2, -7)
+flip_faces = true
+size = Vector3(3, 4, 5)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 8, 2, 2)
+flip_faces = true
+size = Vector3(3, 4, 5)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 8, 2, -2)
+flip_faces = true
+size = Vector3(3, 4, 5)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 11.75, 2, -1.09278e-08)
+flip_faces = true
+size = Vector3(17, 4, 5.5)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 0)
+flip_faces = true
+radius = 4.0
+height = 15.0
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 7.5, 7.5)
+flip_faces = true
+radius = 4.0
+height = 15.0
+
+[node name="lights" type="Node3D" parent="." groups=["light"]]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 14, 0)
+light_color = Color(0.819608, 0.862745, 0.752941, 1)
+light_energy = 8.553
+spot_range = 21.4705
+spot_angle = 19.3701
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 4.5, 14, 7.5)
+light_color = Color(0.694118, 0.74902, 0.627451, 1)
+light_energy = 8.553
+spot_range = 21.4705
+spot_angle = 19.3701
+
+[node name="OmniLight3D" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.09208, 2.1353, -3.53073)
+light_color = Color(0.913725, 0.784314, 0.709804, 1)
+shadow_enabled = true
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.09208, 2.1353, 3.78462)
+light_color = Color(0.913725, 0.784314, 0.709804, 1)
+shadow_enabled = true
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.30631, 2.1353, -0.0685844)
+light_color = Color(0.913725, 0.784314, 0.709804, 1)
+shadow_enabled = true
+
+[node name="OmniLight3D4" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.28256, 2.1353, -0.0685844)
+light_color = Color(0.913725, 0.784314, 0.709804, 1)
+shadow_enabled = true
+
+[node name="OmniLight3D5" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.8389, 2.1353, -7.76446)
+light_color = Color(0.564706, 0.87451, 0.901961, 1)
+
+[node name="OmniLight3D6" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.1177, 2.1353, 1.02532)
+light_color = Color(0.572549, 0.760784, 0.596078, 1)
+omni_range = 9.02302
+
+[node name="exit_door" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.45157, 0, -6.89246)
+
+[node name="Area3D" type="StaticBody3D" parent="exit_door" groups=["interactable"]]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("1_8kf6x")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="exit_door/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("BoxShape3D_esk5l")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="exit_door/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("BoxMesh_4cm88")

@@ -120,7 +120,15 @@ func dash() -> void:
 	dash_timer = 1.0
 	velocity_at_dash_start = velocity
 	var input_dir = Input.get_vector("left", "right", "up", "down")
-	var direction = (graphics.transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
+	var input_vertical = 0.0
+	if Input.is_action_pressed("jump"):
+		input_vertical += 1.0
+	if Input.is_action_pressed("crouch"):
+		input_vertical -= 1.0
+	var direction = (graphics.global_transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
+	if !is_on_floor():
+		direction = (cameraHandler.global_transform.basis * Vector3(input_dir.x, input_vertical, input_dir.y)).normalized()
+	
 	if !direction:
 		direction = Vector3(0.0,-1.0,0.0)
 	dash_vel = direction
@@ -147,7 +155,47 @@ func air_jump() -> void:
 	#velocity.y = jump_strength
 	#graphics.air_dash(Vector3.UP)
 
+func update_tooltip() -> void:
+	var text = interaction_sightline.get_tooltip()
+	Global.tooltip(text)
+	pass
+
+@export_group("sun_sickness")
+@export var sun_sickness_change_speed:float = 1.0;
+var sun_tick_damage_timer = 0.0
+func update_sun_sickness(delta) -> void:
+	var sun_p = $sunlight_check.in_sunlight_pecentage()
+	$Label.text = "sunlight : " + str(sun_p)
+	var sickness = PlayerInformation.sun_sickness
+	
+	sickness += delta*sun_p*sun_sickness_change_speed
+	if sun_p == 0.0:
+		sickness -= delta*0.4*sun_sickness_change_speed
+	sickness = clamp(sickness,0.0,1.0)
+	PlayerInformation.sun_sickness = sickness
+	if sickness == 1.0:
+		sun_tick_damage_timer += delta
+		if sun_tick_damage_timer > 0.25:
+			sun_tick_damage_timer -= 0.25
+			PlayerInformation.take_damage(0.5,Global.damage_types.FIRE)
+		pass
+	
+	$Label.text += ", sun_sickness : " + str(sickness)
+	
+	$sunlight_indicator.rotation = $sunlight_check.get_sun_rotation()#+Vector3(PI*0.5,0.0,0.0)
+	$sunlight_indicator.visible = sun_p > 0.0
+	$sunlight_indicator/MeshInstance3D.mesh.material.set("shader_parameter/albedo",Color.DARK_ORANGE*sun_p)
+	if sun_p > 0.0:
+		if !$sunlight_indicator/AudioStreamPlayer.playing:
+			$sunlight_indicator/AudioStreamPlayer.play()
+		
+		$sunlight_indicator/AudioStreamPlayer.volume_db = lerp($sunlight_indicator/AudioStreamPlayer.volume_db, remap(sun_p,0.0,1.0,-40.0,0.0),delta*4.0)
+	else:
+		$sunlight_indicator/AudioStreamPlayer.volume_db = lerp($sunlight_indicator/AudioStreamPlayer.volume_db, -80.0 ,delta*8.0)
+
 func _process(delta):
+	update_sun_sickness(delta)
+	update_tooltip()
 	if combat_stance > 0.0:
 		combat_stance -= delta
 		if combat_stance < 0.0:
@@ -335,13 +383,18 @@ func _physics_process(delta):
 			#play_anim(get_movement_anim("jump"))
 		elif is_on_wall():
 			var normal = get_wall_normal()
+			if Input.is_action_pressed("up") and can_vault() and ! vaulting:
+				vaulting = true
+				graphics.vault()
+				play_anim(get_movement_anim("vault"))
+			else: #wall_jump
 			#lunge()
-			velocity.y = jump_strength
-			velocity += get_look_dir()*clamp(velocity.length(), 0.0, jump_strength*0.25)
-			velocity += normal * jump_strength
-			graphics.wall_jump(normal)
-			wall_run_timer *= 0.75
-			wall_run_cooldown = 0.2
+				velocity.y = jump_strength
+				velocity += get_look_dir()*clamp(velocity.length(), 0.0, jump_strength*0.25)
+				velocity += normal * jump_strength
+				graphics.wall_jump(normal)
+				wall_run_timer *= 0.75
+				wall_run_cooldown = 0.2
 		else:
 			air_jump()
 	
@@ -375,7 +428,7 @@ func _physics_process(delta):
 				velocity.x += ((crouch_speed * direction.x) - velocity.x) * delta * acceleration
 				velocity.z += ((crouch_speed * direction.z) - velocity.z) * delta * acceleration
 			elif sprinting:
-				graphics.running(delta)
+				graphics.running(delta, velocity)
 				var speed = Vector2(velocity.x,velocity.z).length()
 				play_anim(get_movement_anim("sprinting"))
 				if !speed > sprint_speed:
@@ -391,11 +444,11 @@ func _physics_process(delta):
 						add_vel_length = max_floor_slow_per_second
 					velocity.x += add_vel_length * add_vel_dir.x * delta
 					velocity.z += add_vel_length * add_vel_dir.z * delta
-					velocity -= velocity*delta*0.05 #a little friction
+					velocity -= velocity*delta*2.0 #a little friction -> changed to a lot of friction (old = *0.05)
 					#velocity.x += (speed*direction.x - velocity.x) * delta * acceleration
 					#velocity.z += (speed*direction.z - velocity.z) * delta * acceleration
 			else:
-				graphics.walking(delta)
+				graphics.walking(delta, velocity)
 				play_anim(get_movement_anim("idle"))
 				velocity.x += ((walk_speed * direction.x) - velocity.x) * delta * acceleration
 				velocity.z += ((walk_speed * direction.z) - velocity.z) * delta * acceleration
@@ -418,8 +471,10 @@ func _physics_process(delta):
 		else:
 			velocity = update_velocity_air(direction, velocity, delta)
 			play_anim(get_movement_anim("falling"))
+			graphics.airborn(velocity, delta)
 	elif is_on_floor() and !dash_timer > 0.0:
 		play_anim(get_movement_anim("idle"))
+		graphics.idle(delta)
 		if true:#!sprinting or velocity.length() < 1.0:
 			var speed_to_lose = Vector2(velocity.x,velocity.z).length() * floor_friction
 			var friction_dir = velocity.normalized()
@@ -435,9 +490,10 @@ func _physics_process(delta):
 		#velocity.z -= velocity.z * delta * floor_friction
 	elif !dash_timer > 0.0:
 		play_anim(get_movement_anim("falling"))
+		graphics.airborn(velocity, delta)
 	
 	if !dash_timer > 0.0:
-		velocity = velocity.normalized() * clamp(velocity.length(), 0.0, 25.0)
+		velocity = velocity.normalized() * clamp(velocity.length(), 0.0, 50.0)
 	
 	
 	move_and_slide()
@@ -474,6 +530,12 @@ func _on_successful_interaction(info : Array) -> void:
 	match tag:
 		Global.interact_returns.PICKUP_ITEM:
 			attempt_loose_item_pickup(data)
+		Global.interact_returns.ENTER_DOOR:
+			enter_door(data)
+
+func enter_door(data):
+	tp(data[1], data[2])
+	Global.change_level_from_key(data[0])
 
 func attempt_loose_item_pickup(path_to : String) -> void:
 	var node = get_node_or_null(path_to)
@@ -515,7 +577,7 @@ func use_held_item(special = false):
 			var vfx_method_name = sword_data[3]
 			print("swung sword")
 			play_held_item_sound("swing", attack_speed)
-			weapon_node.slash_close(damage_amount,damage_type,vfx_method_name,special)
+			weapon_node.slash_close(damage_amount,damage_type,vfx_method_name,special,attack_speed)
 			if special:
 				play_anim("swing_sword_2", true, 0.0, attack_speed)
 			else:
@@ -583,7 +645,8 @@ func swing_held_item() -> void:
 	pass
 
 func _on_dropped_item(_data, _pos) -> void:
-	anim.play("drop_bread")
+	#anim.play("drop_bread")
+	print("dropped_item")
 	pass
 
 var held_item_models = []
@@ -623,7 +686,6 @@ func update_held_item_graphics() -> void:
 			play_anim("draw_gun",true,0.0)
 		_:
 			play_anim("draw_bread", true, 0.0)
-
 
 func play_held_item_sound(key : String, speed: float = 1.0) -> void:
 	var s = PlayerInformation.get_held_item_sound(key)

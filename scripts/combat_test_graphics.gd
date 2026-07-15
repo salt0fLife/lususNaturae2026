@@ -37,11 +37,14 @@ func air_dash(direction : Vector3) -> void:
 var camera_rot_vel : Vector3 = Vector3.ZERO
 var hands_rot_vel : Vector3 = Vector3.ZERO
 var hands_pos_vel : Vector3 = Vector3.ZERO
+var hands_rot_big_motion_vel : Vector3 = Vector3.ZERO
 @export var hands_return_power = 20.0
 @export var hands_return_damp = 1.0
 @export var hands_rot_return_power = 20.0
 @export var hands_rot_return_damp = 1.0
-
+@export var hands_rot_big_motion_power = 5.0
+@export var hands_rot_big_motion_damp = 1.0
+@export var hands_rot_lag_power = 1.0
 
 @onready var camera = $cameraHandler/senses_camera
 @onready var cameraHandler = $cameraHandler
@@ -66,7 +69,7 @@ func _process(delta):
 	
 	var camera_rot = Vector2(rotation.y, cameraHandler.rotation.x)
 	
-	var dif = camera_rot - last_frame_camera_rot
+	var dif = (camera_rot - last_frame_camera_rot)*hands_rot_lag_power
 	hands.rotation.y += dif.x*0.2*0.25 #looks better for some reason
 	hands.rotation.x -= dif.y*0.2
 	hands.position.x += dif.x*0.1
@@ -84,6 +87,11 @@ func _process(delta):
 	hands_rot_vel -= hands.rotation*delta *hands_rot_return_power
 	hands_rot_vel -= hands_rot_vel*delta*hands_rot_return_damp
 	hands.rotation += hands_rot_vel * delta
+	
+	#hands_rot_big_motion_vel -= hands.rotation*delta * hands_rot_big_motion_power
+	#hands_rot_big_motion_vel -= hands_rot_big_motion_vel*delta*hands_rot_big_motion_damp
+	#hands.rotation += hands_rot_big_motion_vel
+	
 	
 	hands.rotation.x = clamp(hands.rotation.x,-PI*0.1,PI*0.1)
 	hands.rotation.y = clamp(hands.rotation.y,-PI*0.1,PI*0.1)
@@ -195,11 +203,29 @@ func update_using_senses() -> void:
 		for am in arm_meshes:
 			am.set_surface_override_material(0, null)
 
+@onready var legs = $legs
 var val = 0.0
 var step = 0.0
-func walking(delta) -> void:
-	val += delta * 1.0
-	var strength = 0.5
+@export var walking_speed_mult = 1.0
+func walking(delta, velocity) -> void:
+	var walking_speed = Vector2(velocity.x,velocity.z).length()/4.0
+	velocity = velocity*global_basis
+	var dir = Vector2(velocity.x,velocity.z).normalized()
+	var theta = atan2(dir.x,dir.y) + PI
+	
+	if dir.y > 0.0:
+		#backwards
+		theta = atan2(-dir.x,-dir.y) + PI #reversed
+		play_leg_anim("walk_backwards", 0.2, walking_speed*walking_speed_mult)
+	else:
+		play_leg_anim("walk_forward", 0.2, walking_speed*walking_speed_mult)
+	
+	legs.rotation.y = lerp_angle(legs.rotation.y, theta,delta * 16.0)
+	#legs.rotation.y = theta
+	legs.rotation.y = clamp(legs.rotation.y, -PI*0.4,PI*0.4)
+	
+	val += delta * 1.0 * walking_speed_mult *walking_speed
+	var strength = 0.25
 	if val > 1.0:
 		val -= 1.0
 		step = 0.5
@@ -216,8 +242,16 @@ func walking(delta) -> void:
 	pass
 
 @export var running_speed_mult = 1.0
-func running(delta) -> void:
-	val += delta * 1.5 * running_speed_mult
+func running(delta, velocity) -> void:
+	var running_speed = Vector2(velocity.x,velocity.z).length()/7.0
+	velocity = velocity*global_basis
+	var dir = Vector2(velocity.x,velocity.z).normalized()
+	var theta = atan2(dir.x,dir.y) + PI
+	legs.rotation.y = lerp_angle(legs.rotation.y, theta,delta * 16.0)
+	legs.rotation.y = clamp(legs.rotation.y, -PI*0.4,PI*0.4)
+	
+	play_leg_anim("sprint_forward", 0.2, running_speed*running_speed_mult)
+	val += delta * 1.5 * running_speed_mult * running_speed
 	var strength = 1.0
 	if val > 1.0:
 		val -= 1.0
@@ -231,8 +265,8 @@ func running(delta) -> void:
 	#camera.position.x = lerp(camera.position.x, sin(val*PI), delta*8.0)
 	#hands.position.x += delta * sin(val*PI*2.0) * strength
 	#hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5
-	camera.position.x += delta * sin(val*PI*2.0) * strength
-	camera.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5
+	camera.position.x += delta * sin(val*PI*2.0) * strength * 0.7
+	camera.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.7
 	hands.position.x += delta * sin(val*PI*2.0) * strength*0.5
 	hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5*0.5
 	camera.rotation.y -= delta * sin(val*PI*2.0) * strength * PI*0.005
@@ -268,4 +302,23 @@ func land() -> void:
 func shoot() -> void:
 	camera_rot_vel.x += PI*0.005
 	camera_rot_vel.y += randf_range(-PI*0.002,PI*0.002)
+	pass
+
+func airborn(velocity, delta) -> void:
+	if velocity.y > 0.0:
+		play_leg_anim("airborn_up", 0.5)
+	else:
+		play_leg_anim("airborn_down", 0.5)
+	pass
+
+func idle(delta) -> void:
+	play_leg_anim("idle_ground",0.1)
+
+@onready var legs_anim = $legs/fp_legs_wip/AnimationPlayer
+func play_leg_anim(key : StringName, blend:float = 0.2, speed :float= 1.0) -> void:
+	legs_anim.speed_scale = speed
+	if legs_anim.current_animation == key:
+		return
+	if legs_anim.has_animation(key):
+		legs_anim.play(key,blend)
 	pass
