@@ -19,7 +19,7 @@ class_name CloudsController;
 @export var windDirection : Vector2 = Vector2(1, 0);
 @export var windSpeed : float = 0.003;
 
-@export_range(0,2) var cloudsCutoff : float = 0.213;
+@export_range(-1,2) var cloudsCutoff : float = 0.213;
 @export var cloudsFloor : float = 80.0;
 @export var cloudsCeiling : float = 2000.0;
 
@@ -37,7 +37,11 @@ class_name CloudsController;
 @export var useFogDefault : bool = true;
 @export var fogColorDefault : Color = Color(1, 1, 1);
 @export var sunColorMult : Color = Color(1.0,1.0,1.0);
+@export_range(0,1) var cloudShadowStrength : float = 1.0;
 
+@export_group("Environment Staging")
+@export var shape_speed_multiplier : float = 1.0;
+@export var shape_starting_offset : Vector3 = Vector3.ZERO;
 
 func _ready():
 	if (!Engine.is_editor_hint()):
@@ -124,6 +128,11 @@ func UpdateGlobalVariables():
 	RenderingServer.global_shader_parameter_set("SunshineClouds_CloudsDetailNoisePower", detailNoisePower);
 	RenderingServer.global_shader_parameter_set("SunshineClouds_CloudsLargeScaleNoiseScale", largeScaleNoiseScale);
 	RenderingServer.global_shader_parameter_set("SunshineClouds_CloudsLargeScaleNoisePower", largeScaleNoisePower);
+	RenderingServer.global_shader_parameter_set("SunshineClouds_CloudShadowStrength", cloudShadowStrength);
+	
+	RenderingServer.global_shader_parameter_set("SunshineClouds_ShapeSpeedMultiplier", shape_speed_multiplier)
+	RenderingServer.global_shader_parameter_set("SunshineClouds_StartingOffset",shape_starting_offset)
+	
 	
 	if (sunLight != null):
 		RenderingServer.global_shader_parameter_set("SunshineClouds_SunDirection", sunLight.global_transform.basis.z);

@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://cr72kg6xrvq30"]
+[gd_scene load_steps=44 format=3 uid="uid://cr72kg6xrvq30"]
 
 [ext_resource type="Shader" path="res://assets/shaders/parallax_grass.gdshader" id="1_3p6yo"]
 [ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_konvq"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bo6hlg4idhwmx" path="res://campaign/entities/ash_bat.tscn" id="6_bio1y"]
 [ext_resource type="PackedScene" uid="uid://cs8myhbkslptu" path="res://assets/debug/style_test_player.tscn" id="7_l6xv6"]
 [ext_resource type="PackedScene" uid="uid://byjn5yc1m1okl" path="res://addons/SunshineVolumetricClouds/CloudsPrefab.tscn" id="8_jxdw7"]
+[ext_resource type="PackedScene" uid="uid://drhchp75kxqee" path="res://assets/props/sleeping_bed.tscn" id="13_vs5ia"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_eeh8o"]
 
@@ -28,7 +29,9 @@ shader_parameter/grass_depth_scale = 0.029
 shader_parameter/depth_offset = -1.1
 shader_parameter/uv_scale = 125.0
 shader_parameter/wind_strength = 1.0
-shader_parameter/NdotL = null
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
 shader_parameter/heightmap = ExtResource("2_5ipwy")
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
@@ -42,9 +45,40 @@ size = Vector2(1000, 1000)
 
 [sub_resource type="BoxMesh" id="BoxMesh_bc7q6"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g4po2"]
-albedo_texture = ExtResource("1_konvq")
-uv1_scale = Vector3(10, 10, 10)
+[sub_resource type="Gradient" id="Gradient_2phr0"]
+offsets = PackedFloat32Array(0, 0.444751)
+colors = PackedColorArray(0.782939, 0, 0.150566, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_pgw35"]
+gradient = SubResource("Gradient_2phr0")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dt4fu"]
+render_priority = 0
+shader = ExtResource("4_ttfoh")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(0.223529, 0.309804, 0.329412, 1)
+shader_parameter/day_color_power = 1.0
+shader_parameter/point_size = null
+shader_parameter/roughness = 1.0
+shader_parameter/day_roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(10, 10, 10)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/texture_albedo = ExtResource("1_konvq")
+shader_parameter/texture_albedo_day = ExtResource("1_konvq")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_pgw35")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4cnlg"]
 
@@ -77,7 +111,9 @@ shader_parameter/grass_depth_scale = 0.02
 shader_parameter/depth_offset = -1.0
 shader_parameter/uv_scale = 2.0
 shader_parameter/wind_strength = 1.0
-shader_parameter/NdotL = 0.0
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
 shader_parameter/heightmap = ExtResource("1_konvq")
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
@@ -88,12 +124,22 @@ shader_parameter/cloudSoftness = 0.85
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1jsah"]
 albedo_color = Color(0.243137, 0.121569, 0.0705882, 1)
 
+[sub_resource type="Gradient" id="Gradient_g8mjn"]
+offsets = PackedFloat32Array(0, 0.327869, 1)
+colors = PackedColorArray(0.999995, 0.285245, 0.243372, 1, 1, 0.713055, 0.387652, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_vblda"]
+gradient = SubResource("Gradient_g8mjn")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vyboe"]
 render_priority = 0
 shader = ExtResource("4_ttfoh")
 shader_parameter/albedo = Color(0.901961, 0.886275, 0.878431, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
 shader_parameter/point_size = null
 shader_parameter/roughness = 0.356
+shader_parameter/day_roughness = null
 shader_parameter/metallic_texture_channel = null
 shader_parameter/specular = null
 shader_parameter/metallic = null
@@ -101,22 +147,30 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = null
-shader_parameter/NdotL = 1.0
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
 shader_parameter/CloudDitherPower = 200.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
 shader_parameter/CloudOpacity = 1.0
 shader_parameter/cloudSoftness = 0.85
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_vblda")
 
 [sub_resource type="SphereMesh" id="SphereMesh_mhg1a"]
 material = SubResource("ShaderMaterial_vyboe")
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mfy0m"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wnpme"]
 render_priority = 0
 shader = ExtResource("4_ttfoh")
 shader_parameter/albedo = Color(0.611765, 0.384314, 0.878431, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
 shader_parameter/point_size = 0.0
 shader_parameter/roughness = 0.118
+shader_parameter/day_roughness = null
 shader_parameter/metallic_texture_channel = null
 shader_parameter/specular = 1.0
 shader_parameter/metallic = 1.0
@@ -124,12 +178,15 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = null
-shader_parameter/NdotL = 0.04
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
 shader_parameter/CloudDitherPower = 200.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
 shader_parameter/CloudOpacity = 1.0
 shader_parameter/cloudSoftness = 0.85
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_mfy0m")
 
 [sub_resource type="SphereMesh" id="SphereMesh_v2b8e"]
 material = SubResource("ShaderMaterial_wnpme")
@@ -165,8 +222,8 @@ color_ramp = SubResource("Gradient_qn7b5")
 noise = SubResource("FastNoiseLite_wb2l4")
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_b4btt"]
-rayleigh_color = Color(0.301961, 0.403922, 0.6, 1)
-mie_color = Color(0.690196, 0.729412, 0.811765, 1)
+rayleigh_color = Color(0, 0, 0, 1)
+mie_color = Color(0.172549, 0.2, 0.262745, 1)
 sun_disk_scale = 0.0
 ground_color = Color(0.188235, 0.215686, 0.254902, 1)
 night_sky = SubResource("NoiseTexture2D_pfrfr")
@@ -176,8 +233,17 @@ sky_material = SubResource("PhysicalSkyMaterial_b4btt")
 
 [sub_resource type="Environment" id="Environment_fknbc"]
 background_mode = 2
-background_energy_multiplier = 1.5
 sky = SubResource("Sky_5262a")
+ambient_light_source = 2
+ambient_light_color = Color(0.0941176, 0.113725, 0.0823529, 1)
+ambient_light_energy = 2.0
+ssao_enabled = true
+ssao_power = 3.21532
+ssao_light_affect = 0.5
+ssao_ao_channel_affect = 1.0
+glow_enabled = true
+glow_blend_mode = 0
+glow_hdr_threshold = 0.5
 
 [node name="debug_level_v2" type="Node3D"]
 
@@ -194,7 +260,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.495267, 3)
 mesh = SubResource("BoxMesh_bc7q6")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="." groups=["wood"]]
-material_override = SubResource("StandardMaterial3D_g4po2")
+material_override = SubResource("ShaderMaterial_dt4fu")
 use_collision = true
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D"]
@@ -318,6 +384,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 29)
 
 [node name="dynamic_environment" type="Node3D" parent="."]
 script = ExtResource("4_rq6qy")
+set_preset = "night"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="dynamic_environment"]
 environment = SubResource("Environment_fknbc")
@@ -326,25 +393,30 @@ environment = SubResource("Environment_fknbc")
 updateConstantly = true
 sunLight = NodePath("../DirectionalLight3D2")
 worldEnvironment = NodePath("../WorldEnvironment")
-windSpeed = 0.001
+windSpeed = 0.005
+cloudsCutoff = -0.014
 cloudsFloor = -1000.0
 cloudsCeiling = 1000.0
 detailNoiseScale = 4.476
 detailNoisePower = 0.753
 largeScaleNoiseScale = 0.416
-sunColorDefault = Color(2.18242, 1.4066, 1.16583, 4)
+sunColorDefault = Color(0.00202999, 0.00258362, 0.00327566, 1)
 overrideAmbientLight = true
-ambientColorDefault = Color(0.372549, 0.321569, 0.262745, 1)
 useFogDefault = false
 fogColorDefault = Color(0.518, 0.553, 0.608, 1)
-sunColorMult = Color(0.572549, 0.403922, 0.360784, 1)
+sunColorMult = Color(0.0117647, 0.0117647, 0.0117647, 1)
+cloudShadowStrength = 0.9
+shape_speed_multiplier = 0.0
+shape_starting_offset = Vector3(0.2, 0, 0)
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="dynamic_environment"]
 transform = Transform3D(-0.261174, -0.877492, -0.402238, 0.176662, -0.453114, 0.873772, -0.948988, 0.157146, 0.273361, 0, 0, 0)
-light_color = Color(0.952941, 0.870588, 0.807843, 1)
-light_energy = 4.0
+light_color = Color(0.172549, 0.219608, 0.278431, 1)
 shadow_enabled = true
-shadow_blur = 7.149
+shadow_blur = 7.15
 script = ExtResource("3_bf4nt")
+
+[node name="sleeping_bed" parent="." instance=ExtResource("13_vs5ia")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.7003, 0, 13.1779)
 
 [connection signal="body_entered" from="launcher" to="launcher" method="_on_body_entered"]

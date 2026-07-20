@@ -49,6 +49,7 @@ var levels_persistent_data: Dictionary = {
 
 const cutscenes: Dictionary = {
 	"new_game_start" : ["res://campaign/cutscenes/game_start_cutscene.tscn", 30.0], #path seconds long
+	"dream_1" : ["res://campaign/cutscenes/dream_cutscene.tscn",3.5],
 	"fall_into_world" : ["res://campaign/cutscenes/falling_into_world_cutscene.tscn", 4.0],
 	"gate_warden_introduction" : ["res://campaign/cutscenes/falling_into_world_cutscene.tscn", 1.0],
 }
@@ -93,6 +94,7 @@ var in_game_mouse = false #mouse visible while playing, ie in inventory
 enum interact_returns {
 	PICKUP_ITEM, #includes path_to loose_item node
 	ENTER_DOOR, #[level_key, position, rotation(vec2)]
+	SLEEP_IN_BED, #[bed_global_transform, bed_type]
 	DO_NOTHING, #no action needed (should be pretty rare)
 }
 

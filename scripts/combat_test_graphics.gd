@@ -56,7 +56,6 @@ var hands_rot_big_motion_vel : Vector3 = Vector3.ZERO
 func _process(delta):
 	camera.position = lerp(camera.position, Vector3.ZERO, delta*4.0)
 	
-	
 	if wall_run_active:
 		wall_run_active = false
 	elif $wall_run_sounds.playing:
@@ -321,4 +320,18 @@ func play_leg_anim(key : StringName, blend:float = 0.2, speed :float= 1.0) -> vo
 		return
 	if legs_anim.has_animation(key):
 		legs_anim.play(key,blend)
+	pass
+@export var shiver_strength = 1.0
+@export var shiver_speed = 1.0
+var shiver_timer = 0.0
+func shiver(delta):
+	shiver_timer += delta*12.0*shiver_speed + (sin(shiver_timer*PI)+1.0)*delta*0.1
+	if shiver_timer > 1.0:
+		shiver_timer -= 1.0
+	hands.position.x += sin(shiver_timer*PI)*shiver_strength*0.02
+	hands.position.y += sin(shiver_timer*PI*0.5+PI*0.2)*shiver_strength*0.01
+	hands.position.z += cos(shiver_timer*PI+PI*0.6)*shiver_strength*0.01
+	hands.rotation.y += sin(shiver_timer*PI)*shiver_strength*0.02
+	hands.rotation.x += sin(shiver_timer*PI*0.5+PI*0.2)*shiver_strength*0.01
+	hands.rotation.z += cos(shiver_timer*PI*0.25+PI*0.6)*shiver_strength*0.01
 	pass

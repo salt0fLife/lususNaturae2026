@@ -29,6 +29,7 @@ func _ready():
 	Global.connect("create_decal_signal", create_decal)
 	Global.connect("play_cutscene_signal", play_cutscene)
 	PlayerInformation.connect("change_player", change_player)
+	PlayerInformation.connect("slept", _on_player_slept)
 	$pause_menu/buttonHandler/resume.connect("button_down", set_paused.bind(false))
 	$"pause_menu/buttonHandler/save and quit".connect("button_down", save_and_quit)
 	
@@ -147,7 +148,7 @@ func load_current_level_persistent_data():
 			#spawn_entity(e[0],e[1])
 			var scene = spawn_entity(e[0])
 			scene.set_data(e[1])
-	loading_screen.visible = false
+	#loading_screen.visible = false
 	loading_screen.update_mode(false, "recreating level data")
 
 func spawn_entity(key : String, position : Vector3 = Vector3.ZERO):
@@ -358,7 +359,7 @@ func _process(delta):
 func _input(_event):
 	if Input.is_action_just_pressed("pause"):
 		set_paused(!paused)
-	if paused or in_cutscene:
+	if paused or in_cutscene or Global.in_game_mouse:
 		return
 	if Input.is_action_just_pressed("use_item"):
 		use_held_item()
@@ -366,50 +367,10 @@ func _input(_event):
 		use_held_item(true)
 	if Input.is_action_just_pressed("drop_item"):
 		PlayerInformation.drop_held_item()
-	if Input.is_action_just_pressed("inventory"):
-		set_inventory_open(true)
-	if Input.is_action_just_released("inventory"):
-		set_inventory_open(false)
 	if Input.is_action_just_pressed("action_wheel"):
 		set_action_menu_open(true)
 	if Input.is_action_just_released("action_wheel"):
 		set_action_menu_open(false)
-	
-	if Input.is_action_just_pressed("inventory_slot_1"):
-		if inventory_open:
-			var sel_indx = inventory_menu.get_menu_selection()
-			var data = PlayerInformation.swap_inventory_slot(0, PlayerInformation.inventory[sel_indx])
-			PlayerInformation.set_inventory_slot(sel_indx,data)
-		else:
-			select_inventory_slot(0)
-	if Input.is_action_just_pressed("inventory_slot_2"):
-		if inventory_open:
-			var sel_indx = inventory_menu.get_menu_selection()
-			var data = PlayerInformation.swap_inventory_slot(1, PlayerInformation.inventory[sel_indx])
-			PlayerInformation.set_inventory_slot(sel_indx,data)
-		else:
-			select_inventory_slot(1)
-	if Input.is_action_just_pressed("inventory_slot_3"):
-		if inventory_open:
-			var sel_indx = inventory_menu.get_menu_selection()
-			var data = PlayerInformation.swap_inventory_slot(2, PlayerInformation.inventory[sel_indx])
-			PlayerInformation.set_inventory_slot(sel_indx,data)
-		else:
-			select_inventory_slot(2)
-	if Input.is_action_just_pressed("inventory_slot_4"):
-		if inventory_open:
-			var sel_indx = inventory_menu.get_menu_selection()
-			var data = PlayerInformation.swap_inventory_slot(3, PlayerInformation.inventory[sel_indx])
-			PlayerInformation.set_inventory_slot(sel_indx,data)
-		else:
-			select_inventory_slot(3)
-	if Input.is_action_just_pressed("inventory_slot_5"):
-		if inventory_open:
-			var sel_indx = inventory_menu.get_menu_selection()
-			var data = PlayerInformation.swap_inventory_slot(4, PlayerInformation.inventory[sel_indx])
-			PlayerInformation.set_inventory_slot(sel_indx,data)
-		else:
-			select_inventory_slot(4)
 
 var paused = false
 
@@ -489,7 +450,7 @@ func setup_dev_controls():
 		spawn_entity_menu.add_item(se)
 	spawn_entity_menu.connect("item_selected", _on_spawn_entity_key_selected)
 	
-	$pause_menu/devtools/HFlowContainer/sleepTest.connect("button_down", player_sleep)
+	$pause_menu/devtools/HFlowContainer/sleepTest.connect("button_down", PlayerInformation.player_sleep)
 	
 	$pause_menu/devtools/HFlowContainer/giveFood.connect("button_down", PlayerInformation.pickup_item.bind(["dead_bat"]))
 	
@@ -532,19 +493,7 @@ func _on_level_key_selected(i : int) -> void:
 func _on_spawn_entity_key_selected(i : int) -> void:
 	spawn_entity(entity_keys[i], PlayerInformation.position)
 
-var inventory_open = false
-
-@onready var inventory_menu = $inventory_menu
-func set_inventory_open(val : bool) -> void:
-	inventory_open = val
-	inventory_menu.visible = val
-	if val:
-		Global.in_game_mouse = true
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	else:
-		select_inventory_slot(inventory_menu.get_menu_selection())
-		Global.in_game_mouse = false
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+@onready var inventory_relations_handler = $inventory_relations_handler
 
 var action_menu_open = false
 
@@ -573,29 +522,21 @@ func make_player_perform_action(key : String) -> void:
 	for p in playerHandler.get_children(false):
 		p.perform_action(key)
 
-func select_inventory_slot(i : int) -> void:
-	if i >= PlayerInformation.inventory.size():
-		print("invalid inventory slot selection")
-		return
-	PlayerInformation.change_held_item(i)
-	#if i == -1:
-		#player_sleep() 
-	#elif i == 0:
-		#_on_player_take_damage(0.25)
-	pass
-
 func update_debug_graphics() -> void:
 	$debug_menu/left/paused.text = "paused = " + str(paused)
 	$debug_menu/left/time_of_day.text = "time = " + get_time_of_day()
 	$debug_menu/left/day_timer.text = "day_timer = " + str(round(day_timer))
 	$debug_menu/left/health.text = "health = " + str(PlayerInformation.health) + " / " + str(PlayerInformation.max_health)
 	$debug_menu/left/food.text = "food = " + str(PlayerInformation.food) + " / " + str(PlayerInformation.max_food) + "   min_for_sleep : " + str(PlayerInformation.min_sleep_food)
-	$debug_menu/left/held_item.text = "held_item_data = " + str(PlayerInformation.get_held_item_data())
+	var held_item_text = "empty"
+	var hid = PlayerInformation.get_held_item_data()
+	if !hid.is_empty():
+		held_item_text = hid[0]
+	$debug_menu/left/held_item.text = "held_item_data = " + held_item_text
 	$debug_menu/left/dash_charges.text = "dash_charges : " + str(PlayerInformation.current_dash) + " / " + str(PlayerInformation.max_dash)
 	$debug_menu/left/velocity.text = "velocity = " + str(PlayerInformation.velocity)
 	$debug_menu/left/speed.text = "speed = " + str(PlayerInformation.velocity.length())
 	pass
-
 
 func get_time_of_day() -> String:
 	var tod = "midday"
@@ -613,21 +554,13 @@ func get_time_of_day() -> String:
 
 func _on_player_fall_asleep():
 	print("fell asleep")
-	player_sleep()
+	PlayerInformation.player_sleep()
 	pass
 
-func player_sleep() -> bool: #weather or not you can sleep
-	if PlayerInformation.min_sleep_food > PlayerInformation.food:
-		print("you are too hungry to sleep")
-		return false
-	day_timer = 0.0
-	print("player_slept")
-	PlayerInformation.health = clamp(round(PlayerInformation.health-0.49) + 1.0, 0.0, PlayerInformation.max_health)
-	PlayerInformation.food -= 2
+func _on_player_slept():
 	in_game_days += 1
-	PlayerInformation.emit_signal("slept")
+	day_timer = day_length*0.501
 	_on_checkpoint_reached()
-	return true
 
 func _on_player_take_damage(amount : float) -> void:
 	PlayerInformation.health -= amount
@@ -699,8 +632,6 @@ func _on_major_point_reached(key : int) -> void:
 			level = "stone_forest"
 			pass
 	pass
-
-
 
 func _on_tooltip(text) -> void:
 	$tooltip.set_new_tooltip(text)

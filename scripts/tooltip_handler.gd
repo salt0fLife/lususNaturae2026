@@ -20,6 +20,7 @@ var working = false
 
 func close_dialogue() -> void:
 	working = false
+	text_to_display = ""
 
 var dialogue_timer:float = 0.0
 var letters_per_second:float = 120

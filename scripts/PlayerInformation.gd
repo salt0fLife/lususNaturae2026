@@ -25,6 +25,11 @@ const player_scenes = {
 	-2 : ["res://campaign/player/emerge_from_ground_player.tscn"]
 }
 
+var upgrades = [
+	
+	
+]
+
 
 #gameplay
 var health: float = 1.0
@@ -35,6 +40,7 @@ var min_sleep_food: int = 4
 var sun_sickness: float = 0.0 #builds up when in sunlight goes down in shade
 
 var world_time: float = 0.0 #i know its funny to store here but it fits
+var world_overcast : float = 0.0 #1.0 means no sunlight even during day
 #
 
 var wall_sliding_timer:float = 0.0
@@ -121,6 +127,8 @@ func swap_inventory_slot(index : int, new_data : Array) -> Array: #sets item and
 	var old_data = inventory[index]
 	inventory[index] = new_data
 	emit_signal("update_inventory")
+	if index == held_item_index:
+		emit_signal("update_held_item")
 	return old_data
 
 func get_held_item_data() -> Array:
@@ -128,6 +136,19 @@ func get_held_item_data() -> Array:
 	if held_item_index == -1:
 		return []
 	var data = inventory[held_item_index]
+	if data.is_empty():
+		return []
+	key = data[0]
+	return Items.list[key]
+
+func get_item_data(index : int) -> Array:
+	var key = ""
+	if index < 0: # == -1: #still works and covers for mishaps
+		return []
+	if index > inventory.size():
+		printerr(str(index) + " is not a valid inventory index")
+		return []
+	var data = inventory[index]
 	if data.is_empty():
 		return []
 	key = data[0]
@@ -174,3 +195,22 @@ func get_held_item_sound(sound_key : String) -> String:
 		printerr("item does not include sound " + str(sound_key))
 		return ""
 	return sounds[sound_key]
+
+func player_sleep() -> bool: #weather or not you can sleep
+	if !can_sleep():
+		return false
+	Global.play_cutscene("dream_1")
+	#day_timer = day_length*0.501
+	print("player_slept")
+	PlayerInformation.health = clamp(round(PlayerInformation.health-0.49) + 1.0, 0.0, PlayerInformation.max_health)
+	PlayerInformation.food -= 2
+	#in_game_days += 1
+	emit_signal("slept")
+	#_on_checkpoint_reached()
+	return true
+
+func can_sleep() -> bool:
+	if min_sleep_food > food:
+		print("you are too hungry to sleep")
+		return false
+	return true

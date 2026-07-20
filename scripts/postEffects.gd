@@ -3,6 +3,8 @@ var smooth_reset = false
 
 func _ready():
 	Global.connect("set_post_param", _on_global_set_post_param)
+	Global.connect("change_level",set_to_default)
+	Global.connect("play_cutscene_signal",set_to_default)
 
 func _on_global_set_post_param(key, value) -> void:
 	if key == "smooth_reset":
@@ -28,4 +30,11 @@ func _process(delta):
 		smooth_reset = false
 	material.set("shader_parameter/wave", val)
 	material.set("shader_parameter/flash", val)
+	pass
+
+func set_to_default():
+	material.set("shader_parameter/heart_pounding",0.0)
+	material.set("shader_parameter/burning", false)
+	material.set("shader_parameter/wave",false)
+	
 	pass

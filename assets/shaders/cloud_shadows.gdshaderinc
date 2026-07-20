@@ -1,6 +1,9 @@
 //global uniform vec3 SunshineClouds_SunDirection;
 
-uniform float NdotL;
+uniform float specular_highlight = 0.01;
+uniform float specular_highlight_day = 0.01;
+uniform float sh_day_power :hint_range(0.0, 1.0) = 0.0;
+global uniform float day_color_influence;
 
 global uniform vec2 SunshineClouds_WindDirection;
 global uniform float SunshineClouds_WindSpeed;
@@ -22,6 +25,14 @@ global uniform sampler3D SunshineClouds_DetailNoiseTexture;
 global uniform sampler3D SunshineClouds_LargeScaleNoiseTexture;
 
 global uniform sampler2D SunshineClouds_HeightWeightGradient;
+
+global uniform float SunshineClouds_CloudShadowStrength;
+global uniform float SunshineClouds_ShapeSpeedMultiplier;
+global uniform vec3 SunshineClouds_StartingOffset;
+
+group_uniforms LightingAdjustments;
+uniform sampler2D luminance_gradient : repeat_disable;
+//uniform float gradient_shadow_effect : hint_range(0.0, 1.0, 0.01) = 0.0;
 
 group_uniforms DensityControls;
 uniform float CloudDitherPower = 10.0;
@@ -46,7 +57,9 @@ float samplecloudmap(vec3 pos, float time) {
 	//pos.y = clamp(pos.y, SunshineClouds_CloudsFloor, SunshineClouds_CloudsCeiling);
 	pos /= SunshineClouds_CloudsGlobalScale;
 	
-	float largeScaleNoise = textureLod(SunshineClouds_LargeScaleNoiseTexture, pos * (SunshineClouds_CloudsLargeScaleNoiseScale) + (vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time * SunshineClouds_WindSpeed / 4.0), 1.0).r * SunshineClouds_CloudsLargeScaleNoisePower;
+//	float largeScaleNoise = textureLod(SunshineClouds_LargeScaleNoiseTexture, pos * (SunshineClouds_CloudsLargeScaleNoiseScale) + (vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time * SunshineClouds_WindSpeed / 4.0), 1.0).r * SunshineClouds_CloudsLargeScaleNoisePower;
+	float largeScaleNoise = textureLod(SunshineClouds_LargeScaleNoiseTexture, SunshineClouds_StartingOffset + pos * (SunshineClouds_CloudsLargeScaleNoiseScale) + (vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time *SunshineClouds_ShapeSpeedMultiplier * SunshineClouds_WindSpeed / 4.0), 1.0).r * SunshineClouds_CloudsLargeScaleNoisePower;
+	//BE ^^^
 	//float largeScaleNoise = texture(LargeShapeNoiseTexture, vec3(pos.x, pos.y * 0.5, pos.z) * (large_scale_noise_scale) + vec3(WindDirection.x, 0.0, WindDirection.y) * time * WindSpeed / 3.0).r * large_scale_noise_power;
 	
 	//if (largeScaleNoise > 1.0){return 0.0;}
@@ -60,8 +73,10 @@ float samplecloudmap(vec3 pos, float time) {
 	noise -= largeScaleNoise;
 	//noise = posCutoff;
 	noise = smoothstep(SunshineClouds_CloudsCutoff + CloudCutoffAdjust, SunshineClouds_CloudsCutoff + cloudSoftness, noise);
-	noise *= heightScale;
-	noise *= heightSample;
+	
+	///NOTE these make intensity scale with distance away
+	//noise *= heightScale;
+	//noise *= heightSample;
 	
 	//noise = clamp(noise, 0.0, posCutoff);
 	//noise -= posCutoff;f
@@ -137,11 +152,19 @@ void light()
 		
 		
 		float shadow = mix(ATTENUATION, cast_shadow * (clamp(cloud_shadow * 3.0 - 1.0, 0.0, 1.0) * CLOUD_SHADOW_STRENGTH), CloudOpacity);
-		DIFFUSE_LIGHT +=  clamp(dot(NORMAL, LIGHT), 0.0, 1.0) * shadow * LIGHT_COLOR;
+		
+		shadow = mix(ATTENUATION,shadow,SunshineClouds_CloudShadowStrength);
+		
+		float luminance = clamp(dot(NORMAL, LIGHT), 0.0, 1.0);
+		vec3 luminance_adjustment = texture(luminance_gradient,vec2(luminance,0.0)).rgb;
+		DIFFUSE_LIGHT +=  luminance * shadow * LIGHT_COLOR * luminance_adjustment;
 		//SPECULAR_LIGHT +=  clamp(dot(NORMAL, LIGHT), 0.0, 1.0) * shadow * LIGHT_COLOR;
+		
 	}
 	else{
-		DIFFUSE_LIGHT += clamp(dot(NORMAL, LIGHT), 0.0, 1.0) * ATTENUATION * LIGHT_COLOR;
+		float luminance = clamp(dot(NORMAL, LIGHT), 0.0, 1.0) * ATTENUATION;
+		vec3 luminance_adjustment = texture(luminance_gradient,vec2(luminance,0.0)).rgb;
+		DIFFUSE_LIGHT +=  luminance * LIGHT_COLOR * luminance_adjustment;
 		float Ro = ((1.0 - 0.5)/1.0 + 0.5);
 		Ro *= Ro;
 		
@@ -155,6 +178,7 @@ void light()
 	
 	float alpha_ggx = ROUGHNESS * ROUGHNESS;
 	float D = D_GGX(NdotH, alpha_ggx);
+	float NdotL = mix(specular_highlight,specular_highlight_day,sh_day_power*day_color_influence);
 	float G = G_GGX_2cos(NdotL, alpha_ggx) * G_GGX_2cos(NdotV, alpha_ggx);    
 	
 	vec3 f0 = F0(METALLIC, SPECULAR_AMOUNT, ALBEDO);

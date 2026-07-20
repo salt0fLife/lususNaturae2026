@@ -1,0 +1,53 @@
+[gd_scene load_steps=6 format=3 uid="uid://drhchp75kxqee"]
+
+[ext_resource type="Script" path="res://scripts/sleeping_bed.gd" id="1_3sfmk"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_material.gdshader" id="2_0mvwv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yoprl"]
+render_priority = 0
+shader = ExtResource("2_0mvwv")
+shader_parameter/albedo = Color(0.376471, 0.188235, 0.0980392, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
+shader_parameter/point_size = 0.0
+shader_parameter/roughness = null
+shader_parameter/day_roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 1.0
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_1323f"]
+material = SubResource("ShaderMaterial_yoprl")
+size = Vector3(1, 0.5, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wap6b"]
+size = Vector3(1, 0.5, 2)
+
+[node name="sleeping_bed" type="StaticBody3D" groups=["interactable"]]
+collision_layer = 9
+collision_mask = 0
+script = ExtResource("1_3sfmk")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.258963, 0)
+mesh = SubResource("BoxMesh_1323f")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_wap6b")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 0, 7.8146e-09, 0.523163, 0)
+text = "bed for sleeping"

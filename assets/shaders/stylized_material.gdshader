@@ -3,9 +3,13 @@
 shader_type spatial;
 render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_toon,specular_schlick_ggx;
 uniform vec4 albedo : source_color = vec4(1.0,1.0,1.0,1.0);
+uniform vec4 albedo_day : source_color = vec4(1.0,1.0,1.0,1.0);
 uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
+uniform sampler2D texture_albedo_day : source_color,filter_linear_mipmap,repeat_enable;
+uniform float day_color_power : hint_range(0.0, 1.0, 0.1) = 0.0;
 uniform float point_size : hint_range(0,128);
 uniform float roughness : hint_range(0,1);
+uniform float day_roughness : hint_range(0, 1);
 uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
 uniform vec4 metallic_texture_channel;
 uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
@@ -25,7 +29,10 @@ void fragment() {
 	fragment_worldpos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	vec2 base_uv = UV;
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	vec3 albedo_normal = albedo.rgb * albedo_tex.rgb;
+	vec4 albedo_day_tex = texture(texture_albedo_day,base_uv);
+	ALBEDO = mix(albedo.rgb * albedo_tex.rgb, albedo_day.rgb * albedo_day_tex.rgb,day_color_power*day_color_influence);
+	
 	float c_n = (NORMAL.x + NORMAL.y+NORMAL.z) * 0.333333;
 	//if (((sin(c_n * PI*2.0) + dot(NORMAL, CAMERA_DIRECTION_WORLD-NODE_POSITION_WORLD)) > roughness)){
 		//ALBEDO += ALBEDO * metallic;
@@ -36,7 +43,8 @@ void fragment() {
 	METALLIC = metallic_tex * metallic;
 	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
 	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
-	ROUGHNESS = roughness_tex * roughness;
+	float rough = mix(roughness,day_roughness,day_color_power*day_color_influence);
+	ROUGHNESS = roughness_tex * rough;
 	SPECULAR = specular;
 }
 

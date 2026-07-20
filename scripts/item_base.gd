@@ -10,3 +10,7 @@ class_name item
 @export var model_path: String
 @export var has_deformations: bool #is true if you want the mesh to be parented directly to armature
 @export var texture_path: String
+@export var interactions: Dictionary
+#interactions info
+#key = item_key_that_triggers_this_interaction : [inter_id : int, inter_data : Array]
+

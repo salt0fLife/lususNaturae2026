@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://ifpn0do4gv41"]
+[gd_scene load_steps=44 format=3 uid="uid://ifpn0do4gv41"]
 
 [ext_resource type="Script" path="res://scripts/player_combat_test.gd" id="1_t5q6g"]
 [ext_resource type="Script" path="res://scripts/combat_test_graphics.gd" id="2_0icll"]
@@ -74,12 +74,22 @@ shader_parameter/color_trail = Color(0.788235, 0.776471, 0.776471, 1)
 shader_parameter/progress = 0.0
 shader_parameter/slash_texture = ExtResource("6_ps0dq")
 
+[sub_resource type="Gradient" id="Gradient_6agoa"]
+offsets = PackedFloat32Array(0.0773481, 0.287293)
+colors = PackedColorArray(1, 0.500167, 0.373212, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_t5227"]
+gradient = SubResource("Gradient_6agoa")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jbduu"]
 render_priority = 0
 shader = ExtResource("6_ss6h1")
 shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(0.694118, 0.839216, 0.956863, 1)
+shader_parameter/day_color_power = 1.0
 shader_parameter/point_size = null
-shader_parameter/roughness = 0.541
+shader_parameter/roughness = 0.508
+shader_parameter/day_roughness = 0.599
 shader_parameter/metallic_texture_channel = Vector4(0, 0, 0, 0)
 shader_parameter/specular = 1.0
 shader_parameter/metallic = null
@@ -87,13 +97,17 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = null
-shader_parameter/NdotL = 1.0
+shader_parameter/specular_highlight = 0.26
+shader_parameter/specular_highlight_day = 0.015
+shader_parameter/sh_day_power = 1.0
 shader_parameter/texture_albedo = ExtResource("7_nox7n")
+shader_parameter/texture_albedo_day = ExtResource("7_nox7n")
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
 shader_parameter/CloudOpacity = 1.0
 shader_parameter/cloudSoftness = 0.85
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_t5227")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_0ggqi"]
 resource_name = "fp_hands_wip_male_genericMesh_004"
@@ -313,8 +327,11 @@ shader_parameter/center_point_offset = Vector3(0, 0, 0)
 render_priority = 0
 shader = ExtResource("6_ss6h1")
 shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
 shader_parameter/point_size = 0.0
 shader_parameter/roughness = 0.71
+shader_parameter/day_roughness = null
 shader_parameter/metallic_texture_channel = Vector4(0, 0, 0, 0)
 shader_parameter/specular = 0.0
 shader_parameter/metallic = null
@@ -322,7 +339,9 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = null
-shader_parameter/NdotL = 0.01
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
 shader_parameter/texture_albedo = ExtResource("10_1tio2")
 shader_parameter/CloudDitherPower = 200.0
 shader_parameter/CloudCutoffAdjust = -0.795
@@ -442,15 +461,18 @@ uniform float lines_count = 100.0;
 uniform float center_circle_size = 0.1;
 uniform float y_cuttoff = 0.3;
 
-
 float lines(vec2 uv) {
 	return clamp(round(clamp((uv.y-y_cuttoff),0.0,1.0)*pow(0.5-sin(uv.x*PI*lines_count)*0.5 + clamp(uv.y*center_circle_size*uv.y*uv.y,0.0,1.0),3.0)),0.0,1.0);
 }
 
+float center_gradient(vec2 uv){
+	return (0.3*center_circle_size-clamp(1.0-uv.y,0.0,0.3*center_circle_size));
+}
 
 void fragment() {
 	vec2 move_uv = UV+vec2(TIME*0.025,0.0);
 	ALBEDO = albedo.rgb*lines(move_uv);
+	ALBEDO += center_gradient(UV)*albedo.rgb;
 	//ALPHA = lines(UV);//*clamp((UV.y-0.3),0.0,1.0);
 	
 }
@@ -459,7 +481,7 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8cfr5"]
 render_priority = 0
 shader = SubResource("Shader_atd3u")
-shader_parameter/albedo = Color(0.8, 0.509804, 0.333333, 1)
+shader_parameter/albedo = Color(0.901961, 0.752941, 0.662745, 1)
 shader_parameter/lines_count = 100.0
 shader_parameter/center_circle_size = 0.905
 shader_parameter/y_cuttoff = -0.15
@@ -499,6 +521,8 @@ hands_rot_return_damp = 15.0
 hands_rot_big_motion_power = 50.0
 hands_rot_big_motion_damp = 10.0
 running_speed_mult = 0.95
+shiver_strength = 0.1
+shiver_speed = 0.8
 
 [node name="cameraHandler" type="Node3D" parent="graphics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65329, 0)
@@ -599,7 +623,6 @@ bones/29/position = Vector3(0.00353053, 0.0369612, 0.021801)
 bones/29/rotation = Quaternion(0.138049, -0.735869, 0.019545, 0.662614)
 bones/29/scale = Vector3(1, 1, 1)
 bones/30/rotation = Quaternion(0.091552, 0.0851464, 0.0606795, 0.990296)
-bones/30/scale = Vector3(1, 1, 1)
 bones/31/rotation = Quaternion(0.146096, 0.044049, 0.0238549, 0.988001)
 bones/31/scale = Vector3(1, 1, 1)
 bones/32/rotation = Quaternion(0.182325, 0.0699675, 0.0477859, 0.979581)
@@ -661,7 +684,7 @@ skin = SubResource("Skin_yasc2")
 surface_material_override/0 = SubResource("ShaderMaterial_ff0w0")
 
 [node name="held_item_handler" type="BoneAttachment3D" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="6"]
-transform = Transform3D(0.767554, 0.144109, -0.624575, 0.388461, 0.670491, 0.632091, 0.509862, -0.727787, 0.458658, 0.29355, -0.213693, -0.486146)
+transform = Transform3D(0.767553, 0.144108, -0.624576, 0.388463, 0.67049, 0.632091, 0.509862, -0.727788, 0.458656, 0.293551, -0.213693, -0.486145)
 bone_name = "held_item"
 bone_idx = 48
 
@@ -669,7 +692,7 @@ bone_idx = 48
 transform = Transform3D(1, -4.65661e-10, 0, 0, 0, -1, 9.31323e-10, 1, -2.98023e-08, 0, -0.02, 0)
 
 [node name="camera_bone_attachment" type="BoneAttachment3D" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="7"]
-transform = Transform3D(0.999995, -9.09495e-13, 0.00313185, -9.98968e-06, 0.999995, 0.00318969, -0.00313183, -0.00318971, 0.99999, 0, 0, 0)
+transform = Transform3D(0.999995, 2.95586e-11, 0.00313184, -9.98967e-06, 0.999995, 0.00318969, -0.00313183, -0.0031897, 0.99999, 0, 0, 0)
 bone_name = "camera"
 bone_idx = 51
 
@@ -734,7 +757,6 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 
 
 [node name="Skeleton3D" parent="graphics/legs/fp_legs_wip/metarig" index="0"]
 bones/0/rotation = Quaternion(0.12582, 1.18262e-07, 1.49989e-08, 0.992053)
-bones/0/scale = Vector3(1, 1, 1)
 bones/1/rotation = Quaternion(-0.152455, -0.793331, -0.285504, 0.515627)
 bones/2/rotation = Quaternion(-0.152455, 0.793331, 0.285504, 0.515627)
 bones/3/rotation = Quaternion(0.98325, 0.071082, -0.0117548, 0.167418)
@@ -813,6 +835,7 @@ grow_horizontal = 0
 grow_vertical = 0
 
 [node name="sunlight_indicator" type="Node3D" parent="."]
+visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="sunlight_indicator"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.63494, 0)

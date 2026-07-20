@@ -1556,7 +1556,6 @@ overrideAmbientLight = true
 ambientColorDefault = Color(0.282353, 0.305882, 0.403922, 1)
 useFogDefault = false
 fogColorDefault = Color(0.518, 0.553, 0.608, 1)
-sunColorMult = null
 
 [node name="boss_spawn_point" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -73, -0.5, -40)

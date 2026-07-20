@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="item_sword" load_steps=2 format=3 uid="uid://yhtdug35dsn6"]
+[gd_resource type="Resource" script_class="item_sword" load_steps=2 format=3 uid="uid://hdcu7oibkdbm"]
 
 [ext_resource type="Script" path="res://scripts/item_sword.gd" id="1_g67wk"]
 
@@ -16,3 +16,4 @@ animations = 1
 model_path = "res://assets/items/short_sword/short_sword.tscn"
 has_deformations = false
 texture_path = "res://assets/textures/material/DebuggTexture.png"
+interactions = {}

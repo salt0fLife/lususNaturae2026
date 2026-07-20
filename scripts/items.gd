@@ -95,8 +95,10 @@ func populate_list(): ##NOTE MAY NOT WORK ON EXPORT
 		var item_data = i.get_item()
 		var k = i.internal_reference_name
 		list[k] = item_data
+		interactions[k] = i.interactions
 	
 	print(list)
+	print(interactions)
 
 enum {#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations, has_deformations]
 	INDEX_NAME,
@@ -107,8 +109,18 @@ enum {#["display_name", item_style, sounds, item_type, data, texture_path, model
 	INDEX_TEXTURE,
 	INDEX_MODEL,
 	INDEX_ANIMATIONS,
-	INDEX_HAS_DEFORMATIONS
+	INDEX_HAS_DEFORMATIONS,
 }
 
+
+var interactions = {
+	#"item_key" = {
+		#key = item_key_that_triggers_this_interaction : [inter_id : int, inter_data : Array]
+		#etc... for all interactions
+	#}
+	
+	
+	
+}
 
 

@@ -30,7 +30,7 @@ var mouse_sensitivity = 1.5
 
 ##movement
 #state stuff
-var sprinting:bool = true
+var sprinting:bool = false
 var crouching:bool = false
 #dash
 @export_group("dash")
@@ -164,6 +164,9 @@ func update_tooltip() -> void:
 @export var sun_sickness_change_speed:float = 1.0;
 var sun_tick_damage_timer = 0.0
 func update_sun_sickness(delta) -> void:
+	if PlayerInformation.world_time < 0.5:
+		graphics.shiver(delta)
+	
 	var sun_p = $sunlight_check.in_sunlight_pecentage()
 	$Label.text = "sunlight : " + str(sun_p)
 	var sickness = PlayerInformation.sun_sickness
@@ -180,15 +183,18 @@ func update_sun_sickness(delta) -> void:
 			PlayerInformation.take_damage(0.5,Global.damage_types.FIRE)
 		pass
 	
+	#var m = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_005.get_active_material(0)
+	#m.set("shader_parameter/day_color_power",sun_p)
+	
+	
 	$Label.text += ", sun_sickness : " + str(sickness)
 	
 	$sunlight_indicator.rotation = $sunlight_check.get_sun_rotation()#+Vector3(PI*0.5,0.0,0.0)
 	$sunlight_indicator.visible = sun_p > 0.0
-	$sunlight_indicator/MeshInstance3D.mesh.material.set("shader_parameter/albedo",Color.DARK_ORANGE*sun_p)
+	$sunlight_indicator/MeshInstance3D.mesh.material.set("shader_parameter/albedo",Color("e6c0a9")*sun_p)
 	if sun_p > 0.0:
 		if !$sunlight_indicator/AudioStreamPlayer.playing:
 			$sunlight_indicator/AudioStreamPlayer.play()
-		
 		$sunlight_indicator/AudioStreamPlayer.volume_db = lerp($sunlight_indicator/AudioStreamPlayer.volume_db, remap(sun_p,0.0,1.0,-40.0,0.0),delta*4.0)
 	else:
 		$sunlight_indicator/AudioStreamPlayer.volume_db = lerp($sunlight_indicator/AudioStreamPlayer.volume_db, -80.0 ,delta*8.0)
@@ -532,6 +538,16 @@ func _on_successful_interaction(info : Array) -> void:
 			attempt_loose_item_pickup(data)
 		Global.interact_returns.ENTER_DOOR:
 			enter_door(data)
+		Global.interact_returns.SLEEP_IN_BED:
+			sleep_in_bed(data)
+
+func sleep_in_bed(data):
+	if PlayerInformation.can_sleep():
+		PlayerInformation.player_sleep()
+	else:
+		Global.new_dialogue_box("to hungry to sleep", 2.0)
+		#cant sleep :(
+		pass
 
 func enter_door(data):
 	tp(data[1], data[2])

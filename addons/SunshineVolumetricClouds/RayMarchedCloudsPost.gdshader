@@ -65,6 +65,8 @@ group_uniforms Textures;
 uniform sampler2D depth_texture : source_color, hint_depth_texture;
 // used to create a ramp than controls the vertical axis on the clouds, lets you author clouds a little more detailed, to blend between different types lerp this using c# or gdscript to another gradient.
 
+global uniform float SunshineClouds_ShapeSpeedMultiplier;
+global uniform vec3 SunshineClouds_StartingOffset;
 
 const mat4 dither_matrix = mat4(
   vec4(0.0625, 0.5625, 0.1875,  0.6875),
@@ -100,7 +102,9 @@ float samplecloudmap(vec3 pos, float time) {
 	//if (distance(clamp(pos.y, CloudFloor, CloudCeiling), pos.y) > 0.0){posCutoff = 1.0;}
 	pos /= SunshineClouds_CloudsGlobalScale;
 
-	float largeScaleNoise = textureLod(SunshineClouds_LargeScaleNoiseTexture, pos * (SunshineClouds_CloudsLargeScaleNoiseScale) + (vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time * SunshineClouds_WindSpeed / 4.0), 100.0).r * SunshineClouds_CloudsLargeScaleNoisePower;
+	//float largeScaleNoise = textureLod(SunshineClouds_LargeScaleNoiseTexture, pos * (SunshineClouds_CloudsLargeScaleNoiseScale) + (vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time * SunshineClouds_WindSpeed / 4.0), 100.0).r * SunshineClouds_CloudsLargeScaleNoisePower;
+	//BE VVV
+	float largeScaleNoise = textureLod(SunshineClouds_LargeScaleNoiseTexture, SunshineClouds_StartingOffset + pos * (SunshineClouds_CloudsLargeScaleNoiseScale) + (vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time *SunshineClouds_ShapeSpeedMultiplier * SunshineClouds_WindSpeed / 4.0), 1.0).r * SunshineClouds_CloudsLargeScaleNoisePower;
 	//largeScaleNoise += 1.0 - posCutoff;
 	if (posCutoff <= 0.0){return 0.0;}
 	//float largeScaleNoise = texture(LargeShapeNoiseTexture, vec3(pos.x, pos.y * 0.5, pos.z) * (large_scale_noise_scale) + vec3(WindDirection.x, 0.0, WindDirection.y) * time * WindSpeed / 3.0).r * large_scale_noise_power;
@@ -125,6 +129,8 @@ float samplecloudmap(vec3 pos, float time) {
 	//noise *= posCutoff;
 	return noise;
 }
+
+
 
 float sampleCloudColor(vec3 pos, float time) { //BE
 	float noise = textureLod(SunshineClouds_BaseNoiseTexture, pos * (SunshineClouds_CloudsBaseNoiseScale) + vec3(SunshineClouds_WindDirection.x, 0.0, SunshineClouds_WindDirection.y) * time*1.5 * SunshineClouds_WindSpeed, 100.0).r;

@@ -157,3 +157,22 @@ inventory_slot_5={
 [rendering]
 
 renderer/rendering_method.mobile="gl_compatibility"
+
+[shader_globals]
+
+SunshineClouds_CloudShadowStrength={
+"type": "float",
+"value": 1.0
+}
+day_color_influence={
+"type": "float",
+"value": 0.065
+}
+SunshineClouds_StartingOffset={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
+}
+SunshineClouds_ShapeSpeedMultiplier={
+"type": "float",
+"value": 0.0
+}
