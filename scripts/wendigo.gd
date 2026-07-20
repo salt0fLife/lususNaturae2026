@@ -5,7 +5,7 @@ extends CharacterBody3D
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-var speed = 20.0
+var speed = 15.0
 @onready var graphics = $graphics
 
 var state = "sleeping"

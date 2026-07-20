@@ -1,0 +1,94 @@
+[gd_scene load_steps=7 format=3 uid="uid://ckbg7if3gaqic"]
+
+[ext_resource type="Texture2D" uid="uid://hpcs1dhqwvq6" path="res://assets/textures/material/bullet_hole_heightmap.png" id="1_kn2vs"]
+
+[sub_resource type="Shader" id="Shader_aitqg"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mul,depth_draw_opaque,cull_back,unshaded,specular_disabled;
+uniform vec4 albedo : source_color;
+uniform vec4 albedo_shadow : source_color;
+uniform float roughness : hint_range(0,1);
+uniform float specular : hint_range(0,1);
+uniform int depth_steps = 3;
+uniform float depth_scale = 1.0;
+uniform float depth_offset = -1.0;
+uniform sampler2D heightmap : repeat_enable;
+
+vec2 parallax(float depth, vec3 n, vec3 t, vec3 v) {
+	vec3 normal = normalize(n);
+	vec3 tangent = normalize(t);
+	vec3 bitangent = cross(normal, tangent);
+	vec3 view = normalize(v);
+	vec3 view_tangent = vec3(dot(view, tangent), dot(view, bitangent), dot(view, normal));
+	vec2 offset = (view_tangent.xy / max(view_tangent.z, 0.001)) * depth;
+	offset = vec2(-offset.x, offset.y);
+	return offset;
+}
+
+float heightmap_density(vec2 uv, float power) {
+	float val = texture(heightmap,uv).r;
+	val = roundEven(val*power);
+	return val;
+}
+
+void vertex() {
+}
+
+void fragment() {
+	vec2 base_uv = UV;
+	ALBEDO = albedo.rgb;
+	ROUGHNESS = roughness;
+	SPECULAR = specular;
+	ALBEDO = albedo_shadow.rgb;
+	for (int i = 0; i < depth_steps; i++) {
+		float current_depth = float(i)/float(depth_steps);
+		vec2 uv_offset = parallax((1.0-current_depth+depth_offset)*depth_scale,NORMAL, TANGENT,VIEW);
+		vec2 current_uv = base_uv + uv_offset;
+		float gd = heightmap_density(current_uv,1.0-current_depth);
+		vec3 current_color = mix(albedo_shadow,albedo,current_depth).rgb;
+		ALBEDO = mix(ALBEDO,current_color,gd);
+		}
+	ALBEDO = mix(ALBEDO, vec3(1.0,1.0,1.0),heightmap_density(UV,0.55));
+	//ALBEDO = texture(screen_texture,SCREEN_UV+uv_offset).rgb;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_84wo4"]
+render_priority = 0
+shader = SubResource("Shader_aitqg")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_shadow = Color(0, 0, 0, 1)
+shader_parameter/roughness = 1.0
+shader_parameter/specular = 0.5
+shader_parameter/depth_steps = 10
+shader_parameter/depth_scale = 0.92
+shader_parameter/depth_offset = -0.5
+shader_parameter/heightmap = ExtResource("1_kn2vs")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_bhayd"]
+material = SubResource("ShaderMaterial_84wo4")
+size = Vector2(0.04, 0.04)
+
+[sub_resource type="BoxMesh" id="BoxMesh_u4w1u"]
+size = Vector3(0.005, 0.05, 0.005)
+
+[sub_resource type="PrismMesh" id="PrismMesh_7y3rt"]
+size = Vector3(0.01, 0.02, 0.005)
+
+[node name="bullet_hole_default" type="Node3D"]
+transform = Transform3D(2.76, 0, 0, 0, 2.76, 0, 0, 0, 2.76, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00247489, 0)
+mesh = SubResource("PlaneMesh_bhayd")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0408788, 0)
+mesh = SubResource("BoxMesh_u4w1u")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0516312, 0)
+visible = false
+mesh = SubResource("PrismMesh_7y3rt")

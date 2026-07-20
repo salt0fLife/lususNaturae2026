@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://boyma10cyjpi7"
+path="res://.godot/imported/vfx_mesh_bases.obj-4276195456bd23836871b21e5a634ca5.mesh"
+
+[deps]
+
+files=["res://.godot/imported/vfx_mesh_bases.obj-4276195456bd23836871b21e5a634ca5.mesh"]
+
+source_file="res://assets/effects/vfx_mesh_bases/vfx_mesh_bases.obj"
+dest_files=["res://.godot/imported/vfx_mesh_bases.obj-4276195456bd23836871b21e5a634ca5.mesh", "res://.godot/imported/vfx_mesh_bases.obj-4276195456bd23836871b21e5a634ca5.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

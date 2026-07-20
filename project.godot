@@ -23,6 +23,10 @@ Settings="*res://scripts/Settings.gd"
 PlayerInformation="*res://scripts/PlayerInformation.gd"
 Items="*res://scripts/items.gd"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/SunshineVolumetricClouds/plugin.cfg")
+
 [input]
 
 up={
@@ -148,7 +152,27 @@ inventory_slot_5={
 3d_physics/layer_3="generic entity"
 3d_physics/layer_4="interactable"
 3d_physics/layer_5="special areas"
+3d_physics/layer_6="hurtbox"
 
 [rendering]
 
 renderer/rendering_method.mobile="gl_compatibility"
+
+[shader_globals]
+
+SunshineClouds_CloudShadowStrength={
+"type": "float",
+"value": 1.0
+}
+day_color_influence={
+"type": "float",
+"value": 0.065
+}
+SunshineClouds_StartingOffset={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
+}
+SunshineClouds_ShapeSpeedMultiplier={
+"type": "float",
+"value": 0.0
+}

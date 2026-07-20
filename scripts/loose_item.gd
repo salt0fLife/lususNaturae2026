@@ -2,6 +2,7 @@ extends StaticBody3D
 
 
 var data = []
+var tool_tip = ""
 
 func _ready():
 	update_graphics_from_data()
@@ -10,6 +11,7 @@ func _ready():
 
 func update_graphics_from_data() -> void:
 	$Label3D.text = str(data[0])
+	tool_tip = "pickup "+str(data[0])
 	#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]
 	var item_data = Items.list[data[0]]
 	var model = load(item_data[Items.INDEX_MODEL]).instantiate()

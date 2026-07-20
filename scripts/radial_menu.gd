@@ -8,6 +8,8 @@ class_name RadialMenu
 @export var line_width := 4
 
 @export var number_of_slots := 2
+@export var display_size := 1.0
+
 
 signal slot_selected(index : int)
 
@@ -66,7 +68,11 @@ func _draw():
 		#draw_texture(tex,middle_ray*middle_rad+center-(tex_info[1]*0.5))
 		pass
 
+var freeze_selected = false
 func _process(_delta):
+	if freeze_selected:
+		queue_redraw()
+		return
 	var mouse_pos = get_local_mouse_position() - center
 	var mouse_rad = mouse_pos.length()
 	

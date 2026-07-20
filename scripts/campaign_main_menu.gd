@@ -12,11 +12,10 @@ func _ready():
 	$"Control/Panel/save info/delete_save".connect("button_down", open_delete_save_dialogue)
 	$Control/delete_save_dialogue/new_game_dialogue/cancel.connect("button_down",close_delete_save_dialogue)
 	$Control/delete_save_dialogue/new_game_dialogue/confirm.connect("button_down",confirm_and_delete_selected_save)
+	$Control/Label.text = "version: " + str(Global.version)
 
 var saves_list = [
 	#[saveName, filepath, progress_percent, progress_summary, folder_name, version, seconds_played]
-	
-	
 ]
 
 
@@ -24,6 +23,7 @@ var saves_list = [
 
 func populate_saves_list() -> void:
 	saves_list = []
+	
 	print("populating saves list")
 	var saves = SaveHandler.get_saves_list(save_path)
 	for folder in saves:
@@ -38,7 +38,8 @@ func populate_saves_list() -> void:
 			info["progress_summary"],
 			folder,
 			info["version"],
-			info["seconds_played"]
+			info["seconds_played"],
+			info["version"]
 		]
 		if info["active"]:
 			saves_list += [data]
@@ -49,9 +50,14 @@ func populate_saves_list() -> void:
 	for i in range(0,saves_list.size()):
 		var button_name = saves_list[i][0] + " | " + saves_list[i][4]
 		var b = Button.new()
+		if saves_list[i][7] != Global.version: #outdated version
+			b.set("theme_override_colors/font_color", Color.INDIAN_RED)
+		else:
+			b.set("theme_override_colors/font_color", Color.WEB_GREEN)
 		b.text = button_name
 		b.connect("pressed", select_save.bind(i))
 		save_button_handler.add_child(b)
+		
 
 var selected_save = -1
 func select_save(indx : int) -> void:
@@ -59,10 +65,23 @@ func select_save(indx : int) -> void:
 	print("selected save of index " + str(indx))
 	#[saveName, filepath, progress_percent, progress_summary, folder_name]
 	var data = saves_list[indx]
+	
+	
 	$"Control/Panel/save info/progress".value = data[2]
 	$"Control/Panel/save info/RichTextLabel".text = data[3]
 	$"Control/Panel/save info/selected save name".text = data[0]
-	$"Control/Panel/save info/continue game".disabled = false
+	#$"Control/Panel/save info/continue game".disabled = false
+	$"Control/Panel/save info/continue game".disabled = (data[7] != Global.version)
+	$"Control/Panel/save info/Label3".text = "version: " + str(data[7])
+	if (data[7] != Global.version):
+		$"Control/Panel/save info/Label3".set("theme_override_colors/font_color", Color.RED)
+	else:
+		$"Control/Panel/save info/Label3".set("theme_override_colors/font_color", Color.LIGHT_GRAY)
+	
+	##DEBUG SAVE_INFO
+	var save_filepath = saves_list[selected_save][1]
+	var story_info = SaveHandler.load_file(save_filepath,"story_info.dat")
+	$"Control/Panel/save info/RichTextLabel".text = str(story_info)
 
 func play_selected_save() -> void:
 	if selected_save < 0:
@@ -82,7 +101,7 @@ func create_new_save(save_name := "A brand new adventure!") -> void:
 		"progress_percent" : 0.0,
 		"progress_summary" : "you have not played this save yet",
 		"active" : true,
-		"version" : "early-dev",
+		"version" : Global.version,
 		"seconds_played" : 0
 	}
 	data = JSON.stringify(data)

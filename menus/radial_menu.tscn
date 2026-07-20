@@ -14,3 +14,4 @@ col_1 = Color(0.54902, 0.478431, 0.513726, 1)
 col_2 = Color(0.337255, 0.184314, 0.192157, 1)
 col_3 = Color(0.509804, 0.443137, 0.6, 1)
 number_of_slots = 4
+display_size = null

@@ -14,3 +14,12 @@ func attempt_interact() -> void:
 		if hit.is_in_group("interactable"):
 			var info = hit.interact()
 			emit_signal("interacted", info)
+
+func get_tooltip() -> String:
+	if sight.is_colliding():
+		var hit = sight.get_collider()
+		if hit == null:
+			return ""
+		if hit.is_in_group("interactable"):
+			return hit.tool_tip
+	return "" #nothin

@@ -1,0 +1,186 @@
+extends Node
+
+
+@onready var inventory_menu = $inventory_menu
+@onready var item_menu = $item_menu
+
+var inventory_open = false
+var grabbed_item_index = -1
+var grabbed_item = false
+var click_downtime:int = 0
+
+func _input(event):
+	if Input.is_action_just_pressed("inventory"):
+		set_inventory_open(true)
+	if Input.is_action_just_released("inventory"):
+		set_inventory_open(false)
+	if Input.is_action_just_pressed("inventory_slot_1"):
+		if inventory_open:
+			var sel_indx = inventory_menu.get_menu_selection()
+			var data = PlayerInformation.swap_inventory_slot(0, PlayerInformation.inventory[sel_indx])
+			PlayerInformation.set_inventory_slot(sel_indx,data)
+		else:
+			select_inventory_slot(0)
+	if Input.is_action_just_pressed("inventory_slot_2"):
+		if inventory_open:
+			var sel_indx = inventory_menu.get_menu_selection()
+			var data = PlayerInformation.swap_inventory_slot(1, PlayerInformation.inventory[sel_indx])
+			PlayerInformation.set_inventory_slot(sel_indx,data)
+		else:
+			select_inventory_slot(1)
+	if Input.is_action_just_pressed("inventory_slot_3"):
+		if inventory_open:
+			var sel_indx = inventory_menu.get_menu_selection()
+			var data = PlayerInformation.swap_inventory_slot(2, PlayerInformation.inventory[sel_indx])
+			PlayerInformation.set_inventory_slot(sel_indx,data)
+		else:
+			select_inventory_slot(2)
+	if Input.is_action_just_pressed("inventory_slot_4"):
+		if inventory_open:
+			var sel_indx = inventory_menu.get_menu_selection()
+			var data = PlayerInformation.swap_inventory_slot(3, PlayerInformation.inventory[sel_indx])
+			PlayerInformation.set_inventory_slot(sel_indx,data)
+		else:
+			select_inventory_slot(3)
+	if Input.is_action_just_pressed("inventory_slot_5"):
+		if inventory_open:
+			var sel_indx = inventory_menu.get_menu_selection()
+			var data = PlayerInformation.swap_inventory_slot(4, PlayerInformation.inventory[sel_indx])
+			PlayerInformation.set_inventory_slot(sel_indx,data)
+		else:
+			select_inventory_slot(4)
+	if Input.is_action_just_pressed("use_item") and inventory_open and click_downtime == 0:
+		click_downtime = 4 #4 frames of no clicking allowed
+		if !items_interacting:
+			var sel_indx = inventory_menu.get_menu_selection()
+			if !grabbed_item:
+				var item_data = PlayerInformation.get_item_data(sel_indx)
+				if !item_data.is_empty(): #clicked on full slot with nothing in hand
+					inventory_menu.pretend_empty_index = sel_indx
+					inventory_menu._update_inventory_graphics() #called only here because not actually chaning inventory
+					grabbed_item_index = sel_indx
+					grabbed_item = true
+				else:
+					#just clicked on empty slot with nothing in hand
+					pass
+			else: #just clicked on slot with something in hand
+				_on_item_interaction(grabbed_item_index,sel_indx)
+		else: #interaction already ongoing
+			_on_item_menu_selected(interacting_1,interacting_2)
+
+func set_inventory_open(val : bool) -> void:
+	inventory_open = val
+	inventory_menu.visible = val
+	if val:
+		Global.in_game_mouse = true
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		inventory_menu._update_inventory_graphics() #just incase pretend_empty_index changed
+	else:
+		grabbed_item = false
+		items_interacting = false
+		item_menu.visible = false
+		inventory_menu.pretend_empty_index = -1
+		
+		select_inventory_slot(inventory_menu.get_menu_selection())
+		Global.in_game_mouse = false
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func select_inventory_slot(i : int) -> void:
+	if i >= PlayerInformation.inventory.size():
+		print("invalid inventory slot selection")
+		return
+	PlayerInformation.change_held_item(i)
+
+func _process(delta):
+	if !inventory_open:
+		return
+	$inventory_menu/RadialMenu.freeze_selected = items_interacting
+	if click_downtime > 0:
+		click_downtime -= 1
+		if click_downtime < 0:
+			click_downtime = 0 #just in case
+	if grabbed_item:
+		$grabbed_item_name.visible = !item_menu.visible
+		var item_data = PlayerInformation.get_item_data(grabbed_item_index)
+		if item_data.is_empty():
+			grabbed_item = false
+			inventory_menu.pretend_empty_index = -1
+		var t = "holding_item"
+		$grabbed_item_name.text = t
+		$grabbed_item_name.position = DisplayServer.mouse_get_position()
+	else:
+		$grabbed_item_name.visible = false
+
+var items_interacting = false
+var interactions_list
+var interacting_1 = 0
+var interacting_2 = 0
+func _on_item_interaction(index_1 : int, index_2) -> void: #-> when you click on index_2 with index_1 grabbed
+	if index_1 == index_2:
+		grabbed_item = false
+		inventory_menu.pretend_empty_index = -1
+		inventory_menu._update_inventory_graphics()
+		#return item no longer grabbed
+		return
+	var interaction_type = -1
+	var item_data_1 = PlayerInformation.inventory[index_1]
+	var item_data_2 = PlayerInformation.inventory[index_2]
+	if item_data_1.is_empty():
+		#this should never be empty
+		return
+	if item_data_2.is_empty(): #clicked on empty slot
+		grabbed_item = false
+		inventory_menu.pretend_empty_index = -1
+		#just swap item positions
+		var temp_data = PlayerInformation.swap_inventory_slot(index_2, PlayerInformation.inventory[index_1])
+		PlayerInformation.set_inventory_slot(index_1,temp_data)
+		return
+	#clicked on item with item grabbed
+	var key_1 = item_data_1[0]
+	var key_2 = item_data_2[0]
+	if !Items.interactions[key_1].has(key_2): #the items do not have any interactions
+		grabbed_item = false
+		inventory_menu.pretend_empty_index = -1
+		#just swap item positions
+		var temp_data = PlayerInformation.swap_inventory_slot(index_2, PlayerInformation.inventory[index_1])
+		PlayerInformation.set_inventory_slot(index_1,temp_data)
+		return
+	#the items have interactions
+	#ok now we get serious
+	#bringing out the menu
+	interacting_1 = index_1
+	interacting_2 = index_2
+	items_interacting = true
+	interactions_list = Items.interactions[key_1][key_2]
+	$item_menu/item_options_selection.number_of_slots = interactions_list.size()
+	item_menu.visible = true
+	item_menu.position = inventory_menu.get_slot_position(index_2)
+	print(interactions_list)
+	pass
+
+func _on_item_menu_selected(index_1 : int, index_2) -> void:
+	var index = $item_menu/item_options_selection.selected
+	if index == -1:
+		#center selected, swap items
+		grabbed_item = false
+		inventory_menu.pretend_empty_index = -1
+		#just swap item positions
+		var temp_data = PlayerInformation.swap_inventory_slot(index_2, PlayerInformation.inventory[index_1])
+		PlayerInformation.set_inventory_slot(index_1,temp_data)
+		#end interaction
+		items_interacting = false
+		item_menu.visible = false
+		return
+	#one of the options was selected
+	grabbed_item = false
+	inventory_menu.pretend_empty_index = -1
+	inventory_menu._update_inventory_graphics()
+	print("interaction index " +str(index) + " pressed")
+	print(interactions_list[index])
+	
+	
+	#end interaction
+	items_interacting = false
+	item_menu.visible = false
+	
+	pass

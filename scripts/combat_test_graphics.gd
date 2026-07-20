@@ -14,7 +14,13 @@ func wall_jump(normal : Vector3) -> void:
 	audio_player.play()
 
 func jump() -> void:
-	camera_rot_vel += Vector3(0.02,0.0,0.0)
+	#camera_rot_vel += Vector3(0.02,0.0,0.0)
+	camera_rot_vel.x -= 0.01
+	hands_pos_vel.y -= 1.0*2.5
+	hands_rot_vel.x += 0.2*PI*2.5
+	
+	
+	#hands_pos_vel += Vector3(0.0,1.0,0.0)
 	voice_audio_player.stream = load("res://assets/sounds/player_movement/player_jump.ogg")
 	voice_audio_player.play()
 	if floor_check.is_colliding():
@@ -29,6 +35,17 @@ func air_dash(direction : Vector3) -> void:
 	audio_player.play()
 
 var camera_rot_vel : Vector3 = Vector3.ZERO
+var hands_rot_vel : Vector3 = Vector3.ZERO
+var hands_pos_vel : Vector3 = Vector3.ZERO
+var hands_rot_big_motion_vel : Vector3 = Vector3.ZERO
+@export var hands_return_power = 20.0
+@export var hands_return_damp = 1.0
+@export var hands_rot_return_power = 20.0
+@export var hands_rot_return_damp = 1.0
+@export var hands_rot_big_motion_power = 5.0
+@export var hands_rot_big_motion_damp = 1.0
+@export var hands_rot_lag_power = 1.0
+
 @onready var camera = $cameraHandler/senses_camera
 @onready var cameraHandler = $cameraHandler
 @onready var hands = $cameraHandler/fp_hands_wip
@@ -37,6 +54,8 @@ var camera_rot_vel : Vector3 = Vector3.ZERO
 @onready var last_frame_camera_rot = Vector2(rotation.y, cameraHandler.rotation.x)
 @onready var anim = $cameraHandler/fp_hands_wip/AnimationPlayer
 func _process(delta):
+	camera.position = lerp(camera.position, Vector3.ZERO, delta*4.0)
+	
 	if wall_run_active:
 		wall_run_active = false
 	elif $wall_run_sounds.playing:
@@ -49,19 +68,36 @@ func _process(delta):
 	
 	var camera_rot = Vector2(rotation.y, cameraHandler.rotation.x)
 	
-	var dif = camera_rot - last_frame_camera_rot
-	hands.rotation.y += dif.x*0.2
+	var dif = (camera_rot - last_frame_camera_rot)*hands_rot_lag_power
+	hands.rotation.y += dif.x*0.2*0.25 #looks better for some reason
 	hands.rotation.x -= dif.y*0.2
-	hands.position.x += dif.x*0.25
+	hands.position.x += dif.x*0.1
 	hands.position.y += dif.y*0.1
 	
 	last_frame_camera_rot = camera_rot
 	
-	hands.position.x = clamp(hands.position.x, -0.5,0.5)
+	hands.position.x = clamp(hands.position.x, -0.1,0.1)
 	hands.position.y = clamp(hands.position.y, -0.1,0.1)
-	hands.position = lerp(hands.position, Vector3(0.0,0.0,0.14), delta*16.0)
-	hands.rotation.x = clamp(lerp_angle(hands.rotation.x, 0.0, delta*16.0),-PI*0.1,PI*0.1)
-	hands.rotation.y = clamp(lerp_angle(hands.rotation.y, 0.0, delta*16.0),-PI*0.1,PI*0.1)
+	
+	hands_pos_vel += (Vector3(0.0,0.0,0.14)-hands.position)*delta*hands_return_power
+	hands_pos_vel -= hands_pos_vel*delta*hands_return_damp
+	hands.position += hands_pos_vel * delta
+	
+	hands_rot_vel -= hands.rotation*delta *hands_rot_return_power
+	hands_rot_vel -= hands_rot_vel*delta*hands_rot_return_damp
+	hands.rotation += hands_rot_vel * delta
+	
+	#hands_rot_big_motion_vel -= hands.rotation*delta * hands_rot_big_motion_power
+	#hands_rot_big_motion_vel -= hands_rot_big_motion_vel*delta*hands_rot_big_motion_damp
+	#hands.rotation += hands_rot_big_motion_vel
+	
+	
+	hands.rotation.x = clamp(hands.rotation.x,-PI*0.1,PI*0.1)
+	hands.rotation.y = clamp(hands.rotation.y,-PI*0.1,PI*0.1)
+	
+	#hands.position = lerp(hands.position, Vector3(0.0,0.0,0.14), delta*16.0)
+	#hands.rotation.x = clamp(lerp_angle(hands.rotation.x, 0.0, delta*16.0),-PI*0.1,PI*0.1)
+	#hands.rotation.y = clamp(lerp_angle(hands.rotation.y, 0.0, delta*16.0),-PI*0.1,PI*0.1)
 	
 	#camera.rotation = camera_bone.rotation
 	
@@ -94,7 +130,9 @@ var wall_run_active = false
 func wall_running(normal : Vector3, delta : float, power : float, groups : Array) -> void: # called every frame when running
 	wall_run_active = true
 	if !$wall_run_sounds.playing:
-		$wall_run_sounds.play()
+		var t = (1.0 - power) * 5.0 - 0.017 #because yeah sure
+		$wall_run_sounds.play(t)
+		print("wallrunning time " + str(t) + " : wallrunning power " + str(power))
 	val += delta * power
 	if val > 1.0:
 		val -= 1.0
@@ -147,7 +185,7 @@ func wall_check_right(delta):
 
 func _ready():
 	PlayerInformation.connect("changed_using_senses", update_using_senses)
-	update_using_senses()
+	#update_using_senses()
 	pass
 
 @onready var arm_meshes = [
@@ -164,11 +202,29 @@ func update_using_senses() -> void:
 		for am in arm_meshes:
 			am.set_surface_override_material(0, null)
 
+@onready var legs = $legs
 var val = 0.0
 var step = 0.0
-func walking(delta) -> void:
-	val += delta * 1.0
-	var strength = 0.5
+@export var walking_speed_mult = 1.0
+func walking(delta, velocity) -> void:
+	var walking_speed = Vector2(velocity.x,velocity.z).length()/4.0
+	velocity = velocity*global_basis
+	var dir = Vector2(velocity.x,velocity.z).normalized()
+	var theta = atan2(dir.x,dir.y) + PI
+	
+	if dir.y > 0.0:
+		#backwards
+		theta = atan2(-dir.x,-dir.y) + PI #reversed
+		play_leg_anim("walk_backwards", 0.2, walking_speed*walking_speed_mult)
+	else:
+		play_leg_anim("walk_forward", 0.2, walking_speed*walking_speed_mult)
+	
+	legs.rotation.y = lerp_angle(legs.rotation.y, theta,delta * 16.0)
+	#legs.rotation.y = theta
+	legs.rotation.y = clamp(legs.rotation.y, -PI*0.4,PI*0.4)
+	
+	val += delta * 1.0 * walking_speed_mult *walking_speed
+	var strength = 0.25
 	if val > 1.0:
 		val -= 1.0
 		step = 0.5
@@ -181,10 +237,20 @@ func walking(delta) -> void:
 	#camera.position.x = lerp(camera.position.x, sin(val*PI), delta*8.0)
 	hands.position.x += delta * sin(val*PI*2.0) * strength
 	hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength
+	camera.rotation.y -= delta * sin(val*PI*2.0) * strength * PI*0.01
 	pass
 
-func running(delta) -> void:
-	val += delta * 1.5
+@export var running_speed_mult = 1.0
+func running(delta, velocity) -> void:
+	var running_speed = Vector2(velocity.x,velocity.z).length()/7.0
+	velocity = velocity*global_basis
+	var dir = Vector2(velocity.x,velocity.z).normalized()
+	var theta = atan2(dir.x,dir.y) + PI
+	legs.rotation.y = lerp_angle(legs.rotation.y, theta,delta * 16.0)
+	legs.rotation.y = clamp(legs.rotation.y, -PI*0.4,PI*0.4)
+	
+	play_leg_anim("sprint_forward", 0.2, running_speed*running_speed_mult)
+	val += delta * 1.5 * running_speed_mult * running_speed
 	var strength = 1.0
 	if val > 1.0:
 		val -= 1.0
@@ -196,8 +262,14 @@ func running(delta) -> void:
 			var groups = hit.get_groups()
 			step_sound(groups)
 	#camera.position.x = lerp(camera.position.x, sin(val*PI), delta*8.0)
-	hands.position.x += delta * sin(val*PI*2.0) * strength
-	hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5
+	#hands.position.x += delta * sin(val*PI*2.0) * strength
+	#hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5
+	camera.position.x += delta * sin(val*PI*2.0) * strength * 0.7
+	camera.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.7
+	hands.position.x += delta * sin(val*PI*2.0) * strength*0.5
+	hands.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5*0.5
+	camera.rotation.y -= delta * sin(val*PI*2.0) * strength * PI*0.005
+	camera.rotation.x -= delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.5* PI*0.05
 
 @onready var floor_check = $"../floor_check"
 func step_sound(groups = []) -> void:
@@ -207,20 +279,59 @@ func step_sound(groups = []) -> void:
 			var sound = Global.surface_step_sounds[info[Global.STEP_SOUNDS]].pick_random()
 			audio_player.stream = load(sound)
 			audio_player.play()
-			print(g)
 			return
 	#did not find so use default
 	var sound = Global.surface_step_sounds[Global.surface_lookup["default"][Global.STEP_SOUNDS]].pick_random()
 	audio_player.stream = load(sound)
 	audio_player.play()
-	print("default")
 	pass
 
 func land() -> void:
-	camera_rot_vel.x -= 0.025
+	camera_rot_vel.x -= 0.02
+	hands_pos_vel.y -= 1.0*2.0
+	hands_rot_vel.x -= 0.2*PI*5.0
+	#hands_rot_vel.x += 0.1
 	voice_audio_player.stream = load("res://assets/sounds/player_movement/player_land.ogg")
 	voice_audio_player.play()
 	if floor_check.is_colliding():
 		var hit = floor_check.get_collider()
 		var groups = hit.get_groups()
 		step_sound(groups)
+
+func shoot() -> void:
+	camera_rot_vel.x += PI*0.005
+	camera_rot_vel.y += randf_range(-PI*0.002,PI*0.002)
+	pass
+
+func airborn(velocity, delta) -> void:
+	if velocity.y > 0.0:
+		play_leg_anim("airborn_up", 0.5)
+	else:
+		play_leg_anim("airborn_down", 0.5)
+	pass
+
+func idle(delta) -> void:
+	play_leg_anim("idle_ground",0.1)
+
+@onready var legs_anim = $legs/fp_legs_wip/AnimationPlayer
+func play_leg_anim(key : StringName, blend:float = 0.2, speed :float= 1.0) -> void:
+	legs_anim.speed_scale = speed
+	if legs_anim.current_animation == key:
+		return
+	if legs_anim.has_animation(key):
+		legs_anim.play(key,blend)
+	pass
+@export var shiver_strength = 1.0
+@export var shiver_speed = 1.0
+var shiver_timer = 0.0
+func shiver(delta):
+	shiver_timer += delta*12.0*shiver_speed + (sin(shiver_timer*PI)+1.0)*delta*0.1
+	if shiver_timer > 1.0:
+		shiver_timer -= 1.0
+	hands.position.x += sin(shiver_timer*PI)*shiver_strength*0.02
+	hands.position.y += sin(shiver_timer*PI*0.5+PI*0.2)*shiver_strength*0.01
+	hands.position.z += cos(shiver_timer*PI+PI*0.6)*shiver_strength*0.01
+	hands.rotation.y += sin(shiver_timer*PI)*shiver_strength*0.02
+	hands.rotation.x += sin(shiver_timer*PI*0.5+PI*0.2)*shiver_strength*0.01
+	hands.rotation.z += cos(shiver_timer*PI*0.25+PI*0.6)*shiver_strength*0.01
+	pass

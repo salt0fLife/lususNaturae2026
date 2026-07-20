@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://be27oiqv4i4ac"]
+
+[ext_resource type="VoxelGIData" uid="uid://c7rjwa0u16u33" path="res://campaign/lighting_information/warzone_laboratory.VoxelGI_data.res" id="1_jet2j"]
+[ext_resource type="Script" path="res://scripts/warzone_laboratory.gd" id="1_lwojx"]
+
+[sub_resource type="Environment" id="Environment_a0plm"]
+background_mode = 1
+
+[node name="warzone_laboratory" type="Node3D"]
+script = ExtResource("1_lwojx")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 4.25, -0.25)
+flip_faces = true
+size = Vector3(25, 8.5, 23.5)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_a0plm")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." groups=["light"]]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 7.56392, 0)
+spot_range = 21.3166
+spot_angle = 70.1837
+
+[node name="VoxelGI" type="VoxelGI" parent="." groups=["light"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 4.25, -0.25)
+size = Vector3(25, 8.5, 23.5)
+data = ExtResource("1_jet2j")

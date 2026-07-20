@@ -1,0 +1,146 @@
+[gd_scene load_steps=27 format=3 uid="uid://dycw0diqplgre"]
+
+[ext_resource type="Shader" path="res://assets/shaders/postEffects.gdshader" id="1_4mbyo"]
+[ext_resource type="Script" path="res://scripts/postEffects.gd" id="2_bnrq7"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_mhm5d"]
+frequency = 0.2226
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ghxi3"]
+noise = SubResource("FastNoiseLite_mhm5d")
+
+[sub_resource type="Gradient" id="Gradient_oei1p"]
+offsets = PackedFloat32Array(0, 0.33, 0.66, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.25098, 0, 0, 1, 0, 0.498039, 0, 1, 0, 0, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8rebg"]
+gradient = SubResource("Gradient_oei1p")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_s4hyt"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pmi4q"]
+width = 128
+height = 128
+seamless = true
+noise = SubResource("FastNoiseLite_s4hyt")
+
+[sub_resource type="Gradient" id="Gradient_qfnv1"]
+offsets = PackedFloat32Array(0, 0.33, 0.66, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0.25098, 1, 0.498039, 0, 0, 1, 0, 1, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ptsje"]
+gradient = SubResource("Gradient_qfnv1")
+
+[sub_resource type="Gradient" id="Gradient_kbd4k"]
+interpolation_color_space = 2
+offsets = PackedFloat32Array(0, 0.102439, 0.258537, 0.639024, 0.917073, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.0406606, 4.64161e-05, 0.131864, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.131659, 0.0118721, 0.0039062, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2g75h"]
+gradient = SubResource("Gradient_kbd4k")
+
+[sub_resource type="Gradient" id="Gradient_0gstp"]
+colors = PackedColorArray(0.868985, 0.868985, 0.868985, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bmnrf"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_h3kr7"]
+seamless = true
+color_ramp = SubResource("Gradient_0gstp")
+noise = SubResource("FastNoiseLite_bmnrf")
+
+[sub_resource type="Gradient" id="Gradient_46ki4"]
+offsets = PackedFloat32Array(0, 0.33, 0.66, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0.25098, 0, 1, 0, 0, 0.498039, 1, 1, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xyupm"]
+gradient = SubResource("Gradient_46ki4")
+
+[sub_resource type="Gradient" id="Gradient_ajcll"]
+offsets = PackedFloat32Array(0.430556, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3ve4w"]
+gradient = SubResource("Gradient_ajcll")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_yym0y"]
+offsets = PackedFloat32Array(0.583333, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.359069, 0.359069, 0.359069, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_tejam"]
+gradient = SubResource("Gradient_yym0y")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_cws5q"]
+colors = PackedColorArray(0.0646965, 0.0646965, 0.0646965, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_gbpf2"]
+noise_type = 2
+frequency = 0.0185
+fractal_type = 3
+fractal_octaves = 4
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_8utt2"]
+color_ramp = SubResource("Gradient_cws5q")
+noise = SubResource("FastNoiseLite_gbpf2")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lyans"]
+shader = ExtResource("1_4mbyo")
+shader_parameter/spiral = 0.0
+shader_parameter/wave = 0.0
+shader_parameter/flash = 0.0
+shader_parameter/flash_color = Color(0.996078, 0.678431, 0.466667, 1)
+shader_parameter/grading_power = 0.1
+shader_parameter/lightness_map_power = 0.1
+shader_parameter/heart_pounding = 0.0
+shader_parameter/blood_col = Color(0.298039, 0, 0.027451, 1)
+shader_parameter/fire_color = Color(0.968627, 0.356863, 0, 1)
+shader_parameter/burning = false
+shader_parameter/action_lines = 0.0
+shader_parameter/line_color = Color(0.737255, 0.741176, 0.701961, 0.235294)
+shader_parameter/line_count = 1.5
+shader_parameter/line_density = 0.43
+shader_parameter/line_faloff = 0.25
+shader_parameter/mask_size = 0.1
+shader_parameter/mask_edge = 0.5
+shader_parameter/animation_speed = 20.0
+shader_parameter/piss = false
+shader_parameter/shock = 0.0
+shader_parameter/shock_col = Color(0.772549, 0.658824, 0.717647, 1)
+shader_parameter/cinematic = 0.0
+shader_parameter/cinematic_col = Color(0.764706, 0.615686, 0.956863, 1)
+shader_parameter/damaged = 0.0
+shader_parameter/color_pop = 0.0
+shader_parameter/impact_frame = false
+shader_parameter/impact_color = Color(1, 1, 1, 1)
+shader_parameter/impact_color_2 = Color(0, 0, 0, 1)
+shader_parameter/sharpness_distance = 0.001
+shader_parameter/sharpen = false
+shader_parameter/sharpness_strength = 0.5
+shader_parameter/blur_whites = false
+shader_parameter/blur_distance = 0.001
+shader_parameter/noise_1 = SubResource("NoiseTexture2D_h3kr7")
+shader_parameter/red_ramp = SubResource("GradientTexture1D_xyupm")
+shader_parameter/green_ramp = SubResource("GradientTexture1D_ptsje")
+shader_parameter/blue_ramp = SubResource("GradientTexture1D_8rebg")
+shader_parameter/lightness_map = SubResource("GradientTexture1D_2g75h")
+shader_parameter/vingette_tex = SubResource("GradientTexture2D_tejam")
+shader_parameter/vision_veins = SubResource("NoiseTexture2D_8utt2")
+shader_parameter/fire_noise = SubResource("NoiseTexture2D_pmi4q")
+shader_parameter/screen_gradient = SubResource("GradientTexture2D_3ve4w")
+shader_parameter/action_lines_noise = SubResource("NoiseTexture2D_ghxi3")
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_aeps4"]
+
+[node name="postEffects" type="TextureRect"]
+material = SubResource("ShaderMaterial_lyans")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("PlaceholderTexture2D_aeps4")
+script = ExtResource("2_bnrq7")
