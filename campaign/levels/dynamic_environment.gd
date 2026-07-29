@@ -34,19 +34,32 @@ const presets = {
 		{
 			"ambientColorDefault" : Color.BLACK,
 			"sunColorMult" : Color("030303"),
-			"cloudsCutoff" : -0.014,
+			#"cloudsCutoff" : -0.014,
 			"cloudShadowStrength" : 0.9,
 		},
 		#environment sky
 		{
-			"rayleigh_coefficient" : 2.0,
-			"rayleigh_color" : Color.BLACK,
-			"mie_color" : Color("2c3343"),
-			"mie_eccentricity" : 0.8,
+			#"rayleigh_coefficient" : 2.0,
+			#"rayleigh_color" : Color.BLACK,
+			#"mie_color" : Color("2c3343"),
+			#"mie_eccentricity" : 0.8,
+			"shader_parameter/physical_effect": 1.0,
+			"shader_parameter/rayleigh_color" : Color("7490c4"),
+			"shader_parameter/mie" : 0.1444,
+			"shader_parameter/mie_eccentricity" : 0.532,
+			"shader_parameter/mie_color" : Color("b0bacf"),
+			"shader_parameter/ground_color" : Color("47190c"),
+			"shader_parameter/exposure" : 2.273,
+			"shader_parameter/top_color" : Color("3c4649"),
+			"shader_parameter/bottom_color" : Color("090909"),
+			"shader_parameter/sun_scatter" : Color("181113"),
+			"shader_parameter/astro_scale" : 5.2,
+			"shader_parameter/stars_intensity" : 1.8,
 		},
 		#sun
 		{
-			"light_color" : Color("2c3847"),
+			#"light_color" : Color("2c3847"),
+			"light_color" : Color("98a9b2"),
 			"light_energy" : 1.0,
 			"shadow_blur" : 7.15,
 		},
@@ -67,15 +80,27 @@ const presets = {
 			"ambientColorDefault" : Color("5f5243"),
 			"sunColorMult" : Color("92675c"),
 			#"cloudsCutoff" : 0.443,
-			"cloudsCutoff" : 0.101,
+			#"cloudsCutoff" : 0.101,
 			"cloudShadowStrength" : 0.4,
 		},
 		#environment sky
 		{
-			"rayleigh_coefficient" : 2.0,
-			"rayleigh_color" : Color("4d6799"),
-			"mie_color" : Color("b0bacf"),
-			"mie_eccentricity" : 0.8,
+			#"rayleigh_coefficient" : 2.0,
+			#"rayleigh_color" : Color("4d6799"),
+			#"mie_color" : Color("b0bacf"),
+			#"mie_eccentricity" : 0.8,
+			"shader_parameter/physical_effect": 1.0,
+			"shader_parameter/rayleigh_color" : Color("b3adc6"),
+			"shader_parameter/mie" : 0.01,
+			"shader_parameter/mie_eccentricity" : 0.8,
+			"shader_parameter/mie_color" : Color("b0bacf"),
+			"shader_parameter/ground_color" : Color("47190c"),
+			"shader_parameter/exposure" : 1.0,
+			"shader_parameter/top_color" : Color("deefed"), #hehe deefed
+			"shader_parameter/bottom_color" : Color("eddbd8"),
+			"shader_parameter/sun_scatter" : Color("ffddb5"),
+			"shader_parameter/astro_scale" : 5.2,
+			"shader_parameter/stars_intensity" : 0.0,
 		},
 		#sun
 		{
@@ -85,8 +110,8 @@ const presets = {
 		},
 		#environment environment
 		{
-			"ambient_light_source" : 0,
-			"ambient_light_color" : Color.BLACK,
+			"ambient_light_source" : 2,
+			"ambient_light_color" : Color("427397"),
 			"ambient_light_energy" : 1.0,
 			"glow_bloom" : 0.09,
 			"glow_hdr_threshold" : 0.54,
@@ -98,6 +123,12 @@ const presets = {
 	
 }
 
+func get_astro_texture():
+	if PlayerInformation.world_time > 0.5: #is night time
+		return load("res://assets/textures/sky/moon_phases/full.png")
+	else: #is day
+		return load("res://assets/textures/sky/moon_phases/sunShape.png")
+
 var current_preset = ""
 var blend_duration = 1.0
 func change_to_preset(key : StringName) -> void:
@@ -106,6 +137,9 @@ func change_to_preset(key : StringName) -> void:
 	current_preset = key
 	if !presets.has(key):
 		return
+	
+	$WorldEnvironment.environment.sky.sky_material.set("shader_parameter/astro_sampler", get_astro_texture())
+	
 	var preset = presets[key]
 	for c_s in preset[0].keys(): #cloud settings
 		#$CloudsSystem.set(c_s,preset[0][c_s])

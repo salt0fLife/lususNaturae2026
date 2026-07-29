@@ -1,6 +1,103 @@
-[gd_scene load_steps=2 format=3 uid="uid://chyavasev5lhs"]
+[gd_scene load_steps=26 format=3 uid="uid://chyavasev5lhs"]
 
 [ext_resource type="Script" path="res://scripts/campaign_main_menu.gd" id="1_l8sty"]
+[ext_resource type="Script" path="res://scripts/loading_screen.gd" id="2_81hhl"]
+[ext_resource type="Texture2D" uid="uid://etihtd6qpu8i" path="res://assets/textures/movies/mal0/frame0000.png" id="3_kgjvl"]
+[ext_resource type="Texture2D" uid="uid://d2g4xrpnlpxnr" path="res://assets/textures/movies/mal0/frame0002.png" id="4_ys4wy"]
+[ext_resource type="Texture2D" uid="uid://7veg42kqcnjc" path="res://assets/textures/movies/mal0/frame0003.png" id="5_bnspv"]
+[ext_resource type="Texture2D" uid="uid://b02lyt73a80ml" path="res://assets/textures/movies/mal0/frame0004.png" id="6_q5uba"]
+[ext_resource type="Texture2D" uid="uid://cxygtm02rslhv" path="res://assets/textures/movies/mal0/frame0005.png" id="7_o2jyy"]
+[ext_resource type="Texture2D" uid="uid://dpi213srfeh8u" path="res://assets/textures/movies/mal0/frame0006.png" id="8_geoa2"]
+[ext_resource type="Texture2D" uid="uid://cnb2q8tynnu56" path="res://assets/textures/movies/mal0/frame0007.png" id="9_v0epu"]
+[ext_resource type="Texture2D" uid="uid://dyehh1eetmd7b" path="res://assets/textures/movies/mal0/frame0008.png" id="10_x1u3y"]
+[ext_resource type="Texture2D" uid="uid://bdd4nbnfv4fv3" path="res://assets/textures/movies/mal0/frame0009.png" id="11_eglvx"]
+[ext_resource type="Texture2D" uid="uid://cuo15kr1cefvi" path="res://assets/textures/movies/mal0/frame0010.png" id="12_gfxle"]
+[ext_resource type="Texture2D" uid="uid://bqw6tibkge3o8" path="res://assets/textures/movies/mal0/frame0012.png" id="13_5r800"]
+[ext_resource type="Texture2D" uid="uid://er7w85qfnebq" path="res://assets/textures/movies/mal0/frame0014.png" id="14_no2j8"]
+[ext_resource type="Texture2D" uid="uid://cxih2emn3ln0p" path="res://assets/textures/movies/mal0/frame0016.png" id="15_j7a2s"]
+[ext_resource type="Texture2D" uid="uid://h1qg234nwalg" path="res://assets/textures/movies/mal0/frame0017.png" id="16_xh8po"]
+[ext_resource type="Texture2D" uid="uid://b6mbwckb8kjcm" path="res://assets/textures/movies/mal0/frame0018.png" id="17_p8fqm"]
+[ext_resource type="Texture2D" uid="uid://bpdb7l5p2ee7q" path="res://assets/textures/movies/mal0/frame0019.png" id="18_qv3rm"]
+[ext_resource type="Texture2D" uid="uid://cygknikt1v5oh" path="res://assets/textures/movies/mal0/frame0020.png" id="19_vgqp7"]
+[ext_resource type="Texture2D" uid="uid://78q7ust8155n" path="res://assets/textures/movies/mal0/frame0021.png" id="20_wl2f8"]
+[ext_resource type="Texture2D" uid="uid://saqov6b0f7pn" path="res://assets/textures/movies/mal0/frame0022.png" id="21_sc3vt"]
+[ext_resource type="Texture2D" uid="uid://dc1lawwfofykd" path="res://assets/textures/movies/mal0/frame0023.png" id="22_g1vum"]
+[ext_resource type="Texture2D" uid="uid://b3nrmylhibjeh" path="res://assets/textures/movies/mal0/frame0024.png" id="23_ceg02"]
+[ext_resource type="Texture2D" uid="uid://jpux1mnbh5pi" path="res://assets/textures/movies/mal0/frame0026.png" id="24_jvokn"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ys1xy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_kgjvl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ys4wy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_bnspv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_q5uba")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_o2jyy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_geoa2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_v0epu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_x1u3y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_eglvx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_gfxle")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_5r800")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_no2j8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_j7a2s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_xh8po")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_p8fqm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_qv3rm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_vgqp7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_wl2f8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_sc3vt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_g1vum")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_ceg02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_jvokn")
+}],
+"loop": true,
+"name": &"default",
+"speed": 18.0
+}]
 
 [node name="campaign_menu" type="Node"]
 script = ExtResource("1_l8sty")
@@ -394,3 +491,84 @@ offset_left = -40.0
 offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
+
+[node name="loading_screen" type="Control" parent="Control"]
+process_mode = 3
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_81hhl")
+
+[node name="ColorRect" type="ColorRect" parent="Control/loading_screen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="ProgressBar" type="ProgressBar" parent="Control/loading_screen"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -93.0
+offset_top = -13.0
+offset_right = 94.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Control/loading_screen"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "loading..."
+
+[node name="Control" type="Control" parent="Control/loading_screen"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Control/loading_screen/Control"]
+scale = Vector2(0.085, 0.085)
+sprite_frames = SubResource("SpriteFrames_ys1xy")
+
+[node name="Label2" type="Label" parent="Control/loading_screen"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -41.0
+offset_right = 20.0
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "loading game..."

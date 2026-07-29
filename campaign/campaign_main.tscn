@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://xwre6k638wd1"]
+[gd_scene load_steps=65 format=3 uid="uid://xwre6k638wd1"]
 
 [ext_resource type="Script" path="res://scripts/campaign_main.gd" id="1_3biet"]
 [ext_resource type="PackedScene" uid="uid://o5esi8ctymbf" path="res://menus/inventory_menu.tscn" id="2_np8a5"]
@@ -14,6 +14,28 @@
 [ext_resource type="Texture2D" uid="uid://cvxg3hvn7vq18" path="res://assets/textures/gui/overlays/sun_sickness_overlAY_MASK.PNG" id="8_0aexh"]
 [ext_resource type="Shader" path="res://assets/shaders/postEffects.gdshader" id="10_muloe"]
 [ext_resource type="Script" path="res://scripts/postEffects.gd" id="11_06tnx"]
+[ext_resource type="Texture2D" uid="uid://etihtd6qpu8i" path="res://assets/textures/movies/mal0/frame0000.png" id="15_q46np"]
+[ext_resource type="Texture2D" uid="uid://d2g4xrpnlpxnr" path="res://assets/textures/movies/mal0/frame0002.png" id="16_54ebc"]
+[ext_resource type="Texture2D" uid="uid://7veg42kqcnjc" path="res://assets/textures/movies/mal0/frame0003.png" id="17_ut84x"]
+[ext_resource type="Texture2D" uid="uid://b02lyt73a80ml" path="res://assets/textures/movies/mal0/frame0004.png" id="18_emvlh"]
+[ext_resource type="Texture2D" uid="uid://cxygtm02rslhv" path="res://assets/textures/movies/mal0/frame0005.png" id="19_srotm"]
+[ext_resource type="Texture2D" uid="uid://dpi213srfeh8u" path="res://assets/textures/movies/mal0/frame0006.png" id="20_v61p4"]
+[ext_resource type="Texture2D" uid="uid://cnb2q8tynnu56" path="res://assets/textures/movies/mal0/frame0007.png" id="21_uucs5"]
+[ext_resource type="Texture2D" uid="uid://dyehh1eetmd7b" path="res://assets/textures/movies/mal0/frame0008.png" id="22_0qe7i"]
+[ext_resource type="Texture2D" uid="uid://bdd4nbnfv4fv3" path="res://assets/textures/movies/mal0/frame0009.png" id="23_ymrhr"]
+[ext_resource type="Texture2D" uid="uid://cuo15kr1cefvi" path="res://assets/textures/movies/mal0/frame0010.png" id="24_msf5j"]
+[ext_resource type="Texture2D" uid="uid://bqw6tibkge3o8" path="res://assets/textures/movies/mal0/frame0012.png" id="25_ho66n"]
+[ext_resource type="Texture2D" uid="uid://er7w85qfnebq" path="res://assets/textures/movies/mal0/frame0014.png" id="26_4mrer"]
+[ext_resource type="Texture2D" uid="uid://cxih2emn3ln0p" path="res://assets/textures/movies/mal0/frame0016.png" id="27_yvxxx"]
+[ext_resource type="Texture2D" uid="uid://h1qg234nwalg" path="res://assets/textures/movies/mal0/frame0017.png" id="28_3kjp7"]
+[ext_resource type="Texture2D" uid="uid://b6mbwckb8kjcm" path="res://assets/textures/movies/mal0/frame0018.png" id="29_wjqh8"]
+[ext_resource type="Texture2D" uid="uid://bpdb7l5p2ee7q" path="res://assets/textures/movies/mal0/frame0019.png" id="30_7i5eu"]
+[ext_resource type="Texture2D" uid="uid://cygknikt1v5oh" path="res://assets/textures/movies/mal0/frame0020.png" id="31_gnxcj"]
+[ext_resource type="Texture2D" uid="uid://78q7ust8155n" path="res://assets/textures/movies/mal0/frame0021.png" id="32_sk587"]
+[ext_resource type="Texture2D" uid="uid://saqov6b0f7pn" path="res://assets/textures/movies/mal0/frame0022.png" id="33_vpk4x"]
+[ext_resource type="Texture2D" uid="uid://dc1lawwfofykd" path="res://assets/textures/movies/mal0/frame0023.png" id="34_ud344"]
+[ext_resource type="Texture2D" uid="uid://b3nrmylhibjeh" path="res://assets/textures/movies/mal0/frame0024.png" id="35_c0uob"]
+[ext_resource type="Texture2D" uid="uid://jpux1mnbh5pi" path="res://assets/textures/movies/mal0/frame0026.png" id="36_4sbls"]
 
 [sub_resource type="Shader" id="Shader_3005b"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's CanvasItemMaterial.
@@ -181,7 +203,7 @@ shader_parameter/animation_speed = 20.0
 shader_parameter/piss = false
 shader_parameter/shock = 0.0
 shader_parameter/shock_col = Color(0.772549, 0.658824, 0.717647, 1)
-shader_parameter/cinematic = 0.067
+shader_parameter/cinematic = 0.0
 shader_parameter/cinematic_col = Color(0.764706, 0.615686, 0.956863, 1)
 shader_parameter/damaged = 0.0
 shader_parameter/color_pop = 0.0
@@ -205,6 +227,80 @@ shader_parameter/screen_gradient = SubResource("GradientTexture2D_3ve4w")
 shader_parameter/action_lines_noise = SubResource("NoiseTexture2D_ghxi3")
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_aeps4"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fxbho"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_q46np")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_54ebc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_ut84x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_emvlh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_srotm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_v61p4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_uucs5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_0qe7i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_ymrhr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_msf5j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_ho66n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_4mrer")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_yvxxx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_3kjp7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_wjqh8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_7i5eu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_gnxcj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_sk587")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33_vpk4x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34_ud344")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35_c0uob")
+}, {
+"duration": 1.0,
+"texture": ExtResource("36_4sbls")
+}],
+"loop": true,
+"name": &"default",
+"speed": 18.0
+}]
 
 [node name="campaign_main" type="Node"]
 process_mode = 3
@@ -349,6 +445,8 @@ offset_bottom = 0.0499878
 line_width = 3
 number_of_slots = 2
 display_size = 1.0
+
+[node name="item_sounds" type="AudioStreamPlayer" parent="inventory_relations_handler"]
 
 [node name="action_menu" parent="." instance=ExtResource("3_km1sh")]
 visible = false
@@ -609,6 +707,38 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 text = "loading..."
+
+[node name="Control" type="Control" parent="loading_screen"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="loading_screen/Control"]
+scale = Vector2(0.085, 0.085)
+sprite_frames = SubResource("SpriteFrames_fxbho")
+frame_progress = 0.46404
+
+[node name="Label2" type="Label" parent="loading_screen"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -55.0
+offset_top = -40.0
+offset_right = 56.0
+offset_bottom = -17.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "loading level..."
 
 [node name="playSoundHandler" type="AudioStreamPlayer" parent="."]
 max_polyphony = 32

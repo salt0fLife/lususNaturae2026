@@ -39,6 +39,7 @@ func _ready():
 	load_data_from_save()
 	
 	if Global.progression == 0:
+		$loading_screen.visible = false
 		load_current_level_persistent_data() # a bandaid fix to be sure
 		play_cutscene("new_game_start")
 		Global.progression = 1
@@ -84,6 +85,8 @@ func change_level(level_key : String, update_persistent_data = true) -> void:
 	if changing_level:
 		printerr("already loading different level")
 		return
+	loading_screen.visible = true
+	level_status = 0.0
 	set_paused(true)
 	if update_persistent_data:
 		update_persistent_levels_data()
@@ -148,16 +151,8 @@ func load_current_level_persistent_data():
 			#spawn_entity(e[0],e[1])
 			var scene = spawn_entity(e[0])
 			scene.set_data(e[1])
-	#loading_screen.visible = false
+	loading_screen.visible = false
 	loading_screen.update_mode(false, "recreating level data")
-
-func spawn_entity(key : String, position : Vector3 = Vector3.ZERO):
-	if !Global.entities.has(key):
-		return null
-	var e = load(Global.entities[key][0]).instantiate()
-	entityHandler.add_child(e)
-	e.position = position
-	return e
 
 func create_decal(node) -> void: #just for visuals
 	if decalHandler.get_child_count(false) > 512:
@@ -308,7 +303,7 @@ func update_persistent_levels_data() -> void:
 
 var changing_level:bool = false
 var level_to_change_too:StringName = ""
-
+var level_status:float = 0.0
 
 var sub_second_counter = 0.0
 func _process(delta):
@@ -317,10 +312,14 @@ func _process(delta):
 			print("well thats a problem")
 		var progress = []
 		var status = ResourceLoader.load_threaded_get_status(level_to_change_too, progress)
-		print("level status : " + str(progress[0]))
+		print("level progress : " + str(progress[0]))
+		level_status = lerp(level_status,float(progress[0]),delta*10.0)
+		if level_status > 0.99 and progress[0] == 1:
+			level_status = 1.0
+		print("level status : " + str(level_status))
 		loading_screen.visible = true
-		loading_screen.update_progress(progress[0])
-		if ResourceLoader.THREAD_LOAD_LOADED:#progress[0] >= 1.0:
+		loading_screen.update_progress(level_status)
+		if ResourceLoader.THREAD_LOAD_LOADED and level_status == 1.0:#progress[0] >= 1.0:
 			changing_level = false
 			set_level_to_scene(ResourceLoader.load_threaded_get(level_to_change_too))
 			level_to_change_too = ""
@@ -363,8 +362,12 @@ func _input(_event):
 		return
 	if Input.is_action_just_pressed("use_item"):
 		use_held_item()
+	elif Input.is_action_just_released("use_item"):
+		release_held_item()
 	if Input.is_action_just_pressed("use_item_special"):
 		use_held_item(true)
+	elif Input.is_action_just_released("use_item_special"):
+		release_held_item(true)
 	if Input.is_action_just_pressed("drop_item"):
 		PlayerInformation.drop_held_item()
 	if Input.is_action_just_pressed("action_wheel"):
@@ -478,7 +481,7 @@ func _on_kill_all_entities() -> void:
 			i.call_deferred("queue_free")
 
 func _on_give_item_key_selected(i : int) -> void:
-	PlayerInformation.pickup_item([item_list_keys[i]])
+	PlayerInformation.pickup_item(Items.key_to_item(item_list_keys[i]))
 	pass
 
 func _on_cutscene_key_selected(i : int) -> void:
@@ -570,6 +573,10 @@ func use_held_item(special = false) -> void:
 	for p in playerHandler.get_children(false):
 		p.use_held_item(special)
 
+func release_held_item(special = false) -> void:
+	for p in playerHandler.get_children(false):
+		p.release_held_item(special)
+
 var item_scene = preload("res://campaign/entities/loose_item.tscn")
 func _on_dropped_item(data : Array, pos : Vector3) -> void:
 	var i = item_scene.instantiate()
@@ -594,12 +601,128 @@ func _on_player_death() -> void:
 	print("player_died")
 	#print("loading last checkpoint")
 	#purge_world()
+	load_data_from_checkpoint()
+	player_stage = -2 #the digging up from the ground
+	#save_game_data()
+	#play_cutscene("respawn")
 	#load_data_from_save()
-	#start_game()
+	start_game()
+
+func load_data_from_checkpoint() -> void:
+	var file_path = Global.save_filepath + "checkpoint/"
+	
+	#if !FileAccess.file_exists(file_path+"generic_save.dat"):
+		#printerr("no checkpoint savefile exists, loading from last save instead")
+		#load_data_from_save()
+		#return
+	
+	var saved_data = SaveHandler.load_file(file_path,"generic_save.dat")
+	#saved_data = JSON.parse_string(saved_data)
+	if saved_data == null:
+		saved_data = default_save_data.duplicate(true)
+	PlayerInformation.velocity = saved_data["velocity"]
+	PlayerInformation.position = saved_data["position"]
+	PlayerInformation.rotation = saved_data["rotation"]
+	seconds_played = saved_data["seconds_played"]
+	day_timer = saved_data["day_timer"]
+	player_stage = saved_data["player_stage"]
+	level = saved_data["level"]
+	PlayerInformation.food = saved_data["food"]
+	PlayerInformation.max_food = saved_data["max_food"] 
+	PlayerInformation.min_sleep_food = saved_data["min_sleep_food"]
+	PlayerInformation.health = saved_data["health"]
+	PlayerInformation.max_health = saved_data["max_health"]
+	in_game_days = saved_data["in_game_days"]
+	
+	##inventory
+	
+	var inventory_data = SaveHandler.load_file(file_path,"inventory.dat")
+	if inventory_data == null:
+		inventory_data = default_inventory_data.duplicate(true)
+	PlayerInformation.held_item_index = inventory_data["held_item_index"]
+	PlayerInformation.inventory = inventory_data["inventory"]
+	PlayerInformation.emit_signal("update_inventory")
+	
+	##world
+	#var world_data = SaveHandler.load_file(Global.save_filepath,"world_data.dat")
+	#var lose_item_data = world_data["lose_items"]
+	#for li_data in lose_item_data:
+		#_on_dropped_item(li_data[1],li_data[0])
+	var persistent_data = SaveHandler.load_file(file_path,"levels_persistent.dat")
+	if persistent_data == null:
+		persistent_data = {}
+	Global.levels_persistent_data = persistent_data
+	
+	##story
+	##canot be changed from checkpoint
+	var story_info = SaveHandler.load_file(Global.save_filepath,"story_info.dat")
+	if story_info == null:
+		story_info = default_story_info.duplicate(true)
+	Global.cutscenes_watched = story_info["cutscenes_watched"]
+	
+	Global.progression = story_info["progression"]
+	Global.major_points_reached = story_info["major_points_reached"]
 
 func _on_checkpoint_reached() -> void:
 	print("checkpoint reached")
-	save_game_data()
+	#save_game_data()
+	save_checkpoint_data()
+
+func save_checkpoint_data():
+	var save_path = Global.save_filepath + "checkpoint/"
+	##generic_save
+	var game_data = {
+	"velocity" : PlayerInformation.velocity,
+	"position" : PlayerInformation.position,
+	"rotation" : PlayerInformation.rotation,
+	"player_stage" : player_stage,
+	"level" : level,
+	"day_timer" : day_timer,
+	"seconds_played" : seconds_played,
+	"food" : PlayerInformation.food,
+	"max_food" : PlayerInformation.max_food,
+	"min_sleep_food" : PlayerInformation.min_sleep_food,
+	"health" : PlayerInformation.health,
+	"max_health" : PlayerInformation.max_health,
+	"in_game_days" : in_game_days,
+	"version" : Global.version
+	}
+	
+	#game_data = JSON.stringify(game_data)
+	SaveHandler.save_file(save_path,"generic_save.dat", game_data)
+	
+	##world
+	update_persistent_levels_data()
+	SaveHandler.save_file(save_path,"levels_persistent.dat", Global.levels_persistent_data)
+	
+	##preview
+	##preview cannot be specific to checkpoint
+	var summary = "you played the demo version!" + "\nyou also played for about " + Global.get_abreviated_time(seconds_played)
+	var preview_data = SaveHandler.load_file(Global.save_filepath,"preview.dat")
+	preview_data = JSON.parse_string(preview_data)
+	preview_data["progress_summary"] = summary
+	preview_data["seconds_played"] = seconds_played
+	preview_data = JSON.stringify(preview_data)
+	SaveHandler.save_file(Global.save_filepath,"preview.dat",preview_data)
+	
+	
+	##inventory
+	var inventory_data = {
+		"held_item_index" : PlayerInformation.held_item_index,
+		"inventory" : PlayerInformation.inventory
+	}
+	SaveHandler.save_file(save_path,"inventory.dat", inventory_data)
+	
+	
+	
+	
+	##story
+	var story_info = {
+		"cutscenes_watched" : Global.cutscenes_watched,
+		"progression" : Global.progression,
+		"major_points_reached" : Global.major_points_reached,
+	}
+	SaveHandler.save_file(save_path,"story_info.dat", story_info)
 
 func _on_changed_using_senses() -> void:
 	for light in get_tree().get_nodes_in_group("light"):
@@ -635,3 +758,27 @@ func _on_major_point_reached(key : int) -> void:
 
 func _on_tooltip(text) -> void:
 	$tooltip.set_new_tooltip(text)
+
+
+
+##projectiles and entity management
+
+func spawn_entity(key : String, position:Vector3=Vector3.ZERO, velocity:Vector3=Vector3.ZERO,custom_data:Array=[]):
+	if !Global.entities.has(key):
+		return null
+	var e = load(Global.entities[key][0]).instantiate()
+	e.position = position
+	e.velocity = velocity
+	if !custom_data.is_empty():
+		if e.has_method("set_custom_data"):
+			e.set_custom_data(custom_data)
+	entityHandler.add_child(e)
+	return e
+
+
+
+
+
+
+
+

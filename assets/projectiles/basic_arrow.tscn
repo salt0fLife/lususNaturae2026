@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://d14rlgc6jjs3l"]
+
+[ext_resource type="PackedScene" uid="uid://ddgwhxapd5ks7" path="res://assets/items/arrows/arrow_ph.glb" id="1_2itsn"]
+[ext_resource type="Script" path="res://scripts/basic_arrow.gd" id="1_6qox2"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_vg2t0"]
+radius = 0.0330898
+
+[node name="basic_arrow" type="CharacterBody3D"]
+script = ExtResource("1_6qox2")
+gravity = 0.5
+drag = 0.01
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_vg2t0")
+
+[node name="graphics" type="Node3D" parent="."]
+
+[node name="Node3D" type="Node3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="arrow_ph" parent="graphics/Node3D" instance=ExtResource("1_2itsn")]

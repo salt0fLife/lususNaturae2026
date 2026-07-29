@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="item_hammer" load_steps=2 format=3 uid="uid://bidfyr6auogve"]
+
+[ext_resource type="Script" path="res://scripts/item_hammer.gd" id="1_6y2i4"]
+
+[resource]
+script = ExtResource("1_6y2i4")
+damage = 1
+attack_speed = 0.7
+damage_type = 2
+vfx_method_name = ""
+internal_reference_name = "basic_hammer"
+display_name = "hammer"
+item_style = 2
+sounds = 0
+animations = 4
+model_path = "res://assets/items/hammer/hammer_hands_test.glb"
+has_deformations = false
+texture_path = "res://assets/textures/material/DebuggTexture.png"
+interactions = {}

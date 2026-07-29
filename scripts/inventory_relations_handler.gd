@@ -60,6 +60,7 @@ func _input(event):
 					inventory_menu._update_inventory_graphics() #called only here because not actually chaning inventory
 					grabbed_item_index = sel_indx
 					grabbed_item = true
+					play_item_sound(sel_indx, "grab_start")
 				else:
 					#just clicked on empty slot with nothing in hand
 					pass
@@ -67,6 +68,14 @@ func _input(event):
 				_on_item_interaction(grabbed_item_index,sel_indx)
 		else: #interaction already ongoing
 			_on_item_menu_selected(interacting_1,interacting_2)
+
+func play_item_sound(index :int, sound_key : StringName) -> void:
+	var sound = PlayerInformation.get_item_sound(index, sound_key)
+	if sound == "":
+		print("unimplemented sound key of " + str(sound_key))
+		return
+	$item_sounds.stream = load(sound)
+	$item_sounds.play()
 
 func set_inventory_open(val : bool) -> void:
 	inventory_open = val
@@ -120,6 +129,7 @@ func _on_item_interaction(index_1 : int, index_2) -> void: #-> when you click on
 		grabbed_item = false
 		inventory_menu.pretend_empty_index = -1
 		inventory_menu._update_inventory_graphics()
+		play_item_sound(grabbed_item_index, "grab_end")
 		#return item no longer grabbed
 		return
 	var interaction_type = -1
@@ -131,6 +141,7 @@ func _on_item_interaction(index_1 : int, index_2) -> void: #-> when you click on
 	if item_data_2.is_empty(): #clicked on empty slot
 		grabbed_item = false
 		inventory_menu.pretend_empty_index = -1
+		play_item_sound(grabbed_item_index, "grab_end")
 		#just swap item positions
 		var temp_data = PlayerInformation.swap_inventory_slot(index_2, PlayerInformation.inventory[index_1])
 		PlayerInformation.set_inventory_slot(index_1,temp_data)

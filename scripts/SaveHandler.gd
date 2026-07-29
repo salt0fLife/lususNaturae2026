@@ -44,3 +44,5 @@ func get_files_at_path(path : String):
 		printerr("invalid save path provided of * " + path + " *")
 	return DirAccess.get_files_at(path)
 
+func does_file_exist(path : String) -> bool:
+	return FileAccess.file_exists(path)

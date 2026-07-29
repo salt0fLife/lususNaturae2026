@@ -27,6 +27,9 @@ enum type { #types
 	SWORD,
 	BOOK,
 	GUN,
+	HAMMER,
+	BOW,
+	ARROW,
 }
 
 enum sound { #sounds
@@ -35,6 +38,8 @@ enum sound { #sounds
 	SWORD_SOUNDS,
 	DBAT_SOUNDS,
 	GUN_SOUNDS,
+	BOW_SOUNDS,
+	WOOD_TRINKET_SOUNDS,
 }
 
 enum animation { #animations
@@ -42,6 +47,8 @@ enum animation { #animations
 	SWORD_ANIM,
 	DBAT_ANIM,
 	GUN_ANIM,
+	HAMMER_ANIM,
+	BOW_ANIM,
 }
 
 enum food_type { #food types
@@ -62,22 +69,33 @@ var sounds = {
 	sound.BREAD_SOUNDS : {
 		"pickup" : "res://assets/sounds/item_sounds/draw_bread.ogg",
 		"eat" : "ate bread specifically",
-		"dropped" : "dropped bread"
+		"dropped" : "dropped bread",
+		"grab_end" : "set down bread"
 	},
 	sound.ROCK_SOUNDS : {
 		
 	},
 	sound.SWORD_SOUNDS : {
-		"pickup" : "res://assets/sounds/item_sounds/draw_short_sword.ogg",
-		"swing" : "res://assets/sounds/item_sounds/swing_short_sword.ogg"
+		"pickup" : "res://assets/sounds/item_sounds/swordsfx01.wav",#"res://assets/sounds/item_sounds/draw_short_sword.ogg",
+		"swing" : "res://assets/sounds/item_sounds/swing_short_sword.ogg",
+		"grab_start" : "res://assets/sounds/item_sounds/swordInventoryPickUp01.wav",#"res://assets/sounds/item_sounds/sword_grab_start.ogg",
+		"grab_end" : "res://assets/sounds/item_sounds/swordInventoryDrop01.wav",#"res://assets/sounds/item_sounds/sword_grab_end.ogg",
 	},
 	sound.DBAT_SOUNDS : {
 		"pickup" : "res://assets/sounds/item_sounds/draw_dbat.ogg",
-		"eat" : "ate a dead bat specifically"
+		"eat" : "ate a dead bat specifically",
+		"grab_end" : "set down dead bat"
 	},
 	sound.GUN_SOUNDS : {
 		"pickup" : "res://assets/sounds/item_sounds/draw_gun.ogg",
-		"shoot" : "res://assets/sounds/item_sounds/fire_gun.ogg"
+		"shoot" : "res://assets/sounds/item_sounds/fire_gun.ogg",
+		"grab_end" : "set down gun"
+	},
+	sound.BOW_SOUNDS : {
+		
+	},
+	sound.WOOD_TRINKET_SOUNDS : {
+		
 	}
 }
 
@@ -100,6 +118,9 @@ func populate_list(): ##NOTE MAY NOT WORK ON EXPORT
 	print(list)
 	print(interactions)
 
+func key_to_item(key : StringName):
+	return [key,{}]; #[internal_reference_name, attributes/custom_data]
+
 enum {#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations, has_deformations]
 	INDEX_NAME,
 	INDEX_STYLE,
@@ -118,9 +139,6 @@ var interactions = {
 		#key = item_key_that_triggers_this_interaction : [inter_id : int, inter_data : Array]
 		#etc... for all interactions
 	#}
-	
-	
-	
 }
 
 

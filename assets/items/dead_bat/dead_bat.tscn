@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://b6hxq6dgbv15y"]
+[gd_scene load_steps=4 format=3 uid="uid://b6hxq6dgbv15y"]
+
+[ext_resource type="PackedScene" uid="uid://db7de0jfxd8s0" path="res://assets/enemies_wip/bat_creature_blockout.glb" id="1_6lcvw"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_rloq3"]
 size = Vector3(0.12, 0.305, 0.185)
@@ -9,18 +11,58 @@ size = Vector2(0.14, 0.315)
 [node name="dead_bat" type="Node3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("BoxMesh_rloq3")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.68159, 0.407517, -0.607754, -0.731735, 0.37959, -0.566106, -1.81965e-08, 0.830567, 0.556919, -0.0924744, -0.0047082, 0)
+visible = false
 mesh = SubResource("PlaneMesh_w12he")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.779218, -0.349051, 0.520561, 0.626753, 0.433961, -0.647192, -1.81965e-08, 0.830567, 0.556919, 0.105265, -0.0047082, 0)
+visible = false
 mesh = SubResource("PlaneMesh_w12he")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(0.688899, -0.182542, 0.701496, -0.11828, 0.926491, 0.357246, -0.715142, -0.32908, 0.616668, 0, 0, 0)
+visible = false
 shadow_enabled = true
 spot_range = 20.0856
 spot_angle = 28.2223
+
+[node name="bat_creature_blockout" parent="." instance=ExtResource("1_6lcvw")]
+transform = Transform3D(-0.898887, 0.340969, -0.275214, 0.416404, 0.860244, -0.294257, 0.136419, -0.379104, -0.915243, 0, 0, 0)
+
+[node name="Skeleton3D" parent="bat_creature_blockout/Armature" index="0"]
+bones/0/rotation = Quaternion(0.306601, 1.13468e-07, 3.65497e-08, 0.951838)
+bones/1/rotation = Quaternion(0.411604, -7.79649e-15, 9.8134e-08, 0.911363)
+bones/2/rotation = Quaternion(0.146433, 0.376367, -0.264625, 0.875716)
+bones/3/rotation = Quaternion(0.0936541, 0.00276813, 0.0609032, 0.993736)
+bones/4/rotation = Quaternion(0.147238, -0.376999, 0.258907, 0.877017)
+bones/5/rotation = Quaternion(0.0714118, 0.0040402, -0.117987, 0.990436)
+bones/6/rotation = Quaternion(0.375243, 0.887664, 0.250088, -0.0932808)
+bones/7/rotation = Quaternion(-0.397828, -0.288594, 0.131214, 0.860947)
+bones/8/rotation = Quaternion(0.0062099, 2.93845e-08, 0.0338636, 0.999407)
+bones/9/rotation = Quaternion(0.121696, 0.0409452, 0.839231, 0.528398)
+bones/10/rotation = Quaternion(0.0591845, 0.00202775, 0.666834, 0.74285)
+bones/11/rotation = Quaternion(-0.126947, 0.167823, 0.530481, 0.821164)
+bones/12/rotation = Quaternion(-0.353927, 0.133539, 0.272362, 0.884716)
+bones/13/rotation = Quaternion(0.131159, -4.38505e-08, 0.704577, 0.697401)
+bones/14/rotation = Quaternion(-0.375243, 0.887664, 0.250088, 0.0932809)
+bones/15/rotation = Quaternion(-0.397829, 0.288594, -0.131214, 0.860947)
+bones/16/rotation = Quaternion(0.0062099, -3.03091e-08, -0.0338635, 0.999407)
+bones/17/rotation = Quaternion(0.121696, -0.0409452, -0.839231, 0.528398)
+bones/18/rotation = Quaternion(0.0591845, -0.00202774, -0.666834, 0.74285)
+bones/19/rotation = Quaternion(-0.126947, -0.167823, -0.530481, 0.821164)
+bones/20/rotation = Quaternion(-0.353927, -0.133539, -0.272362, 0.884716)
+bones/21/rotation = Quaternion(0.131159, 6.80192e-09, -0.704577, 0.697401)
+bones/22/rotation = Quaternion(0.944646, 3.91115e-08, 1.12611e-07, -0.328091)
+bones/23/rotation = Quaternion(-0.234064, 0.0487516, 0.0896068, 0.966855)
+bones/24/rotation = Quaternion(-0.340963, 0.0958442, 0.0246879, 0.934852)
+bones/25/rotation = Quaternion(-0.254815, 0.0957027, 0.00115935, 0.962242)
+bones/26/rotation = Quaternion(-0.294796, 0.0924755, -0.0428252, 0.95011)
+bones/27/rotation = Quaternion(-0.305397, 0.0459744, -0.106988, 0.945078)
+bones/28/rotation = Quaternion(-0.262964, 0.0023544, -0.0755194, 0.961843)
+
+[editable path="bat_creature_blockout"]

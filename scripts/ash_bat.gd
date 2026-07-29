@@ -107,4 +107,4 @@ func fly_aimlessly_without_landing(delta):
 func play_anim(key : StringName, blend_time: float = 0.0) -> void:
 	if $graphics/bat_creature_blockout/AnimationPlayer.current_animation != key:
 		$graphics/bat_creature_blockout/AnimationPlayer.play(key,blend_time)
-		print(key)
+		#print(key)

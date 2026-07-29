@@ -13,6 +13,8 @@ uniform float day_roughness : hint_range(0, 1);
 uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
 uniform vec4 metallic_texture_channel;
 uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
+uniform sampler2D texture_normal : hint_roughness_normal,filter_linear_mipmap,repeat_enable;
+uniform float normal_scale : hint_range(-16,16);
 uniform float specular;
 uniform float metallic;
 uniform vec3 uv1_scale = vec3(1.0,1.0,1.0);
@@ -21,8 +23,13 @@ uniform vec3 uv2_scale = vec3(1.0,1.0,1.0);
 uniform vec3 uv2_offset;
 #include "res://assets/shaders/cloud_shadows.gdshaderinc"
 
+global uniform float vertex_snap_scale;
+
 void vertex() {
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
+	//VVV vertex jitter
+	//float v_mult = vertex_snap_scale;
+	//VERTEX = round((VERTEX + NODE_POSITION_VIEW)*v_mult)/(v_mult) - NODE_POSITION_VIEW;
 }
 
 void fragment() {
@@ -46,5 +53,9 @@ void fragment() {
 	float rough = mix(roughness,day_roughness,day_color_power*day_color_influence);
 	ROUGHNESS = roughness_tex * rough;
 	SPECULAR = specular;
+	
+	NORMAL_MAP = texture(texture_normal,base_uv).rgb;
+	NORMAL_MAP_DEPTH = normal_scale;
+	
 }
 

@@ -2,11 +2,14 @@ extends TextureRect
 var smooth_reset = false
 
 func _ready():
-	Global.connect("set_post_param", _on_global_set_post_param)
 	Global.connect("change_level",set_to_default)
+	PlayerInformation.connect("perished", set_to_default)
 	Global.connect("play_cutscene_signal",set_to_default)
 
 func _on_global_set_post_param(key, value) -> void:
+	if key == "DEFAULT":
+		set_to_default()
+		return
 	if key == "smooth_reset":
 		smooth_reset = value
 		return

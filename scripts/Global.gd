@@ -52,6 +52,7 @@ const cutscenes: Dictionary = {
 	"dream_1" : ["res://campaign/cutscenes/dream_cutscene.tscn",3.5],
 	"fall_into_world" : ["res://campaign/cutscenes/falling_into_world_cutscene.tscn", 4.0],
 	"gate_warden_introduction" : ["res://campaign/cutscenes/falling_into_world_cutscene.tscn", 1.0],
+	"respawn" : ["res://campaign/cutscenes/death_cutscene.tscn",3.8]
 }
 
 signal play_cutscene_signal
@@ -65,12 +66,13 @@ var progression:int = 0 #keeps track of various important events
 var cutscenes_watched: Array = []
 
 const entities: Dictionary = {
-	"royal_guard" : ["res://campaign/enemies/royal_guard.tscn"]
+	"royal_guard" : ["res://campaign/enemies/royal_guard.tscn"],
+	"basic_arrow" : ["res://assets/projectiles/basic_arrow.tscn"]
 }
 
 signal spawn_entity_signal
-func spawn_entity(key, position : Vector3 = Vector3.ZERO) -> void:
-	emit_signal("spawn_entity_signal", key, position)
+func spawn_entity(key, position : Vector3 = Vector3.ZERO,velocity:Vector3=Vector3.ZERO,custom_data:Array=[]) -> void:
+	emit_signal("spawn_entity_signal", key, position, velocity,custom_data)
 
 signal create_decal_signal
 func create_decal(node) -> void:
@@ -223,4 +225,8 @@ const purifying_damage_types = [
 	damage_types.FIRE
 ]
 
-
+func dir_to_rot(dir :Vector3) -> Vector2:
+	var rot = Vector2.ZERO
+	rot.y = atan2(dir.x, dir.z)
+	rot.x = atan2(sqrt(dir.z*dir.z+dir.x*dir.x),dir.y)
+	return rot

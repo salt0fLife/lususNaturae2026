@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="item_bow" load_steps=2 format=3 uid="uid://1v7swig3j7ry"]
+
+[ext_resource type="Script" path="res://scripts/item_bow.gd" id="1_10cmm"]
+
+[resource]
+script = ExtResource("1_10cmm")
+quiver_size = 20
+max_launch_speed = 10.0
+launch_speed_mult = 1.0
+min_charge_time = 0.3
+internal_reference_name = "default_bow"
+display_name = "bow and quiver"
+item_style = 1
+sounds = 5
+animations = 5
+model_path = "res://assets/items/default_bow/default_bow_with_def.tscn"
+has_deformations = true
+texture_path = "res://assets/textures/material/DebuggTexture.png"
+interactions = {}

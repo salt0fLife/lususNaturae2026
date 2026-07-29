@@ -77,6 +77,7 @@ signal perished
 func die():
 	print("perished")
 	health = max_health
+	sun_sickness = 0.0
 	emit_signal("perished")
 
 signal teleport
@@ -95,9 +96,47 @@ var inventory: Array = [
 	[],
 	[],
 	[],
-	["moldy_bread"],
-	["moldy_bread"]
+	[],
+	[]
 ]
+
+signal update_equipped_items
+var equipped_items: Array = [
+	[], #backpack
+	[], #quiver
+]
+
+func steal_equipped_item_slot(index : int) -> Array:
+	if index >= equipped_items.size() or index < 0:
+		index = 0
+	var data = equipped_items[index]
+	equipped_items[index] = []
+	emit_signal("update_equipped_items")
+	return data
+
+func set_equipped_item_slot(index : int, data : Array) -> void:
+	equipped_items[index] = data
+	emit_signal("update_equipped_items")
+
+func get_equipped_item_data(index: int) -> Array:
+	var key = ""
+	if index >= equipped_items.size() or index < 0:
+		index = 0
+	var data = equipped_items[index]
+	equipped_items[index] = []
+	if data.is_empty():
+		return []
+	key = data[0]
+	return Items.list[key]
+
+func swap_equipped_item_slot(index : int, new_data : Array) -> Array: #sets item and returns item it replaced
+	if index >= equipped_items.size() or index < 0:
+		index = 0
+	var old_data = equipped_items[index]
+	equipped_items[index] = new_data
+	emit_signal("update_equipped_items")
+	return old_data
+
 
 func change_held_item(index : int) -> void:
 	if index >= inventory.size() or index < 0:
@@ -186,6 +225,26 @@ func get_held_item_sound(sound_key : String) -> String:
 		return ""
 	 #["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]
 	var sk = data[2]
+	if !Items.sounds.has(sk):
+		printerr("use of invalid sound key " + str(sk))
+		return ""
+	
+	var sounds = Items.sounds[sk]
+	if !sounds.has(sound_key):
+		printerr("item does not include sound " + str(sound_key))
+		return ""
+	return sounds[sound_key]
+
+func get_item_sound(index : int, sound_key : String, equipped:bool = false) -> String:
+	var data = []#get_item_data(index)
+	if equipped:
+		data = get_equipped_item_data(index)
+	else:
+		data = get_item_data(index)
+	if data == []:
+		return ""
+	 #["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]
+	var sk = data[Items.INDEX_SOUNDS]
 	if !Items.sounds.has(sk):
 		printerr("use of invalid sound key " + str(sk))
 		return ""

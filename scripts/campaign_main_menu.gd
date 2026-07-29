@@ -90,7 +90,36 @@ func play_selected_save() -> void:
 	print("loading game from filepath " + saves_list[selected_save][1])
 	Global.save_filepath = saves_list[selected_save][1]
 	
-	get_tree().call_deferred("change_scene_to_file", "res://campaign/campaign_main.tscn")
+	#get_tree().call_deferred("change_scene_to_file", "res://campaign/campaign_main.tscn")
+	
+	
+	game_status = 0.0
+	scene_to_change_to = "res://campaign/campaign_main.tscn"
+	ResourceLoader.load_threaded_request(scene_to_change_to)
+	starting_game = true
+
+var game_status = 0.0
+var starting_game = false
+var scene_to_change_to = ""
+@onready var loading_screen = $Control/loading_screen
+func _process(delta):
+	if starting_game:
+		if !ResourceLoader.has_cached(scene_to_change_to):
+			print("well thats a problem")
+		var progress = []
+		var status = ResourceLoader.load_threaded_get_status(scene_to_change_to, progress)
+		print("game progress : " + str(progress[0]))
+		game_status = lerp(game_status,float(progress[0]),delta*10.0)
+		if game_status > 0.99 and progress[0] == 1:
+			game_status = 1.0
+		print("game status : " + str(game_status))
+		loading_screen.visible = true
+		loading_screen.update_progress(game_status)
+		if ResourceLoader.THREAD_LOAD_LOADED and game_status == 1.0:#progress[0] >= 1.0:
+			starting_game = false
+			#get_tree().change_scene_to_packed(ResourceLoader.load_threaded_get(scene_to_change_to))
+			get_tree().call_deferred("change_scene_to_packed",ResourceLoader.load_threaded_get(scene_to_change_to))
+			#return #finished loading
 
 func return_to_main_menu():
 	get_tree().call_deferred("change_scene_to_file", "res://menus/main_menu.tscn")

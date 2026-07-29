@@ -19,6 +19,8 @@ func update_graphics_from_data() -> void:
 	model.rotation.z = PI*0.5
 	model.rotation.y = randf_range(-PI, PI)
 	add_child(model)
+	#if !data.has({}):
+		#data.append({})
 
 func interact():
 	return [Global.interact_returns.PICKUP_ITEM,get_path()]

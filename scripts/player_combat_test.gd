@@ -7,6 +7,7 @@ extends CharacterBody3D
 @onready var camera = $graphics/cameraHandler/senses_camera
 @onready var anim = $graphics/cameraHandler/fp_hands_wip/AnimationPlayer
 @onready var held_item_handler = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/held_item_handler/node3d
+@onready var prop_1_handler = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/BoneAttachment3D/prop_1_handler
 @onready var item_sounds = $graphics/item_sounds
 @onready var skeleton = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D
 @onready var weapon_node = $graphics/cameraHandler/senses_camera/weapon_node
@@ -30,8 +31,9 @@ var mouse_sensitivity = 1.5
 
 ##movement
 #state stuff
-var sprinting:bool = false
+var sprinting:bool = true
 var crouching:bool = false
+var aiming_down_sights:bool = false
 #dash
 @export_group("dash")
 @export var max_dash:float = 3.0
@@ -59,6 +61,7 @@ var wall_run_timer : float = 0.0
 @export var min_wallrun_speed : float = 5.0
 var wall_run_cooldown : float = 0.0
 var last_wall_run_normal = Vector3.ZERO
+var last_wall_groups = []
 
 ##graphics
 var desired_CH_height: float = 1.5
@@ -77,18 +80,20 @@ func _input(event):
 	if event is InputEventMouseMotion and !Global.in_game_mouse:
 		var TempRotation = rotation.x - event.relative.y /1000 * mouse_sensitivity
 		cameraHandler.rotation.x += TempRotation
-		cameraHandler.rotation.x = clamp(cameraHandler.rotation.x, -1.25, 1.5)
+		cameraHandler.rotation.x = clamp(cameraHandler.rotation.x, -1.5, 1.5) #formerly -1.25,1.5
 		graphics.rotation.y -= event.relative.x /1000 * mouse_sensitivity
-	if Input.is_action_just_pressed("sprint") and Input.is_action_pressed("up"):
-		sprinting = true
-	if Input.is_action_just_released("sprint"):
-		if sprinting_timer < 0.25:
-			dash()
-		sprinting = false
-	if Input.is_action_just_released("up"):
-		sprinting = false
-	if Input.is_action_just_pressed("up") and Input.is_action_pressed("sprint"):
-		sprinting = true
+	if Input.is_action_just_pressed("sprint"):
+		sprinting = !sprinting
+	#if Input.is_action_just_pressed("sprint") and Input.is_action_pressed("up"):
+		#sprinting = true
+	#if Input.is_action_just_released("sprint"):
+		#if sprinting_timer < 0.25:
+			#dash()
+		#sprinting = false
+	#if Input.is_action_just_released("up"):
+		#sprinting = false
+	#if Input.is_action_just_pressed("up") and Input.is_action_pressed("sprint"):
+		#sprinting = true
 	if Input.is_action_just_pressed("crouch"):
 		crouching = true
 	if Input.is_action_just_released("crouch"):
@@ -106,8 +111,9 @@ func lunge() -> void:
 	var look_dir = get_look_dir()
 	velocity = look_dir*lunge_speed
 
+@onready var look_dir_reference = $graphics/cameraHandler/look_dir_reference
 func get_look_dir() -> Vector3:
-	return ($graphics/cameraHandler/look_dir_reference.global_position - cameraHandler.global_position)
+	return (look_dir_reference.global_position - cameraHandler.global_position)
 
 func dash() -> void:
 	if !current_dash >= 1.0:
@@ -200,6 +206,8 @@ func update_sun_sickness(delta) -> void:
 		$sunlight_indicator/AudioStreamPlayer.volume_db = lerp($sunlight_indicator/AudioStreamPlayer.volume_db, -80.0 ,delta*8.0)
 
 func _process(delta):
+	if drawing_bow:
+		bow_draw_timer += delta
 	update_sun_sickness(delta)
 	update_tooltip()
 	if combat_stance > 0.0:
@@ -210,11 +218,11 @@ func _process(delta):
 		cameraHandler.position.y = lerp(cameraHandler.position.y, 1.12,delta*12.0)
 	else:
 		cameraHandler.position.y = lerp(cameraHandler.position.y, 1.65,delta*12.0)
-	if movement_scaling_anims.keys().has(anim.current_animation):
-		var speed = Vector2(velocity.x,velocity.z).length()
-		anim.speed_scale = (speed/movement_scaling_anims[anim.current_animation])*0.25 + 0.75
-	else:
-		anim.speed_scale = 1.0
+	#if movement_scaling_anims.keys().has(anim.current_animation):
+		#var speed = Vector2(velocity.x,velocity.z).length()
+		#anim.speed_scale = (speed/movement_scaling_anims[anim.current_animation])*0.25 + 0.75
+	#else:
+		#anim.speed_scale = 1.0
 	
 	##timers and such
 	if sprinting:# and Input.get_vector("left", "right", "up", "down"):
@@ -265,6 +273,14 @@ func get_movement_anim(movement : String) -> String:
 						return "idle_holding_sword"
 					Items.animation.GUN_ANIM:
 						return "idle_holding_gun"
+					Items.animation.HAMMER_ANIM:
+						return "idle_holding_hammer"
+					Items.animation.BOW_ANIM:
+						if drawing_bow:
+							return "idle_holding_bow_drawn"
+						elif bow_loaded:
+							return "idle_holding_bow_loaded"
+						else: return "idle_holding_bow_empty"
 					_:
 						return "idle_holding_bread-metarig_001"
 		"sprinting":
@@ -280,6 +296,14 @@ func get_movement_anim(movement : String) -> String:
 						#return "idle_holding_sword"
 					Items.animation.GUN_ANIM:
 						return "run_holding_gun"
+					Items.animation.HAMMER_ANIM:
+						return "run_holding_hammer"
+					Items.animation.BOW_ANIM:
+						if drawing_bow:
+							return "idle_holding_bow_drawn"
+						elif bow_loaded:
+							return "idle_holding_bow_loaded"
+						else: return "idle_holding_bow_empty"
 					_:
 						return "run_holding_sword"
 		"jump":
@@ -299,6 +323,14 @@ func get_movement_anim(movement : String) -> String:
 						return "idle_holding_sword"
 					Items.animation.GUN_ANIM:
 						return "idle_holding_gun"
+					Items.animation.HAMMER_ANIM:
+						return "idle_holding_hammer"
+					Items.animation.BOW_ANIM:
+						if drawing_bow:
+							return "idle_holding_bow_drawn"
+						elif bow_loaded:
+							return "idle_holding_bow_loaded"
+						else: return "idle_holding_bow_empty"
 					_:
 						return "falling_holding_bread"
 		"vault":
@@ -312,7 +344,7 @@ func get_movement_anim(movement : String) -> String:
 						return "vault_empty"
 		"walk":
 			if held_item_data == []:
-				return "idle_empty"
+				return "idle_empty_shown"
 			else:
 				match held_item_data[Items.INDEX_ANIMATIONS]:
 					Items.animation.BREAD_ANIM:
@@ -339,7 +371,13 @@ var action_animations = [
 	"punch_empty_2",
 	"drop_bread",
 	"draw_gun",
-	"shoot_gun"
+	"shoot_gun",
+	"draw_hammer",
+	"swing_hammer",
+	"draw_bow",
+	"shoot_bow_end_full",
+	"shoot_bow_start",
+	"load_bow",
 ]
 
 var movement_scaling_anims = {
@@ -348,24 +386,40 @@ var movement_scaling_anims = {
 
 func play_anim(key: String, interrupting: bool = false, blend_time: float = 0.2, speed : float = 1.0):
 	if anim.current_animation == key:
+		anim.speed_scale = speed
 		return
 	if action_animations.has(key): #action animations always interrupt action animations
 		anim.play(key,blend_time, speed)
-		print("playing anim " + key)
+		#print("playing anim " + key)
 		return
 	if action_animations.has(anim.current_animation) and !interrupting:
 		return
 	anim.play(key,blend_time,speed)
-	print("playing anim " + key)
+	#print("playing anim " + key)
 	pass
 
+var last_wall_normal = Vector3.ZERO
+@export var wall_jump_max_latency = 0.1
+var wall_jump_latency_timer = 0.0
+
+@export var sprint_animation_speed_mult = 1.0 #for syncing animation to game_feel
+func can_wall_jump() -> bool:
+	if is_on_wall() or wall_jump_latency_timer > 0.0:
+		return true
+	return false
+
 var airborn = false
+var coyote_time:float = 0
+@export var max_coyote_time :float = 0.1
 func _physics_process(delta):
 	# Add the gravity.
 	if not is_on_floor():
 		if !airborn:
-			airborn = true
-			#become airborn
+			if coyote_time > max_coyote_time:
+				airborn = true
+				#become airborn
+			else:
+				coyote_time += delta
 		#combat_stance = 3.5
 		if combat_stance == 0.0:
 			combat_stance = 1.0
@@ -374,6 +428,7 @@ func _physics_process(delta):
 		else:
 			velocity.y -= velocity.y * (1.0 - abs(dash_vel.y)) * delta
 	else:
+		coyote_time = 0.0
 		if airborn:
 			airborn = false
 			#landed
@@ -383,12 +438,13 @@ func _physics_process(delta):
 
 	# Handle jump.
 	if Input.is_action_just_pressed("jump"):
-		if is_on_floor():
+		if !airborn:#is_on_floor():
 			velocity.y = jump_strength
 			graphics.jump()
+			airborn = true
 			#play_anim(get_movement_anim("jump"))
-		elif is_on_wall():
-			var normal = get_wall_normal()
+		elif can_wall_jump():
+			var normal = last_wall_normal
 			if Input.is_action_pressed("up") and can_vault() and ! vaulting:
 				vaulting = true
 				graphics.vault()
@@ -398,7 +454,8 @@ func _physics_process(delta):
 				velocity.y = jump_strength
 				velocity += get_look_dir()*clamp(velocity.length(), 0.0, jump_strength*0.25)
 				velocity += normal * jump_strength
-				graphics.wall_jump(normal)
+				graphics.wall_jump(normal,last_wall_groups)
+				
 				wall_run_timer *= 0.75
 				wall_run_cooldown = 0.2
 		else:
@@ -428,15 +485,21 @@ func _physics_process(delta):
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (graphics.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if direction and !dash_timer > 0.0 and !vaulting:
-		if is_on_floor():
-			if crouching:
+		if !airborn:#is_on_floor():
+			if crouching or aiming_down_sights:
 				play_anim(get_movement_anim("idle"))
 				velocity.x += ((crouch_speed * direction.x) - velocity.x) * delta * acceleration
 				velocity.z += ((crouch_speed * direction.z) - velocity.z) * delta * acceleration
 			elif sprinting:
 				graphics.running(delta, velocity)
 				var speed = Vector2(velocity.x,velocity.z).length()
-				play_anim(get_movement_anim("sprinting"))
+				var a_speed = clamp((speed/sprint_speed),0.9,10.0)*sprint_animation_speed_mult*graphics.running_speed_mult
+				#play_anim(get_movement_anim("sprinting"),false, 0.5, a_speed)
+				if input_dir.y < 0.0:
+					#holding forward
+					play_anim(get_movement_anim("sprinting"),false, 0.5, a_speed)
+				else:
+					play_anim(get_movement_anim("idle"))
 				if !speed > sprint_speed:
 					#play_anim(get_movement_anim("walk"))
 					velocity.x += ((sprint_speed * direction.x) - velocity.x) * delta * acceleration
@@ -504,6 +567,12 @@ func _physics_process(delta):
 	
 	move_and_slide()
 	update_player_information()
+	if is_on_wall():
+		wall_jump_latency_timer = wall_jump_max_latency
+		last_wall_normal = get_wall_normal()
+		last_wall_groups = get_slide_collision(0).get_collider(0).get_groups()
+	else:
+		wall_jump_latency_timer -= delta
 
 func update_velocity_air(wishdir : Vector3, vel : Vector3, frame_time : float) -> Vector3:
 	#apply friction
@@ -519,8 +588,8 @@ func update_velocity_air(wishdir : Vector3, vel : Vector3, frame_time : float) -
 	var add_speed = (sprint_speed - current_speed)
 	if add_speed < 0:
 		add_speed = 0
-	elif add_speed > acceleration * frame_time: #should be accaleration/4 but i made it more fun :D
-		add_speed = acceleration * frame_time
+	elif add_speed > air_acceleration * frame_time: #should be accaleration/4 but i made it more fun :D
+		add_speed = air_acceleration * frame_time
 	return vel + add_speed * wishdir
 
 func tp(pos : Vector3, rot : Vector2, vel := velocity) -> void:
@@ -565,6 +634,12 @@ func attempt_loose_item_pickup(path_to : String) -> void:
 	node.call_deferred("queue_free")
 	print("picked up " + str(data[0]))
 
+#weapon and item based info
+var bow_loaded : bool = false #if your bow has an arrow knocked (for animations mainly)
+var bow_draw_timer : float = 0.0 #how long your bow has been drawn
+var drawing_bow : bool = false #if your drawing it back
+var held_item_attributes: Dictionary = {}
+
 func use_held_item(special = false):
 	var data = PlayerInformation.get_held_item_data()
 	if data.is_empty():
@@ -603,6 +678,86 @@ func use_held_item(special = false):
 			play_anim("shoot_gun",true,0.0)
 			graphics.shoot()
 			shoot_held_item()
+		Items.type.HAMMER:
+			play_anim("swing_hammer",true,0.0)
+			print("swung hammer")
+		Items.type.BOW:
+			start_using_bow(special)
+
+func release_held_item(special = false):
+	var data = PlayerInformation.get_held_item_data()
+	if data.is_empty():
+		print("punched")
+		combat_stance = 3.5
+		if special:
+			play_anim("punch_empty_2")
+		else:
+			play_anim("punch_empty_1")
+		return
+	var type = data[3]
+	match type:
+		Items.type.SWORD:
+			if special:
+				print("stopped blocking")
+		Items.type.GUN:
+			if special:
+				print("stopped aiming_down_sights")
+		Items.type.BOW:
+			if !special:
+				if drawing_bow:
+					shoot_bow()
+
+func start_using_bow(special : bool) -> void:
+	if !special:
+		if bow_loaded:
+			play_anim("shoot_bow_start",true,0.0)
+			aiming_down_sights = true #disables movement stuff, slows, and zooms slightly
+			drawing_bow = true
+			bow_draw_timer = 0.0
+		else:
+			load_bow()
+
+func load_bow():
+	var arrow_graphics = load("res://assets/items/arrows/arrow_ph.glb").instantiate()
+	#^^^ get frow quiver aka held_item_attributes["inventory"]
+	prop_1_handler.add_child(arrow_graphics)
+	prop_item_models.append(arrow_graphics)
+	play_anim("load_bow", true, 0.0)
+	bow_loaded = true
+	pass
+
+func shoot_bow():
+	if bow_draw_timer < 0.1:
+		print("bow spam, canceling shot")
+		aiming_down_sights = false
+		drawing_bow = false
+		play_anim("idle_holding_bow_loaded", true)
+		return
+	
+	var bow_info = PlayerInformation.get_held_item_data()
+	var bow_data = bow_info[Items.INDEX_DATA]
+	var min_draw_time = bow_data[0]
+	
+	
+	
+	
+	print("shot bow")
+	aiming_down_sights = false
+	drawing_bow = false
+	bow_loaded = false
+	clear_item_props()
+	if bow_draw_timer > min_draw_time:
+		print("perfect draw shooting accurately")
+		play_anim("shoot_bow_end_full")
+		var dir = get_look_dir()
+		var pos = look_dir_reference.global_position
+		Global.spawn_entity("basic_arrow",pos,dir*bow_data[3],["default_arrow",self])
+	else:
+		print("inadequate draw, misfire")
+		play_anim("shoot_bow_end_full")
+		var dir = get_look_dir()
+		var pos = look_dir_reference.global_position
+		Global.spawn_entity("basic_arrow",pos,dir*bow_data[3]*0.1,["default_arrow",self])
 
 func shoot_held_item() -> void:
 	var data = PlayerInformation.get_held_item_data()[Items.INDEX_DATA]
@@ -636,6 +791,10 @@ func _on_anim_finished(key) -> void:
 			swing_held_item()
 		"swing_sword_2":
 			swing_held_item()
+		"load_bow":
+			if Input.is_action_pressed("use_item"):
+				print("bow loaded continuing shot")
+				use_held_item()
 	if action_animations.has(key):
 		#anim.play(get_movement_anim("idle"))
 		pass
@@ -666,15 +825,23 @@ func _on_dropped_item(_data, _pos) -> void:
 	pass
 
 var held_item_models = []
+var prop_item_models = []
 func update_held_item_graphics() -> void:
+	aiming_down_sights = false
+	bow_loaded = false
 	for old in held_item_models:#.get_children(false):
 		old.queue_free()
+	for old_p in prop_item_models:
+		old_p.queue_free()
 	held_item_models = []
+	prop_item_models = []
 	var item_data = PlayerInformation.get_held_item_data()
 	if item_data == []:
 		play_anim(get_movement_anim("idle"),true)
 		#interupts drop animation :/
 		return
+	held_item_attributes = PlayerInformation.inventory[PlayerInformation.held_item_index][1]
+	print(held_item_attributes)
 	#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]
 	var path = item_data[Items.INDEX_MODEL]
 	var g = load(path).instantiate()
@@ -700,8 +867,17 @@ func update_held_item_graphics() -> void:
 			play_anim("draw_sword_fancifully", true, 0.0)
 		Items.animation.GUN_ANIM:
 			play_anim("draw_gun",true,0.0)
+		Items.animation.HAMMER_ANIM:
+			play_anim("draw_hammer",true,0.0)
+		Items.animation.BOW_ANIM:
+			play_anim("draw_bow")
 		_:
 			play_anim("draw_bread", true, 0.0)
+
+func clear_item_props() -> void:
+	for old_p in prop_item_models:
+		old_p.queue_free()
+	prop_item_models = []
 
 func play_held_item_sound(key : String, speed: float = 1.0) -> void:
 	var s = PlayerInformation.get_held_item_sound(key)
@@ -715,4 +891,7 @@ func perform_action(key : String) -> void:
 	play_anim(key, true, 0.2, 1.0)
 	pass
 
+func _on_projectile_hit_enemy(p_dam_amount:float,p_dam_type:int,entity_node):
+	print("recieved projectile hit info")
+	pass
 
