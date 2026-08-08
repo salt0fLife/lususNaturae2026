@@ -1,0 +1,81 @@
+[gd_scene load_steps=7 format=3 uid="uid://c4k6hu8hxovwo"]
+
+[ext_resource type="Shader" path="res://assets/shaders/stylized_foliage.gdshader" id="2_p24h8"]
+[ext_resource type="Texture2D" uid="uid://chqkigbq5i4uq" path="res://assets/glb_temp/foliage_foliage_02.png" id="5_4nqtf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7wwtt"]
+resource_name = "foliage_02"
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_texture = ExtResource("5_4nqtf")
+roughness = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_6uope"]
+_surfaces = [{
+"aabb": AABB(-0.345947, 0, -0.349456, 0.743939, 0.402642, 0.737537),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray(4, 0, 3, 0, 1, 0, 4, 0, 5, 0, 3, 0, 0, 0, 5, 0, 4, 0, 0, 0, 2, 0, 5, 0, 10, 0, 9, 0, 7, 0, 10, 0, 11, 0, 9, 0, 6, 0, 11, 0, 10, 0, 6, 0, 8, 0, 11, 0, 16, 0, 15, 0, 13, 0, 16, 0, 17, 0, 15, 0, 12, 0, 17, 0, 16, 0, 12, 0, 14, 0, 17, 0),
+"name": "foliage_02",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 18,
+"vertex_data": PackedByteArray(102, 210, 0, 0, 70, 212, 0, 0, 162, 42, 0, 0, 59, 17, 0, 0, 133, 223, 50, 192, 202, 200, 0, 0, 95, 56, 47, 201, 54, 5, 0, 0, 144, 96, 0, 0, 247, 140, 0, 0, 11, 114, 255, 255, 171, 125, 0, 0, 0, 0, 0, 0, 1, 162, 0, 0, 255, 255, 0, 0, 1, 162, 0, 0, 0, 0, 50, 192, 136, 179, 0, 0, 255, 255, 47, 201, 90, 180, 0, 0, 255, 127, 0, 0, 2, 122, 0, 0, 255, 127, 255, 255, 89, 145, 0, 0, 138, 103, 0, 0, 190, 3, 0, 0, 210, 48, 0, 0, 255, 255, 0, 0, 145, 86, 50, 192, 0, 0, 0, 0, 14, 31, 47, 201, 19, 252, 0, 0, 235, 114, 0, 0, 107, 138, 0, 0, 79, 92, 255, 255, 110, 133, 0, 0)
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_vakk8"]
+resource_name = "foliage_Plane_014"
+_surfaces = [{
+"aabb": AABB(-0.345947, 0, -0.349456, 0.743939, 0.402642, 0.737537),
+"attribute_data": PackedByteArray(0, 0, 255, 255, 255, 255, 255, 255, 0, 0, 209, 177, 255, 255, 41, 174, 255, 127, 255, 255, 255, 127, 222, 151, 0, 0, 255, 255, 255, 255, 255, 255, 0, 0, 209, 177, 255, 255, 41, 174, 255, 127, 255, 255, 255, 127, 222, 151, 0, 0, 255, 255, 255, 255, 255, 255, 0, 0, 209, 177, 255, 255, 41, 174, 255, 127, 255, 255, 255, 127, 222, 151),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray(4, 0, 3, 0, 1, 0, 4, 0, 5, 0, 3, 0, 0, 0, 5, 0, 4, 0, 0, 0, 2, 0, 5, 0, 10, 0, 9, 0, 7, 0, 10, 0, 11, 0, 9, 0, 6, 0, 11, 0, 10, 0, 6, 0, 8, 0, 11, 0, 16, 0, 15, 0, 13, 0, 16, 0, 17, 0, 15, 0, 12, 0, 17, 0, 16, 0, 12, 0, 14, 0, 17, 0),
+"material": SubResource("StandardMaterial3D_7wwtt"),
+"name": "foliage_02",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 18,
+"vertex_data": PackedByteArray(102, 210, 0, 0, 70, 212, 108, 233, 162, 42, 0, 0, 59, 17, 9, 209, 133, 223, 50, 192, 202, 200, 108, 233, 95, 56, 47, 201, 54, 5, 9, 209, 144, 96, 0, 0, 247, 140, 61, 221, 11, 114, 255, 255, 171, 125, 19, 221, 0, 0, 0, 0, 1, 162, 209, 141, 255, 255, 0, 0, 1, 162, 209, 141, 0, 0, 50, 192, 136, 179, 209, 141, 255, 255, 47, 201, 90, 180, 209, 141, 255, 127, 0, 0, 2, 122, 189, 134, 255, 127, 255, 255, 89, 145, 189, 134, 138, 103, 0, 0, 190, 3, 207, 188, 210, 48, 0, 0, 255, 255, 41, 213, 145, 86, 50, 192, 0, 0, 207, 188, 14, 31, 47, 201, 19, 252, 41, 213, 235, 114, 0, 0, 107, 138, 255, 200, 79, 92, 255, 255, 110, 133, 41, 201, 95, 125, 212, 11, 36, 122, 210, 14, 95, 125, 212, 11, 36, 122, 210, 14, 173, 123, 202, 13, 167, 123, 207, 13, 47, 86, 36, 48, 218, 79, 46, 214, 47, 86, 36, 48, 218, 79, 46, 214, 0, 0, 255, 127, 249, 2, 53, 131, 209, 109, 133, 246, 188, 113, 190, 250, 209, 109, 133, 246, 188, 113, 190, 250, 85, 111, 144, 248, 92, 111, 151, 248)
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_6uope")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wu27b"]
+render_priority = 0
+shader = ExtResource("2_p24h8")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
+shader_parameter/point_size = null
+shader_parameter/roughness = 1.0
+shader_parameter/day_roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/wind_speed_effect = 4.0
+shader_parameter/wind_strength = 5.0
+shader_parameter/backlight = Color(1, 1, 1, 1)
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/texture_albedo = ExtResource("5_4nqtf")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+
+[node name="foliage_01" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00967765, 0, -0.0329273)
+mesh = SubResource("ArrayMesh_vakk8")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("ShaderMaterial_wu27b")

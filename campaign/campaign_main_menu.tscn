@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://chyavasev5lhs"]
+[gd_scene load_steps=28 format=3 uid="uid://chyavasev5lhs"]
 
 [ext_resource type="Script" path="res://scripts/campaign_main_menu.gd" id="1_l8sty"]
 [ext_resource type="Script" path="res://scripts/loading_screen.gd" id="2_81hhl"]
@@ -24,6 +24,8 @@
 [ext_resource type="Texture2D" uid="uid://dc1lawwfofykd" path="res://assets/textures/movies/mal0/frame0023.png" id="22_g1vum"]
 [ext_resource type="Texture2D" uid="uid://b3nrmylhibjeh" path="res://assets/textures/movies/mal0/frame0024.png" id="23_ceg02"]
 [ext_resource type="Texture2D" uid="uid://jpux1mnbh5pi" path="res://assets/textures/movies/mal0/frame0026.png" id="24_jvokn"]
+[ext_resource type="AudioStream" uid="uid://bl2bpgw0la1fs" path="res://assets/sounds/gui_interactions/button_hover_2.ogg" id="25_wa75y"]
+[ext_resource type="AudioStream" uid="uid://cylpgcme2mveo" path="res://assets/sounds/gui_interactions/button_click_2.ogg" id="26_d6wx4"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ys1xy"]
 animations = [{
@@ -572,3 +574,9 @@ offset_bottom = -18.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "loading game..."
+
+[node name="button_hovered" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("25_wa75y")
+
+[node name="button_clicked" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("26_d6wx4")

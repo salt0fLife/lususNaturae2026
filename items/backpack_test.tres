@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="item_bag" load_steps=2 format=3 uid="uid://iw0aehgs5esi"]
+
+[ext_resource type="Script" path="res://scripts/item_bag.gd" id="1_r6r5d"]
+
+[resource]
+script = ExtResource("1_r6r5d")
+max_capacity = 10
+internal_reference_name = "backpack_default"
+display_name = "backpack"
+item_style = 1
+sounds = 0
+animations = 0
+model_path = "res://assets/items/bread/bread.tscn"
+has_deformations = false
+texture_path = "res://assets/textures/material/DebuggTexture.png"
+interactions = {}

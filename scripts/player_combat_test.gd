@@ -74,6 +74,7 @@ func _ready():
 	anim.connect("animation_finished", _on_anim_finished)
 	PlayerInformation.connect("dropped_item", _on_dropped_item)
 	PlayerInformation.connect("update_held_item", update_held_item_graphics)
+	PlayerInformation.connect("attempt_to_drop_item", _on_item_drop_attempt)
 	update_held_item_graphics()
 
 func _input(event):
@@ -627,8 +628,16 @@ func attempt_loose_item_pickup(path_to : String) -> void:
 	if node == null:
 		return #cannot pickup is null
 	if !PlayerInformation.is_hand_empty():
-		print("cannot pickup, hand is full")
-		return #hand is full cannot pickup
+		var data = node.data #should be item but syntax highlighting :/
+		var vacancy = PlayerInformation.get_inventory_vacancy(data)
+		if vacancy == -1:
+			print("cannot pickup, inventory is full")
+			return #hand is full cannot pickup
+		else:
+			PlayerInformation.set_inventory_slot(vacancy,data)
+			node.call_deferred("queue_free")
+			print("stored " + str(data[0]) + " in nearest free slot")
+			return #finished
 	var data = node.data
 	PlayerInformation.set_inventory_slot(PlayerInformation.held_item_index,data)
 	node.call_deferred("queue_free")
@@ -738,14 +747,13 @@ func shoot_bow():
 	var bow_data = bow_info[Items.INDEX_DATA]
 	var min_draw_time = bow_data[0]
 	
-	
+	clear_item_props()
 	
 	
 	print("shot bow")
 	aiming_down_sights = false
 	drawing_bow = false
 	bow_loaded = false
-	clear_item_props()
 	if bow_draw_timer > min_draw_time:
 		print("perfect draw shooting accurately")
 		play_anim("shoot_bow_end_full")
@@ -824,6 +832,12 @@ func _on_dropped_item(_data, _pos) -> void:
 	print("dropped_item")
 	pass
 
+func _on_item_drop_attempt(index : int) -> void:
+	var data = PlayerInformation.steal_inventory_slot(index)
+	PlayerInformation.emit_signal("dropped_item", data, look_dir_reference.global_position)
+	PlayerInformation.emit_signal("update_held_item")
+	play_anim("drop_bread", true, 0.0)
+
 var held_item_models = []
 var prop_item_models = []
 func update_held_item_graphics() -> void:
@@ -870,7 +884,7 @@ func update_held_item_graphics() -> void:
 		Items.animation.HAMMER_ANIM:
 			play_anim("draw_hammer",true,0.0)
 		Items.animation.BOW_ANIM:
-			play_anim("draw_bow")
+			play_anim("draw_bow",true,0.0)
 		_:
 			play_anim("draw_bread", true, 0.0)
 

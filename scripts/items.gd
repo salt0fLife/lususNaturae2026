@@ -30,6 +30,7 @@ enum type { #types
 	HAMMER,
 	BOW,
 	ARROW,
+	BAG,
 }
 
 enum sound { #sounds

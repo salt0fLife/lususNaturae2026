@@ -1,6 +1,7 @@
 extends Node
 
 func _ready():
+	#MusicHandler.play_song("res://assets/sounds/music/menu_midi_test.wav")
 	$control/Panel/VBoxContainer/campaign.connect("button_down", play_campaign)
 	$control/Panel/VBoxContainer/multiplayer.connect("button_down", play_multiplayer)
 	$control/Panel/VBoxContainer/settings.connect("button_down", open_settings)
@@ -22,6 +23,9 @@ func open_settings() -> void:
 	pass
 
 func play_campaign() -> void:
+	$button_clicked.play()
+	await $button_clicked.finished
+	
 	print("opening campaign menu")
 	get_tree().call_deferred("change_scene_to_file", "res://campaign/campaign_main_menu.tscn")
 	pass
@@ -31,4 +35,5 @@ func play_multiplayer() -> void:
 
 func _on_button_hovered() -> void:
 	print("button hovered")
+	$button_hovered.play()
 	pass

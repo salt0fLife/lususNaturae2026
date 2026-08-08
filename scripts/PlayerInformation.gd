@@ -40,7 +40,7 @@ var min_sleep_food: int = 4
 var sun_sickness: float = 0.0 #builds up when in sunlight goes down in shade
 
 var world_time: float = 0.0 #i know its funny to store here but it fits
-var world_overcast : float = 0.0 #1.0 means no sunlight even during day
+var world_overcast : float = 1.0 #1.0 means no sunlight even during day
 #
 
 var wall_sliding_timer:float = 0.0
@@ -92,51 +92,68 @@ var held_item_index: int = 0 #-1 is an empty hand (problem is picking up items,
 #i made it so you have to have empty hand, so now -1 is not allowed as it is not valid pickup spot)
 signal update_inventory
 signal update_held_item
+const equipment_slot_count = 2 #number of slots at end that are for equipment instead of real item slot
 var inventory: Array = [
 	[],
 	[],
 	[],
 	[],
-	[]
-]
-
-signal update_equipped_items
-var equipped_items: Array = [
+	[],
 	[], #backpack
 	[], #quiver
 ]
 
-func steal_equipped_item_slot(index : int) -> Array:
-	if index >= equipped_items.size() or index < 0:
-		index = 0
-	var data = equipped_items[index]
-	equipped_items[index] = []
-	emit_signal("update_equipped_items")
-	return data
+func load_inventory(new_inventory : Array) -> void: #so i can do stuffs :D
+	print("#LOADED INVENTORY#")
+	var to_small = clampi((7- new_inventory.size()),0,1)
+	inventory = new_inventory
+	for i in to_small:
+		inventory.append([])
+	emit_signal("update_inventory")
+	pass
 
-func set_equipped_item_slot(index : int, data : Array) -> void:
-	equipped_items[index] = data
-	emit_signal("update_equipped_items")
+#signal update_equipped_items
+#var equipped_items: Array = [
+	#[], #backpack
+	#[], #quiver
+#]
+#
+#func steal_equipped_item_slot(index : int) -> Array:
+	#if index >= equipped_items.size() or index < 0:
+		#index = 0
+	#var data = equipped_items[index]
+	#equipped_items[index] = []
+	#emit_signal("update_equipped_items")
+	#return data
+#
+#func set_equipped_item_slot(index : int, data : Array) -> void:
+	#equipped_items[index] = data
+	#emit_signal("update_equipped_items")
+#
+#func get_equipped_item_data(index: int) -> Array:
+	#var key = ""
+	#if index >= equipped_items.size() or index < 0:
+		#index = 0
+	#var data = equipped_items[index]
+	#equipped_items[index] = []
+	#if data.is_empty():
+		#return []
+	#key = data[0]
+	#return Items.list[key]
+#
+#func swap_equipped_item_slot(index : int, new_data : Array) -> Array: #sets item and returns item it replaced
+	#if index >= equipped_items.size() or index < 0:
+		#index = 0
+	#var old_data = equipped_items[index]
+	#equipped_items[index] = new_data
+	#emit_signal("update_equipped_items")
+	#return old_data
 
-func get_equipped_item_data(index: int) -> Array:
-	var key = ""
-	if index >= equipped_items.size() or index < 0:
-		index = 0
-	var data = equipped_items[index]
-	equipped_items[index] = []
-	if data.is_empty():
-		return []
-	key = data[0]
-	return Items.list[key]
-
-func swap_equipped_item_slot(index : int, new_data : Array) -> Array: #sets item and returns item it replaced
-	if index >= equipped_items.size() or index < 0:
-		index = 0
-	var old_data = equipped_items[index]
-	equipped_items[index] = new_data
-	emit_signal("update_equipped_items")
-	return old_data
-
+func get_inventory_vacancy(_item) -> int: #data because it should eventually check for stacking
+	for i in range(0,inventory.size() - equipment_slot_count):
+		if inventory[i].is_empty():
+			return i
+	return -1
 
 func change_held_item(index : int) -> void:
 	if index >= inventory.size() or index < 0:
@@ -193,16 +210,19 @@ func get_item_data(index : int) -> Array:
 	key = data[0]
 	return Items.list[key]
 
-signal dropped_item
+signal dropped_item #item, position
+signal attempt_to_drop_item #index
 
 func drop_held_item() -> void:
 	if held_item_index == -1:
 		return
-	var data = steal_inventory_slot(held_item_index)
+	#var data = steal_inventory_slot(held_item_index)
+	var data = inventory[held_item_index]
 	if data.is_empty():
 		return
-	emit_signal("dropped_item", data, position)
-	emit_signal("update_held_item")
+	#emit_signal("dropped_item", data, position)
+	emit_signal("attempt_to_drop_item",held_item_index)
+	#emit_signal("update_held_item")
 
 func pickup_item(data : Array) -> bool:
 	if inventory[held_item_index].is_empty():
@@ -235,12 +255,12 @@ func get_held_item_sound(sound_key : String) -> String:
 		return ""
 	return sounds[sound_key]
 
-func get_item_sound(index : int, sound_key : String, equipped:bool = false) -> String:
+func get_item_sound(index : int, sound_key : String) -> String:
 	var data = []#get_item_data(index)
-	if equipped:
-		data = get_equipped_item_data(index)
-	else:
-		data = get_item_data(index)
+	#if equipped:
+		#data = get_equipped_item_data(index)
+	#else:
+	data = get_item_data(index)
 	if data == []:
 		return ""
 	 #["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]

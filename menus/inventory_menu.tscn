@@ -22,9 +22,10 @@ grow_vertical = 2
 script = ExtResource("1_i5yku")
 col_1 = Color(0.317647, 0.345098, 0.368627, 1)
 col_2 = Color(0.105882, 0.105882, 0.105882, 1)
-col_3 = Color(0.513726, 0.541176, 0.533333, 1)
+col_3 = Color(0.427451, 0.454902, 0.447059, 1)
+col_highlighted = Color(0.392157, 0.4, 0.498039, 1)
+col_can_click = Color(0.694118, 0.764706, 0.752941, 1)
 number_of_slots = 12
-display_size = null
 
 [node name="items_graphics" type="Control" parent="."]
 layout_mode = 1

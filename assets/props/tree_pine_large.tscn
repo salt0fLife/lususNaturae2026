@@ -1,0 +1,79 @@
+[gd_scene load_steps=8 format=3 uid="uid://ms4ki01tq5tx"]
+
+[ext_resource type="PackedScene" uid="uid://5knnkrqyvi1v" path="res://assets/glb_temp/pine_tree_test_02.glb" id="1_pc6ky"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_foliage.gdshader" id="2_75yu2"]
+[ext_resource type="Texture2D" uid="uid://4vgtm337srpa" path="res://assets/glb_temp/pine_tree_test_02_tree_leaves_color_2.png" id="3_xi64j"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_material.gdshader" id="4_slw20"]
+[ext_resource type="Texture2D" uid="uid://bauc04uka3ux8" path="res://assets/glb_temp/pine_tree_test_02_tree_trunk_with_moss.png" id="5_blob4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_23s2n"]
+render_priority = 0
+shader = ExtResource("2_75yu2")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
+shader_parameter/point_size = null
+shader_parameter/roughness = 1.0
+shader_parameter/day_roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/wind_speed_effect = 5.0
+shader_parameter/wind_strength = 5.0
+shader_parameter/backlight = Color(0.482353, 0.482353, 0.482353, 1)
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/texture_albedo = ExtResource("3_xi64j")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kg2rn"]
+render_priority = 0
+shader = ExtResource("4_slw20")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
+shader_parameter/point_size = null
+shader_parameter/roughness = 1.0
+shader_parameter/day_roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/texture_albedo = ExtResource("5_blob4")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+
+[node name="tree_pine_large" type="Node3D"]
+
+[node name="pine_tree_test_02" parent="." instance=ExtResource("1_pc6ky")]
+
+[node name="Cube_001" parent="pine_tree_test_02" index="0"]
+surface_material_override/0 = SubResource("ShaderMaterial_23s2n")
+
+[node name="Cube_002" parent="pine_tree_test_02" index="1"]
+surface_material_override/0 = SubResource("ShaderMaterial_kg2rn")
+
+[node name="StaticBody3D" parent="pine_tree_test_02/Cube_002" index="0"]
+visible = false
+
+[editable path="pine_tree_test_02"]

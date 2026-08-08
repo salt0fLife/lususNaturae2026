@@ -196,8 +196,9 @@ func load_data_from_save():
 	if inventory_data == null:
 		inventory_data = default_inventory_data.duplicate(true)
 	PlayerInformation.held_item_index = inventory_data["held_item_index"]
-	PlayerInformation.inventory = inventory_data["inventory"]
-	PlayerInformation.emit_signal("update_inventory")
+	#PlayerInformation.inventory = inventory_data["inventory"]
+	#PlayerInformation.emit_signal("update_inventory")
+	PlayerInformation.load_inventory(inventory_data["inventory"])
 	
 	##world
 	#var world_data = SaveHandler.load_file(Global.save_filepath,"world_data.dat")
@@ -571,11 +572,13 @@ func _on_player_take_damage(amount : float) -> void:
 
 func use_held_item(special = false) -> void:
 	for p in playerHandler.get_children(false):
-		p.use_held_item(special)
+		if p.has_method("use_held_item"):
+			p.use_held_item(special)
 
 func release_held_item(special = false) -> void:
 	for p in playerHandler.get_children(false):
-		p.release_held_item(special)
+		if p.has_method("release_held_item"):
+			p.release_held_item(special)
 
 var item_scene = preload("res://campaign/entities/loose_item.tscn")
 func _on_dropped_item(data : Array, pos : Vector3) -> void:
@@ -640,8 +643,9 @@ func load_data_from_checkpoint() -> void:
 	if inventory_data == null:
 		inventory_data = default_inventory_data.duplicate(true)
 	PlayerInformation.held_item_index = inventory_data["held_item_index"]
-	PlayerInformation.inventory = inventory_data["inventory"]
-	PlayerInformation.emit_signal("update_inventory")
+	#PlayerInformation.inventory = inventory_data["inventory"]
+	#PlayerInformation.emit_signal("update_inventory")
+	PlayerInformation.load_inventory(inventory_data["inventory"])
 	
 	##world
 	#var world_data = SaveHandler.load_file(Global.save_filepath,"world_data.dat")

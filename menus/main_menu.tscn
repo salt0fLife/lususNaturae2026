@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://cmhfq4uyk05xo"]
+[gd_scene load_steps=5 format=3 uid="uid://cmhfq4uyk05xo"]
 
 [ext_resource type="Theme" uid="uid://calyvxvtcobp0" path="res://menus/menus_theme.tres" id="1_2v8ml"]
 [ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_6vx3b"]
+[ext_resource type="AudioStream" uid="uid://b7pmiii2rubnw" path="res://assets/sounds/gui_interactions/button_hover_1.ogg" id="3_mk6o1"]
+[ext_resource type="AudioStream" uid="uid://4hbx7b46iamm" path="res://assets/sounds/gui_interactions/button_click_1.ogg" id="4_38fjh"]
 
 [node name="MainMenu" type="Node"]
 script = ExtResource("1_6vx3b")
@@ -53,3 +55,9 @@ text = "Settings"
 [node name="quit" type="Button" parent="control/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Quit"
+
+[node name="button_hovered" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_mk6o1")
+
+[node name="button_clicked" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_38fjh")

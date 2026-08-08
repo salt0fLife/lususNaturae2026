@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=3 uid="uid://ifpn0do4gv41"]
+[gd_scene load_steps=58 format=3 uid="uid://ifpn0do4gv41"]
 
 [ext_resource type="Script" path="res://scripts/player_combat_test.gd" id="1_t5q6g"]
 [ext_resource type="Script" path="res://scripts/combat_test_graphics.gd" id="2_0icll"]
@@ -79,8 +79,8 @@ shader_parameter/progress = 0.0
 shader_parameter/slash_texture = ExtResource("6_ps0dq")
 
 [sub_resource type="Gradient" id="Gradient_x4437"]
-offsets = PackedFloat32Array(0, 0.0805085, 1)
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0.300847, 0.516949, 0.728814, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.0364392, 0.00784931, 7.52043e-10, 1, 0, 0, 0, 1, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_mnjyr"]
 gradient = SubResource("Gradient_x4437")
@@ -90,7 +90,7 @@ render_priority = 0
 shader = ExtResource("6_ss6h1")
 shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/albedo_day = Color(0.486275, 0.54902, 0.576471, 1)
-shader_parameter/day_color_power = 1.0
+shader_parameter/day_color_power = 0.5
 shader_parameter/point_size = 0.0
 shader_parameter/roughness = 0.596
 shader_parameter/day_roughness = 0.0
@@ -480,6 +480,51 @@ shader_parameter/albedo = Color(0.164706, 0.164706, 0.164706, 1)
 shader_parameter/line_size_change = 0.0
 shader_parameter/center_point_offset = Vector3(0, 0, 0)
 
+[sub_resource type="Gradient" id="Gradient_rtyin"]
+offsets = PackedFloat32Array(0.169492, 0.516949, 0.728814, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.0228628, 0, 2.94681e-05, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2v2so"]
+gradient = SubResource("Gradient_rtyin")
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vgbhn"]
+load_path = "res://.godot/imported/skin_albedo_baked.png-677084cd29680f4054ef95d1503a8ef1.s3tc.ctex"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yb7o1"]
+render_priority = 0
+shader = ExtResource("6_ss6h1")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(0.486275, 0.54902, 0.576471, 1)
+shader_parameter/day_color_power = 0.5
+shader_parameter/point_size = 0.0
+shader_parameter/roughness = 0.596
+shader_parameter/day_roughness = 0.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = 0.0
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/specular_highlight = 0.825
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/texture_albedo = SubResource("CompressedTexture2D_vgbhn")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_2v2so")
+
+[sub_resource type="Gradient" id="Gradient_o7h5k"]
+offsets = PackedFloat32Array(0.309322, 0.491525, 0.673729)
+colors = PackedColorArray(0, 0, 0, 1, 0.0882582, 0.063689, 0.0404479, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_4rnfc"]
+gradient = SubResource("Gradient_o7h5k")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rnxrv"]
 render_priority = 0
 shader = ExtResource("6_ss6h1")
@@ -506,6 +551,7 @@ shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
 shader_parameter/CloudOpacity = 1.0
 shader_parameter/cloudSoftness = 0.85
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_4rnfc")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_m7w8t"]
 
@@ -795,7 +841,7 @@ visible = false
 target_position = Vector3(-0.84, 0, 0)
 
 [node name="Cube_008" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="14"]
-surface_material_override/0 = SubResource("ShaderMaterial_pj1h4")
+surface_material_override/0 = SubResource("ShaderMaterial_yb7o1")
 
 [node name="glove" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="15"]
 surface_material_override/0 = SubResource("ShaderMaterial_rnxrv")

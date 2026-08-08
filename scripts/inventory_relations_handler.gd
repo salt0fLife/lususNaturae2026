@@ -3,6 +3,7 @@ extends Node
 
 @onready var inventory_menu = $inventory_menu
 @onready var item_menu = $item_menu
+@onready var equipped_items_menu = $equipped_items_menu
 
 var inventory_open = false
 var grabbed_item_index = -1
@@ -51,23 +52,33 @@ func _input(event):
 			select_inventory_slot(4)
 	if Input.is_action_just_pressed("use_item") and inventory_open and click_downtime == 0:
 		click_downtime = 4 #4 frames of no clicking allowed
-		if !items_interacting:
-			var sel_indx = inventory_menu.get_menu_selection()
-			if !grabbed_item:
-				var item_data = PlayerInformation.get_item_data(sel_indx)
-				if !item_data.is_empty(): #clicked on full slot with nothing in hand
-					inventory_menu.pretend_empty_index = sel_indx
-					inventory_menu._update_inventory_graphics() #called only here because not actually chaning inventory
-					grabbed_item_index = sel_indx
-					grabbed_item = true
-					play_item_sound(sel_indx, "grab_start")
-				else:
-					#just clicked on empty slot with nothing in hand
-					pass
-			else: #just clicked on slot with something in hand
-				_on_item_interaction(grabbed_item_index,sel_indx)
-		else: #interaction already ongoing
-			_on_item_menu_selected(interacting_1,interacting_2)
+		var eq_sel = equipped_items_menu.get_selection()
+		var using_eq = false
+		var sel_indx = -1
+		if inventory_menu.can_click():
+			sel_indx = inventory_menu.get_menu_selection()
+		else:
+			sel_indx = equipped_items_menu.get_selection()
+			using_eq = true
+		
+		if sel_indx != -1: #if valid button was hit
+			if !items_interacting:
+				#var sel_indx = inventory_menu.get_menu_selection()
+				if !grabbed_item:
+					var item_data = PlayerInformation.get_item_data(sel_indx)
+					if !item_data.is_empty(): #clicked on full slot with nothing in hand
+						inventory_menu.pretend_empty_index = sel_indx
+						inventory_menu._update_inventory_graphics() #called only here because not actually chaning inventory
+						grabbed_item_index = sel_indx
+						grabbed_item = true
+						play_item_sound(sel_indx, "grab_start")
+					else:
+						#just clicked on empty slot with nothing in hand
+						pass
+				else: #just clicked on slot with something in hand
+					_on_item_interaction(grabbed_item_index,sel_indx)
+			else: #interaction already ongoing
+				_on_item_menu_selected(interacting_1,interacting_2)
 
 func play_item_sound(index :int, sound_key : StringName) -> void:
 	var sound = PlayerInformation.get_item_sound(index, sound_key)
@@ -80,6 +91,7 @@ func play_item_sound(index :int, sound_key : StringName) -> void:
 func set_inventory_open(val : bool) -> void:
 	inventory_open = val
 	inventory_menu.visible = val
+	equipped_items_menu.visible = val
 	if val:
 		Global.in_game_mouse = true
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -195,3 +207,4 @@ func _on_item_menu_selected(index_1 : int, index_2) -> void:
 	item_menu.visible = false
 	
 	pass
+

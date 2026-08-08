@@ -56,6 +56,8 @@ func populate_saves_list() -> void:
 			b.set("theme_override_colors/font_color", Color.WEB_GREEN)
 		b.text = button_name
 		b.connect("pressed", select_save.bind(i))
+		b.connect("pressed", _on_button_pressed)
+		b.connect("mouse_entered",_on_button_hovered)
 		save_button_handler.add_child(b)
 		
 
@@ -191,3 +193,8 @@ func confirm_and_delete_selected_save():
 	delete_save(selected_save)
 	close_delete_save_dialogue()
 
+func _on_button_hovered():
+	$button_hovered.play()
+
+func _on_button_pressed():
+	$button_clicked.play()

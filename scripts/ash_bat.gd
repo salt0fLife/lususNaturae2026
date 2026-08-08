@@ -66,7 +66,7 @@ func die():
 	state = "dead"
 	play_anim("die")
 	velocity.y += 1.0
-	var data = ["dead_bat"]
+	var data = ["dead_bat", {}]
 	PlayerInformation.emit_signal("dropped_item", data, position)
 
 var decision_timer = 0.0

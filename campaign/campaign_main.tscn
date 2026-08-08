@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=3 uid="uid://xwre6k638wd1"]
+[gd_scene load_steps=67 format=3 uid="uid://xwre6k638wd1"]
 
 [ext_resource type="Script" path="res://scripts/campaign_main.gd" id="1_3biet"]
 [ext_resource type="PackedScene" uid="uid://o5esi8ctymbf" path="res://menus/inventory_menu.tscn" id="2_np8a5"]
@@ -10,6 +10,8 @@
 [ext_resource type="PackedScene" uid="uid://bdmt3runy3j7k" path="res://menus/radial_menu.tscn" id="6_705ms"]
 [ext_resource type="Script" path="res://scripts/post_effects.gd" id="6_mgka1"]
 [ext_resource type="Texture2D" uid="uid://b12py7g7w260f" path="res://assets/textures/gui/overlays/sun_sickness_overlay_color.png" id="6_pjrpw"]
+[ext_resource type="Script" path="res://scripts/equipped_items_menu.gd" id="7_8qyyk"]
+[ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="7_os0l1"]
 [ext_resource type="Texture2D" uid="uid://s5ir8m7v7p2m" path="res://assets/textures/gui/overlays/sun_sickness_overlay_frame.png" id="7_t2br1"]
 [ext_resource type="Texture2D" uid="uid://cvxg3hvn7vq18" path="res://assets/textures/gui/overlays/sun_sickness_overlAY_MASK.PNG" id="8_0aexh"]
 [ext_resource type="Shader" path="res://assets/shaders/postEffects.gdshader" id="10_muloe"]
@@ -416,7 +418,7 @@ process_mode = 1
 visible = false
 
 [node name="RadialMenu" parent="inventory_relations_handler/inventory_menu" index="0"]
-display_size = 1.0
+highlighted = null
 
 [node name="grabbed_item_name" type="Label" parent="inventory_relations_handler"]
 visible = false
@@ -444,9 +446,57 @@ offset_top = 0.0500031
 offset_bottom = 0.0499878
 line_width = 3
 number_of_slots = 2
-display_size = 1.0
 
 [node name="item_sounds" type="AudioStreamPlayer" parent="inventory_relations_handler"]
+
+[node name="equipped_items_menu" type="Control" parent="inventory_relations_handler"]
+layout_mode = 3
+anchor_left = 0.669
+anchor_right = 0.999
+anchor_bottom = 1.0
+offset_left = 0.311951
+offset_right = 0.151855
+script = ExtResource("7_8qyyk")
+metadata/_edit_use_anchors_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="inventory_relations_handler/equipped_items_menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 2
+
+[node name="quiver" type="VBoxContainer" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/quiver"]
+layout_mode = 2
+text = "equipped_quiver"
+
+[node name="quiver_slot" type="Button" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/quiver"]
+layout_mode = 2
+text = "empty"
+icon = ExtResource("7_os0l1")
+
+[node name="quiver_storage_slots" type="VBoxContainer" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/quiver"]
+layout_mode = 2
+
+[node name="backpack" type="VBoxContainer" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/backpack"]
+layout_mode = 2
+text = "equipped_backpack"
+
+[node name="backpack_slot" type="Button" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/backpack"]
+layout_mode = 2
+text = "empty"
+icon = ExtResource("7_os0l1")
+
+[node name="backpack_storage_slots" type="VBoxContainer" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/backpack"]
+layout_mode = 2
 
 [node name="action_menu" parent="." instance=ExtResource("3_km1sh")]
 visible = false

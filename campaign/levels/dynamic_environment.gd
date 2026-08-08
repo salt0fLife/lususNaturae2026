@@ -32,8 +32,8 @@ const presets = {
 	"night" : [
 		#clouds
 		{
-			"ambientColorDefault" : Color.BLACK,
-			"sunColorMult" : Color("030303"),
+			"ambientColorDefault" : Color("000101"),
+			"sunColorMult" : Color("141416"),#("030303"),
 			#"cloudsCutoff" : -0.014,
 			"cloudShadowStrength" : 0.9,
 		},
@@ -48,10 +48,10 @@ const presets = {
 			"shader_parameter/mie" : 0.1444,
 			"shader_parameter/mie_eccentricity" : 0.532,
 			"shader_parameter/mie_color" : Color("b0bacf"),
-			"shader_parameter/ground_color" : Color("47190c"),
+			"shader_parameter/ground_color" : Color("6573d5"),#Color("47190c"),
 			"shader_parameter/exposure" : 2.273,
 			"shader_parameter/top_color" : Color("3c4649"),
-			"shader_parameter/bottom_color" : Color("090909"),
+			"shader_parameter/bottom_color" : Color("2f382b"),#Color("090909"),
 			"shader_parameter/sun_scatter" : Color("181113"),
 			"shader_parameter/astro_scale" : 5.2,
 			"shader_parameter/stars_intensity" : 1.8,

@@ -200,8 +200,11 @@ func _ready():
 	pass
 
 @onready var arm_meshes = [
-	$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_003,
-	$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_005
+	#$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_003,
+	#$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_005
+	$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/arm2,
+	$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_004,
+	$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/Cube_008
 ]
 
 func update_using_senses() -> void:

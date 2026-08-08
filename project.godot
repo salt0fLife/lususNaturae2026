@@ -17,11 +17,12 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-SaveHandler="*res://scripts/SaveHandler.gd"
-Global="*res://scripts/Global.gd"
+SaveHandler="*res://internal/SaveHandler.gd"
+Global="*res://internal/Global.gd"
 Settings="*res://scripts/Settings.gd"
 PlayerInformation="*res://scripts/PlayerInformation.gd"
 Items="*res://scripts/items.gd"
+MusicHandler="*res://internal/musicHandler.gd"
 
 [editor_plugins]
 

@@ -19,10 +19,12 @@ func get_menu_selection():
 		return val
 
 func _update_inventory_graphics():
+	$RadialMenu.highlighted = PlayerInformation.held_item_index
+	
 	for i in $items_graphics.get_children(false):
 		i.queue_free()
 	
-	var nos = PlayerInformation.inventory.size()
+	var nos = PlayerInformation.inventory.size() - PlayerInformation.equipment_slot_count
 	$RadialMenu.number_of_slots = nos
 	var center = size*0.5
 	var cell_size = (PI*2.0 * ((1.0/nos)))
@@ -61,3 +63,6 @@ func get_slot_position(index : int) -> Vector2:
 	middle_ray.y *= sin(centered_angle)
 	var middle_rad = (size.y*0.05 + size.y*0.25)*0.5
 	return middle_ray*middle_rad+center
+
+func can_click():
+	return $RadialMenu.can_click
