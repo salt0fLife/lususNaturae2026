@@ -3,6 +3,9 @@ extends Node3D
 @onready var audio_player = $AudioStreamPlayer
 @onready var voice_audio_player = $AudioStreamPlayer2
 @onready var impact_audio_player = $AudioStreamPlayer3
+
+@export var movmement_voice_chance = 0.25 #25% chance
+
 func vault() -> void:
 	audio_player.stream = load("res://assets/sounds/footsteps/snow/snow5.wav")
 	audio_player.play()
@@ -24,8 +27,9 @@ func jump() -> void:
 	
 	
 	#hands_pos_vel += Vector3(0.0,1.0,0.0)
-	voice_audio_player.stream = load("res://assets/sounds/player_movement/player_jump.ogg")
-	voice_audio_player.play()
+	if randf_range(0.0,1.0) < movmement_voice_chance:
+		voice_audio_player.stream = load("res://assets/sounds/player_movement/player_jump.ogg")
+		voice_audio_player.play()
 	if floor_check.is_colliding():
 		var hit = floor_check.get_collider()
 		var groups = hit.get_groups()
@@ -143,7 +147,8 @@ func wall_running(normal : Vector3, delta : float, power : float, groups : Array
 	if !$wall_run_sounds.playing:
 		var t = (1.0 - power) * 5.0 - 0.017 #because yeah sure
 		$wall_run_sounds.play(t)
-		print("wallrunning time " + str(t) + " : wallrunning power " + str(power))
+		step_sound(groups)
+		#print("wallrunning time " + str(t) + " : wallrunning power " + str(power))
 	val += delta * power
 	if val > 1.0:
 		val -= 1.0
@@ -309,8 +314,9 @@ func land() -> void:
 	hands_pos_vel.y -= 1.0*2.0
 	hands_rot_vel.x -= 0.2*PI*5.0
 	#hands_rot_vel.x += 0.1
-	voice_audio_player.stream = load("res://assets/sounds/player_movement/player_land.ogg")
-	voice_audio_player.play()
+	if randf_range(0.0,1.0) < movmement_voice_chance:
+		voice_audio_player.stream = load("res://assets/sounds/player_movement/player_land.ogg")
+		voice_audio_player.play()
 	if floor_check.is_colliding():
 		var hit = floor_check.get_collider()
 		var groups = hit.get_groups()

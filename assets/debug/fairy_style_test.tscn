@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://c7sj7re55hlfy"]
+[gd_scene load_steps=5 format=3 uid="uid://c7sj7re55hlfy"]
 
 [ext_resource type="PackedScene" uid="uid://nqgqwhpgw6br" path="res://assets/glb_temp/face_shape_test.glb" id="1_vr4oh"]
 [ext_resource type="Shader" path="res://assets/shaders/stylized_mouth_shader.gdshader" id="2_age52"]
+[ext_resource type="PackedScene" uid="uid://bwmx7kgpy2ge3" path="res://assets/glb_temp/farlander_base_visualization.glb" id="3_tibot"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rh11i"]
 render_priority = 0
@@ -28,8 +29,12 @@ shader_parameter/back_ground_col = Color(0.898039, 0.662745, 0.478431, 1)
 
 [node name="face_shape_test" parent="." instance=ExtResource("1_vr4oh")]
 transform = Transform3D(0.26, 0, 0, 0, 0.26, 0, 0, 0, 0.26, 0, 0, 0)
+visible = false
 
 [node name="mouth_001" parent="face_shape_test" index="15"]
 surface_material_override/0 = SubResource("ShaderMaterial_rh11i")
+
+[node name="farlander_base_visualization" parent="." instance=ExtResource("3_tibot")]
+transform = Transform3D(0.26, 0, 0, 0, 0.26, 0, 0, 0, 0.26, 0, 0, 0)
 
 [editable path="face_shape_test"]

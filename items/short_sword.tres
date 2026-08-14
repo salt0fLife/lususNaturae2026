@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_g67wk")
-damage = 1
+damage = 10
 attack_speed = 2.0
 damage_type = 0
 vfx_method_name = "standard_slash"

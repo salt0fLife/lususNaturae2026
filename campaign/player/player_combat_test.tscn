@@ -614,12 +614,12 @@ walk_speed = 4.0
 crouch_speed = 2.5
 acceleration = 5.0
 air_acceleration = 10.0
-jump_strength = 5.0
+jump_strength = 6.0
 max_crouch_slow_per_second = 20.0
 dash_regen_speed = 10.0
 dash_distance = 20.0
 dash_end_friction = 0.02
-max_air_jumps = 99
+max_air_jumps = 0
 sun_sickness_change_speed = 0.25
 wall_jump_max_latency = 0.5
 sprint_animation_speed_mult = 1.333
@@ -631,6 +631,7 @@ shape = SubResource("CapsuleShape3D_vt6p6")
 
 [node name="graphics" type="Node3D" parent="."]
 script = ExtResource("2_0icll")
+movmement_voice_chance = 0.0
 hands_return_power = 275.0
 hands_return_damp = 18.0
 hands_rot_return_power = 150.0

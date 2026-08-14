@@ -122,6 +122,7 @@ func dash() -> void:
 		return
 	if dash_timer > 0.0:
 		print("dash spam")
+		#velocity -= velocity * 0.5
 		return
 	current_dash -= 1.0
 	dash_timer = 1.0
@@ -133,8 +134,8 @@ func dash() -> void:
 	if Input.is_action_pressed("crouch"):
 		input_vertical -= 1.0
 	var direction = (graphics.global_transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
-	if !is_on_floor():
-		direction = (cameraHandler.global_transform.basis * Vector3(input_dir.x, input_vertical, input_dir.y)).normalized()
+	#if !is_on_floor():
+		#direction = (cameraHandler.global_transform.basis * Vector3(input_dir.x, input_vertical, input_dir.y)).normalized()
 	
 	if !direction:
 		direction = Vector3(0.0,-1.0,0.0)
@@ -187,7 +188,7 @@ func update_sun_sickness(delta) -> void:
 		sun_tick_damage_timer += delta
 		if sun_tick_damage_timer > 0.25:
 			sun_tick_damage_timer -= 0.25
-			PlayerInformation.take_damage(0.5,Global.damage_types.FIRE)
+			PlayerInformation.take_damage(1,Global.damage_types.FIRE)
 		pass
 	
 	#var m = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_005.get_active_material(0)
@@ -537,7 +538,7 @@ func _physics_process(delta):
 			graphics.wall_running(w_n, delta, wr_power, get_slide_collision(0).get_collider(0).get_groups())
 			velocity -= w_n * delta * velocity.length() * 25.0 * wr_power * Vector3(1.0,0.0,1.0) #stick to wall
 			velocity = update_velocity_air(direction,velocity,delta)
-			velocity.y += (clamp(get_look_dir().y, -0.5, 0.5) * wr_power) *delta *acceleration
+			#velocity.y += (clamp(get_look_dir().y, -0.5, 0.5) * wr_power) *delta *acceleration
 		else:
 			velocity = update_velocity_air(direction, velocity, delta)
 			play_anim(get_movement_anim("falling"))

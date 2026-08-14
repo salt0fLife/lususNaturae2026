@@ -18,6 +18,7 @@ var in_game_days = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	MusicHandler.stop()
 	PlayerInformation.connect("dropped_item", _on_dropped_item)
 	PlayerInformation.connect("perished", _on_player_death)
 	PlayerInformation.connect("changed_using_senses", _on_changed_using_senses)

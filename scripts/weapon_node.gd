@@ -10,7 +10,6 @@ func slash_close(damage_amount : int, damage_type : int, vfx_method : StringName
 			if !hits.has(c):
 				hits += [c]
 				hit_positions.append(r.get_collision_point())
-	
 	for h in hits:
 		if h.has_method("take_damage"):
 			h.take_damage(damage_amount,damage_type)

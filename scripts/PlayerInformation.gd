@@ -32,7 +32,7 @@ var upgrades = [
 
 
 #gameplay
-var health: float = 1.0
+var health: float = 5.0
 var max_health: float = 5.0
 var food: int = 1
 var max_food: int = 5
@@ -40,7 +40,7 @@ var min_sleep_food: int = 4
 var sun_sickness: float = 0.0 #builds up when in sunlight goes down in shade
 
 var world_time: float = 0.0 #i know its funny to store here but it fits
-var world_overcast : float = 1.0 #1.0 means no sunlight even during day
+var world_overcast : float = 0.0 #1.0 means no sunlight even during day
 #
 
 var wall_sliding_timer:float = 0.0
@@ -67,7 +67,7 @@ enum { #damage tags
 }
 
 signal took_damage
-func take_damage(amount : float, tag : int) -> void:
+func take_damage(amount : int, tag : int) -> void:
 	health -= amount
 	emit_signal("took_damage")
 	if health < 0.0:

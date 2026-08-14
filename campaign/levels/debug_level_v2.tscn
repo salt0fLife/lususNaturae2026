@@ -1,4 +1,4 @@
-[gd_scene load_steps=67 format=3 uid="uid://cr72kg6xrvq30"]
+[gd_scene load_steps=69 format=3 uid="uid://cr72kg6xrvq30"]
 
 [ext_resource type="Shader" path="res://assets/shaders/parallax_grass.gdshader" id="1_3p6yo"]
 [ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_konvq"]
@@ -29,6 +29,8 @@
 [ext_resource type="PackedScene" uid="uid://bg8cskm2swvl" path="res://assets/props/flat_grass_scatter.tscn" id="27_mtt6d"]
 [ext_resource type="Shader" path="res://assets/shaders/stylized_mouth_shader.gdshader" id="28_euwsy"]
 [ext_resource type="PackedScene" uid="uid://c7sj7re55hlfy" path="res://assets/debug/fairy_style_test.tscn" id="29_ggnip"]
+[ext_resource type="PackedScene" uid="uid://cnw5lgwyi4fel" path="res://campaign/enemies/forest_spider.tscn" id="30_ivmw8"]
+[ext_resource type="PackedScene" uid="uid://dwb8rqy5utihe" path="res://campaign/entities/loose_item.tscn" id="31_47ija"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_eeh8o"]
 
@@ -1115,6 +1117,15 @@ mesh = SubResource("QuadMesh_rslud")
 
 [node name="fairy_style_test" parent="." instance=ExtResource("29_ggnip")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 20)
+
+[node name="forest_spider" parent="." instance=ExtResource("30_ivmw8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 19)
+
+[node name="loose_item" parent="." instance=ExtResource("31_47ija")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.2754, 2, 14.5366)
+data = [&"backpack_default", {
+"inventory": [[&"short_sword", {}], [], [], [], [], []]
+}]
 
 [connection signal="body_entered" from="launcher" to="launcher" method="_on_body_entered"]
 

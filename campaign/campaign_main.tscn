@@ -498,6 +498,11 @@ icon = ExtResource("7_os0l1")
 [node name="backpack_storage_slots" type="VBoxContainer" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/backpack"]
 layout_mode = 2
 
+[node name="Button" type="Button" parent="inventory_relations_handler/equipped_items_menu"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
 [node name="action_menu" parent="." instance=ExtResource("3_km1sh")]
 visible = false
 

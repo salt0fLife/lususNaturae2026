@@ -1,0 +1,98 @@
+[gd_scene load_steps=12 format=3 uid="uid://cnw5lgwyi4fel"]
+
+[ext_resource type="Script" path="res://scripts/forest_spider.gd" id="1_2pm46"]
+[ext_resource type="PackedScene" uid="uid://b21m67s1dsdtr" path="res://assets/entity_components/hurtbox.tscn" id="2_bghc6"]
+[ext_resource type="Script" path="res://scripts/generic_health_handler.gd" id="3_1kdef"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_fjwoi"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_q7otu"]
+size = Vector3(0.5, 0.5, 0.705)
+
+[sub_resource type="BoxMesh" id="BoxMesh_0jnyf"]
+size = Vector3(0.915, 0.785, 1.01)
+
+[sub_resource type="BoxMesh" id="BoxMesh_0gnb3"]
+size = Vector3(0.255, 0.27, 0.27)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jhxhl"]
+size = Vector3(0.74, 1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rmtae"]
+size = Vector3(0.756409, 0.887939, 0.917969)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_60jxm"]
+size = Vector3(0.746, 1.023, 1.073)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4lcig"]
+size = Vector3(0.916, 0.948, 1.073)
+
+[node name="forest_spider" type="CharacterBody3D"]
+collision_layer = 4
+script = ExtResource("1_2pm46")
+run_speed = 10.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("SphereShape3D_fjwoi")
+
+[node name="graphics" type="Node3D" parent="."]
+
+[node name="body" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("BoxMesh_q7otu")
+
+[node name="abdomen" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 0.975607, -0.219523, 0, 0.219523, 0.975607, 0, 0.5, -0.896008)
+mesh = SubResource("BoxMesh_0jnyf")
+
+[node name="head" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.521509, 0.463008)
+mesh = SubResource("BoxMesh_0gnb3")
+
+[node name="legs_left" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.636729, 0.5, 0)
+mesh = SubResource("BoxMesh_jhxhl")
+
+[node name="legs_right" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.61759, 0.5, 0)
+mesh = SubResource("BoxMesh_jhxhl")
+
+[node name="hurtbox" parent="." node_paths=PackedStringArray("health_handler") instance=ExtResource("2_bghc6")]
+health_handler = NodePath("../health_handler")
+limb_key = &"body"
+limb_health = 5
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0174255, 0.0274658, -0.0410156)
+shape = SubResource("BoxShape3D_rmtae")
+
+[node name="hurtbox2" parent="." node_paths=PackedStringArray("health_handler") instance=ExtResource("2_bghc6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.644543, 0.5, 0)
+health_handler = NodePath("../health_handler")
+limb_key = &"legs_left"
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="hurtbox2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0174255, 0.0274658, 0.000173151)
+shape = SubResource("BoxShape3D_60jxm")
+
+[node name="hurtbox3" parent="." node_paths=PackedStringArray("health_handler") instance=ExtResource("2_bghc6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.624881, 0.5, 0)
+health_handler = NodePath("../health_handler")
+limb_key = &"legs_right"
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="hurtbox3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0174255, 0.0274658, 0.000173151)
+shape = SubResource("BoxShape3D_60jxm")
+
+[node name="hurtbox4" parent="." node_paths=PackedStringArray("health_handler") instance=ExtResource("2_bghc6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.853312)
+health_handler = NodePath("../health_handler")
+limb_key = &"abdomen"
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="hurtbox4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0174255, 0.0274658, 0.000173151)
+shape = SubResource("BoxShape3D_4lcig")
+
+[node name="health_handler" type="Node" parent="."]
+script = ExtResource("3_1kdef")

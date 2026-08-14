@@ -1,7 +1,8 @@
 extends Node
 
 func _ready():
-	#MusicHandler.play_song("res://assets/sounds/music/menu_midi_test.wav")
+#	MusicHandler.play_song("res://assets/sounds/music/menu_midi_test.wav")
+	MusicHandler.play_song("res://assets/sounds/music/main_menu_music.wav")
 	$control/Panel/VBoxContainer/campaign.connect("button_down", play_campaign)
 	$control/Panel/VBoxContainer/multiplayer.connect("button_down", play_multiplayer)
 	$control/Panel/VBoxContainer/settings.connect("button_down", open_settings)

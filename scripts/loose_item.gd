@@ -1,7 +1,7 @@
 extends StaticBody3D
 
 
-var data = []
+@export var data = []
 var tool_tip = ""
 
 func _ready():

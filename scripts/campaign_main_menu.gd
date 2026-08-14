@@ -2,6 +2,7 @@ extends Node
 var save_path = "campaign/saves/"
 
 func _ready():
+	MusicHandler.play_song("res://assets/sounds/music/menu_midi_test.wav")
 	print("started campaign")
 	$Control/Panel/back.connect("button_down", return_to_main_menu)
 	$"Control/Panel/save info/continue game".connect("button_down", play_selected_save)
