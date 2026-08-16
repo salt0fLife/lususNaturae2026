@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="item_useless" load_steps=2 format=3 uid="uid://deivc6sskdov0"]
+
+[ext_resource type="Script" path="res://scripts/item_useless.gd" id="1_6krpg"]
+
+[resource]
+script = ExtResource("1_6krpg")
+internal_reference_name = "forest_spider_leg"
+display_name = "spider leg"
+item_style = 0
+sounds = 3
+animations = 4
+model_path = "res://assets/enemies_wip/dead_spider_leg.tscn"
+has_deformations = false
+texture_path = "res://assets/textures/material/DebuggTexture.png"
+interactions = {}

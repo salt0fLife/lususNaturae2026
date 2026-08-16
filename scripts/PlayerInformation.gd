@@ -149,6 +149,9 @@ func load_inventory(new_inventory : Array) -> void: #so i can do stuffs :D
 	#emit_signal("update_equipped_items")
 	#return old_data
 
+func get_backpack_index() -> int:
+	return inventory.size() - equipment_slot_count
+
 func get_inventory_vacancy(_item) -> int: #data because it should eventually check for stacking
 	for i in range(0,inventory.size() - equipment_slot_count):
 		if inventory[i].is_empty():

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfc835gbhfvk8"]
+
+[ext_resource type="ArrayMesh" uid="uid://ftfjipqoyhm2" path="res://assets/items/arrows/arrow_ph.res" id="1_q5cu6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_isy2i"]
+cull_mode = 2
+albedo_color = Color(0.756863, 0, 0.113725, 1)
+
+[node name="red_arrow" type="MeshInstance3D"]
+mesh = ExtResource("1_q5cu6")
+surface_material_override/0 = SubResource("StandardMaterial3D_isy2i")

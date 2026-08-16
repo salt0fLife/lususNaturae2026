@@ -13,4 +13,4 @@ func get_data() -> Array:
 	return [min_charge_time, quiver_size,max_launch_speed,launch_speed_mult]
 
 func get_item() -> Array:
-	return [display_name,item_style,sounds,item_type, get_data(), texture_path,model_path,animations, has_deformations]
+	return [display_name,item_style,sounds,item_type, get_data(), texture_path,model_path,animations, has_deformations,equipment_id]

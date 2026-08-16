@@ -29,6 +29,7 @@ func _ready():
 	Global.connect("spawn_entity_signal", spawn_entity)
 	Global.connect("create_decal_signal", create_decal)
 	Global.connect("play_cutscene_signal", play_cutscene)
+	Global.connect("drop_item_signal",_on_dropped_item)
 	PlayerInformation.connect("change_player", change_player)
 	PlayerInformation.connect("slept", _on_player_slept)
 	$pause_menu/buttonHandler/resume.connect("button_down", set_paused.bind(false))
@@ -130,7 +131,10 @@ func load_current_level_persistent_data():
 				print("default_level_settup")
 	
 	for i in data[0]:
-		_on_dropped_item(i[1],i[0])
+		if !i.size() > 2:
+			_on_dropped_item(i[1],i[0])
+		else:
+			_on_dropped_item(i[1],i[0],i[2],i[3])
 	
 	if data.size() > 1:
 		#for d in data[1]:
@@ -292,7 +296,7 @@ func update_persistent_levels_data() -> void:
 	#print("saved decals : " + str(decals_save))
 	
 	for li in itemHandler.get_children(false):
-		var data = [li.position, li.data]
+		var data = [li.position, li.data, li.rotation, li.stuck]
 		loose_items_save += [data]
 	
 	var entity_save = []
@@ -582,12 +586,15 @@ func release_held_item(special = false) -> void:
 			p.release_held_item(special)
 
 var item_scene = preload("res://campaign/entities/loose_item.tscn")
-func _on_dropped_item(data : Array, pos : Vector3) -> void:
+func _on_dropped_item(data : Array, pos : Vector3, rotation : Vector3 = Vector3.ZERO, stuck: bool = false, velL :=Vector3.ZERO, velR := Vector3.ZERO) -> void:
 	var i = item_scene.instantiate()
 	i.data = data
 	i.position = pos
+	i.rotation = rotation
+	i.stuck = stuck
+	i.linear_velocity = velL
+	i.angular_velocity = velR
 	itemHandler.add_child(i)
-	
 	pass
 
 func purge_world() -> void:

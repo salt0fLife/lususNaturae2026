@@ -1127,6 +1127,32 @@ data = [&"backpack_default", {
 "inventory": [[&"short_sword", {}], [], [], [], [], []]
 }]
 
+[node name="CSGCombiner3D2" type="CSGCombiner3D" parent="."]
+material_override = SubResource("ShaderMaterial_dt4fu")
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 11.5, 134.5)
+size = Vector3(11, 2, 14)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 11.5, 177.5)
+size = Vector3(11, 2, 14)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 4, 128)
+size = Vector3(15, 13, 11)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 4, 184)
+size = Vector3(15, 13, 11)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, 157)
+radius = 11.0
+height = 104.0
+sides = 64
+
 [connection signal="body_entered" from="launcher" to="launcher" method="_on_body_entered"]
 
 [editable path="catherdral_tower_test"]

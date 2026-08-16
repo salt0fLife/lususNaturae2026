@@ -54,13 +54,17 @@ func _input(event):
 			select_inventory_slot(4)
 	if Input.is_action_just_pressed("use_item") and inventory_open and click_downtime == 0:
 		click_downtime = 4 #4 frames of no clicking allowed
-		var eq_sel = equipped_items_menu.get_selection()
+		#var eq_sel = equipped_items_menu.get_selection()
 		var using_eq = false
 		var sel_indx = -1
 		if inventory_menu.can_click():
 			sel_indx = inventory_menu.get_menu_selection()
 		else:
-			sel_indx = equipped_items_menu.get_selection()
+			var gi = PlayerInformation.get_item_data(grabbed_item_index)
+			var eq_filter = -1 #-1 is wildcard (empty can always click slots)
+			if !gi.is_empty() and grabbed_item:
+				eq_filter = gi[Items.INDEX_EQUIPMENT_ID]
+			sel_indx = equipped_items_menu.get_selection(eq_filter)
 			using_eq = true
 		
 		
@@ -90,7 +94,11 @@ func _input(event):
 			else: #interaction already ongoing
 				_on_item_menu_selected(interacting_1,interacting_2)
 		else:
-			var storage_sel = equipped_items_menu.get_item_storage_selection()
+			var gi = PlayerInformation.get_item_data(grabbed_item_index)
+			var eq_filter = -1 #-1 is wildcard (empty can always click slots)
+			if !gi.is_empty() and grabbed_item:
+				eq_filter = gi[Items.INDEX_EQUIPMENT_ID]
+			var storage_sel = equipped_items_menu.get_item_storage_selection(eq_filter)
 			if storage_sel.x != -1:
 				var sel_item = PlayerInformation.inventory[storage_sel.x][1]["inventory"][storage_sel.y]
 				print(storage_sel)
@@ -190,6 +198,8 @@ var interactions_list
 var interacting_1 = 0
 var interacting_2 = 0
 func _on_item_interaction(index_1 : int, index_2) -> void: #-> when you click on index_2 with index_1 grabbed
+	
+	
 	if index_1 == index_2:
 		grabbed_item = false
 		grabbed_storage_item = false

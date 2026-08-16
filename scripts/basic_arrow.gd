@@ -5,6 +5,9 @@ extends CharacterBody3D
 @export var gravity = 0.98
 @export var drag = 0.1
 @onready var graphics = $graphics
+var damage_type : int = 0
+var damage_amount : int = 0
+var item_key = "basic_arrow"
 func _physics_process(delta):
 	velocity.y -= gravity * delta
 	var col = move_and_collide(velocity,false)
@@ -19,15 +22,17 @@ func _physics_process(delta):
 		
 		var pos = col.get_position(0)
 		var norm = col.get_normal(0)
-		var decal = load("res://assets/items/arrows/arrow_ph.glb").instantiate()
+		#var decal = load("res://assets/items/arrows/arrow_ph.glb").instantiate()
 		#decal.position = pos - norm
 		#var r = Global.dir_to_rot(norm)
 		#decal.rotation.x=r.x
 		#decal.rotation.y=r.y
-		decal.rotation = graphics.rotation
-		decal.position = $graphics/Node3D/arrow_ph.global_position
-		Global.create_decal(decal)
-		
+		#decal.rotation = graphics.rotation
+		#decal.position = $graphics/Node3D/arrow_ph.global_position
+		#Global.create_decal(decal)
+		#Global.drop_item()
+		Global.drop_item([item_key,{}],position+norm*0.5,graphics.global_rotation,true)
+		#drop_item(data, pos, rotation, stuck, velL, velR) -> void:
 		emit_signal("hit_target",0.0,1,null)
 		queue_free()
 
@@ -42,7 +47,16 @@ func set_ruler(new_ruler):
 	connect("hit_target",ruler._on_projectile_hit_enemy)
 
 func set_arrow_type(key:StringName):
-	
+	var info = Items.list[key]
+	var model_path = info[Items.INDEX_MODEL]
+	item_key = key
+	var m = load(model_path).instantiate()
+	$graphics/Node3D.add_child(m)
+	var data = info[Items.INDEX_DATA]
+	gravity = data[3]
+	drag = data[2]
+	damage_amount = data[0]
+	damage_type = data[1]
 	pass
 
 

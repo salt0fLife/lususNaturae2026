@@ -14,3 +14,4 @@ model_path = "res://assets/items/bread/bread.tscn"
 has_deformations = false
 texture_path = "res://assets/textures/material/DebuggTexture.png"
 interactions = {}
+equipment_id = 1

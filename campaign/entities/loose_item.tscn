@@ -1,6 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://dwb8rqy5utihe"]
+[gd_scene load_steps=11 format=3 uid="uid://dwb8rqy5utihe"]
 
 [ext_resource type="Script" path="res://scripts/loose_item.gd" id="1_q61v5"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_fvxhj"]
+bounce = 0.25
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_2weyi"]
 
@@ -47,9 +50,12 @@ material = SubResource("StandardMaterial3D_1teii")
 size = Vector2(0.04, 0.04)
 orientation = 2
 
-[node name="loose_item" type="StaticBody3D" groups=["interactable"]]
+[sub_resource type="BoxShape3D" id="BoxShape3D_t1tne"]
+
+[node name="loose_item" type="RigidBody3D" groups=["interactable"]]
+disable_mode = 1
 collision_layer = 8
-collision_mask = 0
+physics_material_override = SubResource("PhysicsMaterial_fvxhj")
 script = ExtResource("1_q61v5")
 
 [node name="Label3D" type="Label3D" parent="."]
@@ -76,3 +82,6 @@ spread = 180.0
 gravity = Vector3(0, 0, 0)
 initial_velocity_min = 0.2
 initial_velocity_max = 0.2
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_t1tne")

@@ -30,10 +30,10 @@ func _ready():
 func die(_t,_l):
 	injured = 0
 	print("forest spider died")
-	$graphics/legs_left.visible = true
-	$graphics/legs_right.visible = true
-	$graphics/head.visible = true
-	$graphics/abdomen.visible = true
+	#$graphics/legs_left.visible = true
+	#$graphics/legs_right.visible = true
+	#$graphics/head.visible = true
+	#$graphics/abdomen.visible = true
 
 func _on_took_damage(amount):
 	velocity = Vector3.ZERO
@@ -43,9 +43,16 @@ func _on_limb_death(limb, type):
 	print("forest spider " + str(limb) + " died")
 	injured += 1
 	match limb:
-		"head" : $graphics/head.visible = false
-		"abdomen" : $graphics/abdomen.visible = false
-		"legs_left" : $graphics/legs_left.visible = false
-		"legs_right" : $graphics/legs_right.visible = false
+		"leg_1":
+			var data = ["forest_spider_leg", {}]
+			$graphics/forest_spider_avatar/forest_spider_test/Armature/Skeleton3D/Cube_027.visible = true
+			$graphics/forest_spider_avatar/forest_spider_test/Armature/Skeleton3D/Cube_026.visible = false
+			PlayerInformation.emit_signal("dropped_item", data, position)
+			pass
+	#match limb:
+		#"head" : $graphics/head.visible = false
+		#"abdomen" : $graphics/abdomen.visible = false
+		#"legs_left" : $graphics/legs_left.visible = false
+		#"legs_right" : $graphics/legs_right.visible = false
 
 

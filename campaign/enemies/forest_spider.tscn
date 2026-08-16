@@ -1,22 +1,13 @@
-[gd_scene load_steps=12 format=3 uid="uid://cnw5lgwyi4fel"]
+[gd_scene load_steps=11 format=3 uid="uid://cnw5lgwyi4fel"]
 
 [ext_resource type="Script" path="res://scripts/forest_spider.gd" id="1_2pm46"]
 [ext_resource type="PackedScene" uid="uid://b21m67s1dsdtr" path="res://assets/entity_components/hurtbox.tscn" id="2_bghc6"]
+[ext_resource type="PackedScene" uid="uid://dtpprq7ugqfpr" path="res://assets/enemies_wip/forest_spider_test.glb" id="2_bwulf"]
 [ext_resource type="Script" path="res://scripts/generic_health_handler.gd" id="3_1kdef"]
+[ext_resource type="PackedScene" uid="uid://bgjwkkae55662" path="res://assets/enemies_wip/forest_spider_test_model.glb" id="3_gay1h"]
+[ext_resource type="PackedScene" uid="uid://b1laosneanwf1" path="res://assets/glb_temp/player_01_wip_rig_test.glb" id="5_t7ir4"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_fjwoi"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_q7otu"]
-size = Vector3(0.5, 0.5, 0.705)
-
-[sub_resource type="BoxMesh" id="BoxMesh_0jnyf"]
-size = Vector3(0.915, 0.785, 1.01)
-
-[sub_resource type="BoxMesh" id="BoxMesh_0gnb3"]
-size = Vector3(0.255, 0.27, 0.27)
-
-[sub_resource type="BoxMesh" id="BoxMesh_jhxhl"]
-size = Vector3(0.74, 1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rmtae"]
 size = Vector3(0.756409, 0.887939, 0.917969)
@@ -38,25 +29,47 @@ shape = SubResource("SphereShape3D_fjwoi")
 
 [node name="graphics" type="Node3D" parent="."]
 
-[node name="body" type="MeshInstance3D" parent="graphics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-mesh = SubResource("BoxMesh_q7otu")
+[node name="forest_spider_avatar" type="Node3D" parent="graphics"]
+transform = Transform3D(0.615, 0, 0, 0, 0.615, 0, 0, 0, 0.615, 0, 0, 0)
 
-[node name="abdomen" type="MeshInstance3D" parent="graphics"]
-transform = Transform3D(1, 0, 0, 0, 0.975607, -0.219523, 0, 0.219523, 0.975607, 0, 0.5, -0.896008)
-mesh = SubResource("BoxMesh_0jnyf")
+[node name="forest_spider_test" parent="graphics/forest_spider_avatar" instance=ExtResource("2_bwulf")]
+visible = false
 
-[node name="head" type="MeshInstance3D" parent="graphics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.521509, 0.463008)
-mesh = SubResource("BoxMesh_0gnb3")
+[node name="Skeleton3D" parent="graphics/forest_spider_avatar/forest_spider_test/Armature" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.545282, 2.33246, 0)
+bones/0/rotation = Quaternion(-2.66925e-08, -2.66925e-08, -0.707107, 0.707107)
+bones/1/rotation = Quaternion(-2.93062e-08, -5.94136e-08, -0.211461, 0.977387)
+bones/2/scale = Vector3(1, 1, 1)
+bones/3/rotation = Quaternion(2.28925e-07, -3.71028e-10, 0.956632, 0.2913)
+bones/3/scale = Vector3(1, 1, 1)
 
-[node name="legs_left" type="MeshInstance3D" parent="graphics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.636729, 0.5, 0)
-mesh = SubResource("BoxMesh_jhxhl")
+[node name="Cube_027" parent="graphics/forest_spider_avatar/forest_spider_test/Armature/Skeleton3D" index="1"]
+visible = false
 
-[node name="legs_right" type="MeshInstance3D" parent="graphics"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.61759, 0.5, 0)
-mesh = SubResource("BoxMesh_jhxhl")
+[node name="SkeletonIK3D" type="SkeletonIK3D" parent="graphics/forest_spider_avatar/forest_spider_test/Armature/Skeleton3D" index="2"]
+process_priority = 1
+root_bone = &"Bone"
+tip_bone = &"ik_target"
+use_magnet = true
+magnet = Vector3(10, 10, 0)
+target_node = NodePath("../../ik_target")
+
+[node name="BoneAttachment3D2" type="BoneAttachment3D" parent="graphics/forest_spider_avatar/forest_spider_test/Armature/Skeleton3D" index="3"]
+transform = Transform3D(1, -1.78814e-07, -2.38418e-07, 8.9407e-08, 1, 2.84217e-14, 2.38419e-07, 1.42109e-14, 1, 8.18954, -4.05145, -6.91251e-09)
+bone_name = "ik_target"
+bone_idx = 3
+
+[node name="ik_target" type="Node3D" parent="graphics/forest_spider_avatar/forest_spider_test/Armature" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.65833, -0.0364532, -0.110522)
+
+[node name="Cube_028" parent="graphics/forest_spider_avatar/forest_spider_test" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.33137, 0)
+visible = false
+
+[node name="Cube_031" parent="graphics/forest_spider_avatar/forest_spider_test" index="2"]
+visible = false
+
+[node name="forest_spider_test_model" parent="graphics" instance=ExtResource("3_gay1h")]
 
 [node name="hurtbox" parent="." node_paths=PackedStringArray("health_handler") instance=ExtResource("2_bghc6")]
 health_handler = NodePath("../health_handler")
@@ -96,3 +109,8 @@ shape = SubResource("BoxShape3D_4lcig")
 
 [node name="health_handler" type="Node" parent="."]
 script = ExtResource("3_1kdef")
+
+[node name="player_01_wip_rig_test" parent="." instance=ExtResource("5_t7ir4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+
+[editable path="graphics/forest_spider_avatar/forest_spider_test"]

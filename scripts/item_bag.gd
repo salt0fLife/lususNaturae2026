@@ -10,4 +10,4 @@ func get_data() -> Array:
 	return [max_capacity]
 
 func get_item() -> Array:
-	return [display_name,item_style,sounds,item_type, get_data(), texture_path,model_path,animations, has_deformations]
+	return [display_name,item_style,sounds,item_type, get_data(), texture_path,model_path,animations, has_deformations,equipment_id]

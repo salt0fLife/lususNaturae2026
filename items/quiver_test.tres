@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="item_bag" load_steps=2 format=3 uid="uid://c5pp5qatv41vx"]
+
+[ext_resource type="Script" path="res://scripts/item_bag.gd" id="1_yv0ys"]
+
+[resource]
+script = ExtResource("1_yv0ys")
+max_capacity = 20
+internal_reference_name = "quiver_default"
+display_name = "quiver"
+item_style = 1
+sounds = 5
+animations = 4
+model_path = "res://assets/items/bread/bread.tscn"
+has_deformations = false
+texture_path = "res://assets/textures/material/DebuggTexture.png"
+interactions = {}
+equipment_id = 2

@@ -70,6 +70,7 @@ const entities: Dictionary = {
 	"basic_arrow" : ["res://assets/projectiles/basic_arrow.tscn"]
 }
 
+
 signal spawn_entity_signal
 func spawn_entity(key, position : Vector3 = Vector3.ZERO,velocity:Vector3=Vector3.ZERO,custom_data:Array=[]) -> void:
 	emit_signal("spawn_entity_signal", key, position, velocity,custom_data)
@@ -77,6 +78,11 @@ func spawn_entity(key, position : Vector3 = Vector3.ZERO,velocity:Vector3=Vector
 signal create_decal_signal
 func create_decal(node) -> void:
 	emit_signal("create_decal_signal", node)
+
+signal drop_item_signal
+func drop_item(data : Array, pos : Vector3, rotation : Vector3 = Vector3.ZERO, stuck: bool = false, velL :=Vector3.ZERO, velR := Vector3.ZERO) -> void:
+	emit_signal("drop_item_signal",data,pos,rotation,stuck,velL,velR)
+	pass
 
 func get_abreviated_time(seconds : int) -> String:
 	var abrev_time = ""

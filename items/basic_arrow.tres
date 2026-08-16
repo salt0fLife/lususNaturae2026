@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="item_arrow" load_steps=2 format=3 uid="uid://y1qsb7taxnl2"]
+
+[ext_resource type="Script" path="res://scripts/item_arrow.gd" id="1_0dglw"]
+
+[resource]
+script = ExtResource("1_0dglw")
+damage_amount = 12
+damage_type = 1
+internal_reference_name = "basic_arrow"
+display_name = "arrow"
+item_style = 1
+sounds = 6
+animations = 2
+model_path = "res://assets/items/arrows/arrow_ph.glb"
+has_deformations = false
+texture_path = "res://assets/textures/material/DebuggTexture.png"
+interactions = {}
+equipment_id = 3

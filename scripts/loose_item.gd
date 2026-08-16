@@ -1,10 +1,12 @@
-extends StaticBody3D
+extends RigidBody3D
 
 
-@export var data = []
-var tool_tip = ""
+@export var data : Array = []
+var tool_tip : String= ""
+var stuck : bool = false
 
 func _ready():
+	freeze = stuck
 	update_graphics_from_data()
 	PlayerInformation.connect("changed_using_senses", update_from_senses)
 	update_from_senses()
@@ -15,9 +17,9 @@ func update_graphics_from_data() -> void:
 	#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]
 	var item_data = Items.list[data[0]]
 	var model = load(item_data[Items.INDEX_MODEL]).instantiate()
-	model.rotation.x = PI*0.5
-	model.rotation.z = PI*0.5
-	model.rotation.y = randf_range(-PI, PI)
+	#model.rotation.x = PI*0.5
+	#model.rotation.z = PI*0.5
+	#model.rotation.y = randf_range(-PI, PI)
 	add_child(model)
 	#if !data.has({}):
 		#data.append({})

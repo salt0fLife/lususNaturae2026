@@ -31,6 +31,7 @@ enum type { #types
 	BOW,
 	ARROW,
 	BAG,
+	USELESS,
 }
 
 enum sound { #sounds
@@ -120,7 +121,15 @@ func populate_list(): ##NOTE MAY NOT WORK ON EXPORT
 	print(interactions)
 
 func key_to_item(key : StringName):
-	return [key,{}]; #[internal_reference_name, attributes/custom_data]
+	var custom_data = {}
+	var info = list[key]
+	match info[INDEX_TYPE]: #can do some small stuff for convienience
+		type.BAG:
+			var inv = []
+			for i in info[INDEX_DATA][0]:
+				inv.append([])
+			custom_data["inventory"] = inv
+	return [key,custom_data]; #[internal_reference_name, attributes/custom_data]
 
 enum {#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations, has_deformations]
 	INDEX_NAME,
@@ -132,6 +141,7 @@ enum {#["display_name", item_style, sounds, item_type, data, texture_path, model
 	INDEX_MODEL,
 	INDEX_ANIMATIONS,
 	INDEX_HAS_DEFORMATIONS,
+	INDEX_EQUIPMENT_ID,
 }
 
 
@@ -142,4 +152,9 @@ var interactions = {
 	#}
 }
 
-
+enum equipment_id { #for items with slots they can or cannot be put in
+	NORMAL,
+	BACKPACK,
+	QUIVER,
+	ARROW
+}

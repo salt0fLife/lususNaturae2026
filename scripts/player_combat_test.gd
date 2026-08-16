@@ -41,9 +41,9 @@ var current_dash:float = 3.0
 @export var dash_regen_speed:float = 0.25
 var dash_vel: Vector3 = Vector3.ZERO
 var dash_timer: float = 0.0 #goes from 1.0 -> 0.0 during dash
-@export var dash_distance:float = 50.0
+@export var dash_distance:float = 50.0 #nice 20.0
 @export var dash_speed:float = 5.0
-@export var dash_end_friction : float = 0.03
+@export var dash_end_friction : float = 0.03 #nice 0.02
 var velocity_at_dash_start : Vector3 = Vector3.ZERO
 
 #lunge
@@ -646,6 +646,7 @@ func attempt_loose_item_pickup(path_to : String) -> void:
 
 #weapon and item based info
 var bow_loaded : bool = false #if your bow has an arrow knocked (for animations mainly)
+var loaded_arrow_key : StringName = "basic_arrow"
 var bow_draw_timer : float = 0.0 #how long your bow has been drawn
 var drawing_bow : bool = false #if your drawing it back
 var held_item_attributes: Dictionary = {}
@@ -679,6 +680,11 @@ func use_held_item(special = false):
 			print("swung sword")
 			play_held_item_sound("swing", attack_speed)
 			weapon_node.slash_close(damage_amount,damage_type,vfx_method_name,special,attack_speed)
+			#velocity += get_look_dir()
+			if !dash_timer > 0.0 and is_on_floor():
+				dash_timer = 0.75
+				velocity_at_dash_start = velocity
+				dash_vel = get_look_dir()
 			if special:
 				play_anim("swing_sword_2", true, 0.0, attack_speed)
 			else:
@@ -727,13 +733,36 @@ func start_using_bow(special : bool) -> void:
 		else:
 			load_bow()
 
-func load_bow():
-	var arrow_graphics = load("res://assets/items/arrows/arrow_ph.glb").instantiate()
-	#^^^ get frow quiver aka held_item_attributes["inventory"]
-	prop_1_handler.add_child(arrow_graphics)
-	prop_item_models.append(arrow_graphics)
-	play_anim("load_bow", true, 0.0)
-	bow_loaded = true
+func load_bow() -> void:
+	var quiver_item = PlayerInformation.inventory[PlayerInformation.get_backpack_index()+1]
+	if !quiver_item.is_empty():
+		var arrow_item = []
+		for i in range(0,quiver_item[1]["inventory"].size()):
+			var a = quiver_item[1]["inventory"][i]
+			if !a.is_empty():
+				arrow_item = Items.list[a[0]]
+				quiver_item[1]["inventory"][i] = []
+				loaded_arrow_key = a[0]
+				break
+		if arrow_item.is_empty():
+			print("quiver empty checking inventory")
+			for i in range(0,PlayerInformation.inventory.size()):
+				var a = PlayerInformation.get_item_data(i)
+				if !a.is_empty():
+					if a[Items.INDEX_EQUIPMENT_ID] == Items.equipment_id.ARROW:
+						arrow_item = a
+						loaded_arrow_key = PlayerInformation.inventory[i][0]
+						PlayerInformation.inventory[i] = []
+						break
+			if arrow_item.is_empty():
+				print("no ammo found in inventory")
+				return
+		var arrow_graphics = load(arrow_item[Items.INDEX_MODEL]).instantiate()#load("res://assets/items/arrows/arrow_ph.glb").instantiate()
+		#^^^ get frow quiver aka held_item_attributes["inventory"]
+		prop_1_handler.add_child(arrow_graphics)
+		prop_item_models.append(arrow_graphics)
+		play_anim("load_bow", true, 0.0)
+		bow_loaded = true
 	pass
 
 func shoot_bow():
@@ -760,13 +789,13 @@ func shoot_bow():
 		play_anim("shoot_bow_end_full")
 		var dir = get_look_dir()
 		var pos = look_dir_reference.global_position
-		Global.spawn_entity("basic_arrow",pos,dir*bow_data[3],["default_arrow",self])
+		Global.spawn_entity("basic_arrow",pos,dir*bow_data[3],[loaded_arrow_key,self])
 	else:
 		print("inadequate draw, misfire")
 		play_anim("shoot_bow_end_full")
 		var dir = get_look_dir()
 		var pos = look_dir_reference.global_position
-		Global.spawn_entity("basic_arrow",pos,dir*bow_data[3]*0.1,["default_arrow",self])
+		Global.spawn_entity("basic_arrow",pos,dir*bow_data[3]*0.1,[loaded_arrow_key,self])
 
 func shoot_held_item() -> void:
 	var data = PlayerInformation.get_held_item_data()[Items.INDEX_DATA]
@@ -835,7 +864,9 @@ func _on_dropped_item(_data, _pos) -> void:
 
 func _on_item_drop_attempt(index : int) -> void:
 	var data = PlayerInformation.steal_inventory_slot(index)
-	PlayerInformation.emit_signal("dropped_item", data, look_dir_reference.global_position)
+	#PlayerInformation.emit_signal("dropped_item", data, look_dir_reference.global_position)
+	#(data, pos, rotation, stuck, velL , velR) -> void:
+	Global.drop_item(data,held_item_handler.global_position,held_item_handler.global_rotation,false,velocity)
 	PlayerInformation.emit_signal("update_held_item")
 	play_anim("drop_bread", true, 0.0)
 
