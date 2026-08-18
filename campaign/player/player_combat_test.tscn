@@ -1,9 +1,10 @@
-[gd_scene load_steps=58 format=3 uid="uid://ifpn0do4gv41"]
+[gd_scene load_steps=62 format=3 uid="uid://ifpn0do4gv41"]
 
 [ext_resource type="Script" path="res://scripts/player_combat_test.gd" id="1_t5q6g"]
 [ext_resource type="Script" path="res://scripts/combat_test_graphics.gd" id="2_0icll"]
 [ext_resource type="PackedScene" uid="uid://dyl2fckihvk6a" path="res://campaign/player/components/interaction_sightline.tscn" id="2_sh5jq"]
 [ext_resource type="PackedScene" uid="uid://c4woxbpboh1ky" path="res://campaign/player/components/senses_camera.tscn" id="2_xkmxm"]
+[ext_resource type="Shader" path="res://assets/shaders/heat_signature.gdshader" id="3_76xdo"]
 [ext_resource type="PackedScene" uid="uid://co55ejp62qjtu" path="res://campaign/player/graphics/wip/fp_hands_wip.glb" id="5_k3qy5"]
 [ext_resource type="ArrayMesh" uid="uid://boyma10cyjpi7" path="res://assets/effects/vfx_mesh_bases/vfx_mesh_bases.obj" id="5_y706u"]
 [ext_resource type="PackedScene" uid="uid://cvsdxjehh0m7f" path="res://assets/effects/senses_trail.tscn" id="6_1etcr"]
@@ -27,6 +28,55 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vt6p6"]
 radius = 0.371076
+
+[sub_resource type="Gradient" id="Gradient_x4437"]
+offsets = PackedFloat32Array(0.300847, 0.516949, 0.728814, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.0364392, 0.00784931, 7.52043e-10, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mnjyr"]
+gradient = SubResource("Gradient_x4437")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pj1h4"]
+render_priority = 0
+shader = ExtResource("6_ss6h1")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(0.486275, 0.54902, 0.576471, 1)
+shader_parameter/day_color_power = 0.5
+shader_parameter/point_size = 0.0
+shader_parameter/roughness = 0.596
+shader_parameter/day_roughness = 0.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = 0.0
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/specular_highlight = 0.825
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/texture_albedo = ExtResource("12_er1ca")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_mnjyr")
+
+[sub_resource type="Gradient" id="Gradient_42b58"]
+colors = PackedColorArray(0.312453, 0.705047, 0.710448, 1, 0.231373, 0.537255, 0.588235, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_p6vg8"]
+gradient = SubResource("Gradient_42b58")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q1des"]
+render_priority = 0
+shader = ExtResource("3_76xdo")
+shader_parameter/distance_fade_min = 20.0
+shader_parameter/distance_fade_max = 15.0
+shader_parameter/displacement_amplitude = 0.001
+shader_parameter/heat_map_gradient = SubResource("GradientTexture1D_p6vg8")
 
 [sub_resource type="Shader" id="Shader_8d4ys"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's StandardMaterial3D.
@@ -77,41 +127,6 @@ shader_parameter/color_highlight = Color(0.596078, 0.596078, 0.596078, 1)
 shader_parameter/color_trail = Color(0.788235, 0.776471, 0.776471, 1)
 shader_parameter/progress = 0.0
 shader_parameter/slash_texture = ExtResource("6_ps0dq")
-
-[sub_resource type="Gradient" id="Gradient_x4437"]
-offsets = PackedFloat32Array(0.300847, 0.516949, 0.728814, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.0364392, 0.00784931, 7.52043e-10, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_mnjyr"]
-gradient = SubResource("Gradient_x4437")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_pj1h4"]
-render_priority = 0
-shader = ExtResource("6_ss6h1")
-shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/albedo_day = Color(0.486275, 0.54902, 0.576471, 1)
-shader_parameter/day_color_power = 0.5
-shader_parameter/point_size = 0.0
-shader_parameter/roughness = 0.596
-shader_parameter/day_roughness = 0.0
-shader_parameter/metallic_texture_channel = null
-shader_parameter/normal_scale = null
-shader_parameter/specular = 0.0
-shader_parameter/metallic = null
-shader_parameter/uv1_scale = Vector3(1, 1, 1)
-shader_parameter/uv1_offset = null
-shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/uv2_offset = null
-shader_parameter/specular_highlight = 0.825
-shader_parameter/specular_highlight_day = 0.01
-shader_parameter/sh_day_power = 0.0
-shader_parameter/texture_albedo = ExtResource("12_er1ca")
-shader_parameter/CloudDitherPower = 10.0
-shader_parameter/CloudCutoffAdjust = -0.795
-shader_parameter/CloudDensity = 1.49
-shader_parameter/CloudOpacity = 1.0
-shader_parameter/cloudSoftness = 0.85
-shader_parameter/luminance_gradient = SubResource("GradientTexture1D_mnjyr")
 
 [sub_resource type="Gradient" id="Gradient_6agoa"]
 offsets = PackedFloat32Array(0.0773481, 0.287293)
@@ -637,6 +652,8 @@ hands_rot_return_power = 150.0
 hands_rot_return_damp = 15.0
 hands_rot_big_motion_power = 50.0
 hands_rot_big_motion_damp = 10.0
+mat_basic = SubResource("ShaderMaterial_pj1h4")
+mat_senses = SubResource("ShaderMaterial_q1des")
 running_speed_mult = 0.95
 shiver_strength = 0.1
 shiver_speed = 0.8
@@ -973,6 +990,10 @@ skeleton = NodePath("../..")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="sunlight_indicator"]
 stream = ExtResource("20_jogrh")
+
+[node name="stepDownCheckRaycast" type="RayCast3D" parent="."]
+
+[node name="stairsAheadRaycast" type="RayCast3D" parent="."]
 
 [editable path="graphics/cameraHandler/fp_hands_wip"]
 [editable path="graphics/legs/fp_legs_wip"]

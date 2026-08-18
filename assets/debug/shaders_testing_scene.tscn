@@ -1,7 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://ctdfqqiyjwq8a"]
+[gd_scene load_steps=14 format=3 uid="uid://ctdfqqiyjwq8a"]
 
 [ext_resource type="Shader" path="res://assets/shaders/stylized_mouth_shader.gdshader" id="1_103pd"]
 [ext_resource type="Shader" path="res://assets/shaders/stylized_eyes.gdshader" id="2_ynw5a"]
+[ext_resource type="Shader" path="res://assets/shaders/heat_signature.gdshader" id="3_eoyc6"]
+[ext_resource type="Texture2D" uid="uid://drscnbar1xv1j" path="res://assets/textures/vfx/heat_map_gradient.tres" id="4_1b65e"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ow4hu"]
 render_priority = 0
@@ -84,6 +86,16 @@ material = SubResource("ShaderMaterial_1yn3a")
 [sub_resource type="QuadMesh" id="QuadMesh_fpbrm"]
 material = SubResource("ShaderMaterial_1yn3a")
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_rls5p"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4lmdg"]
+render_priority = 0
+shader = ExtResource("3_eoyc6")
+shader_parameter/distance_fade_min = 20.0
+shader_parameter/distance_fade_max = 15.0
+shader_parameter/displacement_amplitude = 0.05
+shader_parameter/heat_map_gradient = ExtResource("4_1b65e")
+
 [node name="shaders_testing_scene" type="Node3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
@@ -101,3 +113,8 @@ mesh = SubResource("SphereMesh_hituf")
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 mesh = SubResource("QuadMesh_fpbrm")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)
+mesh = SubResource("CapsuleMesh_rls5p")
+surface_material_override/0 = SubResource("ShaderMaterial_4lmdg")

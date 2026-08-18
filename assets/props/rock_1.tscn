@@ -74,7 +74,7 @@ transform = Transform3D(3.0096, 0, 0, 0, 3.0096, 0, 0, 0, 3.0096, 0, 0, 0)
 mesh = SubResource("ArrayMesh_gotmw")
 skeleton = NodePath("")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Cube_001"]
+[node name="StaticBody3D" type="StaticBody3D" parent="Cube_001" groups=["stone"]]
 visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Cube_001/StaticBody3D"]

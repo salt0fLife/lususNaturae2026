@@ -39,9 +39,11 @@ var max_food: int = 5
 var min_sleep_food: int = 4
 var sun_sickness: float = 0.0 #builds up when in sunlight goes down in shade
 
-var world_time: float = 0.0 #i know its funny to store here but it fits
-var world_overcast : float = 0.0 #1.0 means no sunlight even during day
-#
+##world information
+#var world_time: float = 0.0 #i know its funny to store here but it fits
+#var world_overcast : float = 0.0 #1.0 means no sunlight even during day
+#var wind : Vector3 = Vector3.ZERO
+##
 
 var wall_sliding_timer:float = 0.0
 var max_dash:float = 3.0

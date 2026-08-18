@@ -60,6 +60,10 @@ var hands_rot_big_motion_vel : Vector3 = Vector3.ZERO
 
 @onready var last_frame_camera_rot = Vector2(rotation.y, cameraHandler.rotation.x)
 @onready var anim = $cameraHandler/fp_hands_wip/AnimationPlayer
+
+@export var mat_basic : Material
+@export var mat_senses : Material
+
 var first_active_frame = true
 func _process(delta):
 	camera.position = lerp(camera.position, Vector3.ZERO, delta*4.0)
@@ -214,12 +218,14 @@ func _ready():
 
 func update_using_senses() -> void:
 	if PlayerInformation.using_senses:
-		var mat = $"../senses_trail".material.duplicate(true)
+		#var mat = $"../senses_trail".material.duplicate(true)
+		$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bandages.visible = false
 		for am in arm_meshes:
-			am.set_surface_override_material(0, mat)
+			am.set_surface_override_material(0, mat_senses)
 	else:
+		$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bandages.visible = true
 		for am in arm_meshes:
-			am.set_surface_override_material(0, null)
+			am.set_surface_override_material(0, mat_basic)
 
 @onready var legs = $legs
 var val = 0.0

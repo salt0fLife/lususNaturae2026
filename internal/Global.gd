@@ -8,6 +8,7 @@ var version = "early-dev"
 
 var settup_clouds = false #to minimize errors because its annoying
 
+var desired_monochrome_value : float = 0.0
 
 
 signal change_level
@@ -121,6 +122,13 @@ func tooltip(text : String) -> void:
 
 ##world stuff
 
+#world information
+var world_time: float = 0.0 #i know its funny to store here but it fits
+var world_overcast : float = 0.0 #1.0 means no sunlight even during day
+var world_wind : Vector3 = Vector3.ZERO
+#
+
+
 func get_surface_info(groups : Array) -> Dictionary:
 	for g in groups:
 		if surface_lookup.has(g):
@@ -138,32 +146,39 @@ enum {
 enum {
 	STEP_SOUNDS,
 	BULLET_HIT_EFFECT,
+	SURFACE_HARDNESS, #0 being fluid and 100 being tough metal
 }
 
 const surface_lookup = { #this way i can bundle more info in if i need
 	"dirt" : {
 		STEP_SOUNDS : DIRT_KEY,
 		BULLET_HIT_EFFECT : DIRT_KEY,
+		SURFACE_HARDNESS : 5,
 	},
 	"stone" : {
 		STEP_SOUNDS : STONE_KEY,
 		BULLET_HIT_EFFECT : STONE_KEY,
+		SURFACE_HARDNESS : 60,
 	},
 	"grass" : {
 		STEP_SOUNDS : GRASS_KEY,
 		BULLET_HIT_EFFECT : DIRT_KEY,
+		SURFACE_HARDNESS : 4,
 	},
 	"metal" : {
 		STEP_SOUNDS : METAL_KEY,
 		BULLET_HIT_EFFECT : STONE_KEY,
+		SURFACE_HARDNESS : 100,
 	},
 	"wood" : {
 		STEP_SOUNDS : WOOD_KEY,
 		BULLET_HIT_EFFECT : STONE_KEY,
+		SURFACE_HARDNESS : 30,
 	},
 	"default" : {
 		STEP_SOUNDS : STONE_KEY,
 		BULLET_HIT_EFFECT : DIRT_KEY,
+		SURFACE_HARDNESS : 20, #i have no real reasoning behind this
 	}
 	
 }
@@ -236,3 +251,4 @@ func dir_to_rot(dir :Vector3) -> Vector2:
 	rot.y = atan2(dir.x, dir.z)
 	rot.x = atan2(sqrt(dir.z*dir.z+dir.x*dir.x),dir.y)
 	return rot
+

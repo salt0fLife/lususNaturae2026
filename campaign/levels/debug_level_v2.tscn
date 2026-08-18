@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=3 uid="uid://cr72kg6xrvq30"]
+[gd_scene load_steps=70 format=3 uid="uid://cr72kg6xrvq30"]
 
 [ext_resource type="Shader" path="res://assets/shaders/parallax_grass.gdshader" id="1_3p6yo"]
 [ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_konvq"]
@@ -31,6 +31,7 @@
 [ext_resource type="PackedScene" uid="uid://c7sj7re55hlfy" path="res://assets/debug/fairy_style_test.tscn" id="29_ggnip"]
 [ext_resource type="PackedScene" uid="uid://cnw5lgwyi4fel" path="res://campaign/enemies/forest_spider.tscn" id="30_ivmw8"]
 [ext_resource type="PackedScene" uid="uid://dwb8rqy5utihe" path="res://campaign/entities/loose_item.tscn" id="31_47ija"]
+[ext_resource type="PackedScene" uid="uid://dsulkfu7150ar" path="res://campaign/levels/dark_tower/dark_tower.tscn" id="32_gerqm"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_eeh8o"]
 
@@ -1152,6 +1153,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, 157)
 radius = 11.0
 height = 104.0
 sides = 64
+
+[node name="dark_tower" parent="." instance=ExtResource("32_gerqm")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 128, 0.113321, 183)
 
 [connection signal="body_entered" from="launcher" to="launcher" method="_on_body_entered"]
 

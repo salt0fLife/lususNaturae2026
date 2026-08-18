@@ -22,10 +22,12 @@ func update_senses() -> void:
 	$blackout.set("color", Color.BLACK)
 	if PlayerInformation.using_senses:
 		$smell_camera.make_current()
+		RenderingServer.global_shader_parameter_set("monochrome", 1.0)
 		print("using senses")
 	else:
 		$sight_camera.make_current()
 		print("using eyes")
+		RenderingServer.global_shader_parameter_set("monochrome", Global.desired_monochrome_value)
 	var t2 = get_tree().create_tween()
 	t2.tween_property($blackout, "color", Color.WHITE, 0.4)
 

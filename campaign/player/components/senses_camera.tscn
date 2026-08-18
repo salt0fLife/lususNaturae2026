@@ -4,7 +4,6 @@
 
 [sub_resource type="Environment" id="Environment_8lrqg"]
 background_mode = 1
-fog_enabled = true
 fog_light_color = Color(0.156863, 0.176471, 0.223529, 1)
 fog_density = 0.2
 adjustment_enabled = true
@@ -31,3 +30,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+layers = 2
+light_color = Color(0.517647, 0.886275, 0.984314, 1)
+light_energy = 0.5
+omni_range = 10.0

@@ -31,9 +31,19 @@ func _physics_process(delta):
 		#decal.position = $graphics/Node3D/arrow_ph.global_position
 		#Global.create_decal(decal)
 		#Global.drop_item()
-		Global.drop_item([item_key,{}],position+norm*0.5,graphics.global_rotation,true)
+		var hit = col.get_collider(0)
+		if hit.has_method("take_damage"):
+			
+			emit_signal("hit_target",damage_amount,damage_type,hit)
+		else:
+			var surface_info = Global.get_surface_info(hit.get_groups())
+			if surface_info[Global.SURFACE_HARDNESS] > 50:
+				print("surface to hard, deflecting arrow")
+				Global.drop_item([item_key,{}],position+norm*0.5,graphics.global_rotation,false,norm*velocity.length()*0.5,Vector3(0.0,1.0,0.0))
+			else:
+				Global.drop_item([item_key,{}],position+norm*0.5,graphics.global_rotation,true)
 		#drop_item(data, pos, rotation, stuck, velL, velR) -> void:
-		emit_signal("hit_target",0.0,1,null)
+		#emit_signal("hit_target",0.0,1,null)
 		queue_free()
 
 

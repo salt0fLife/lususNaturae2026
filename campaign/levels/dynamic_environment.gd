@@ -8,7 +8,8 @@ func _process(delta):
 		change_to_preset(set_preset)
 		return
 	
-	var time = PlayerInformation.world_time
+	#var time = PlayerInformation.world_time
+	var time = Global.world_time
 	if time > 0.5:
 		change_to_preset("night")
 	else:
@@ -124,7 +125,8 @@ const presets = {
 }
 
 func get_astro_texture():
-	if PlayerInformation.world_time > 0.5: #is night time
+	#if PlayerInformation.world_time > 0.5: #is night time
+	if Global.world_time > 0.5: #is night time
 		return load("res://assets/textures/sky/moon_phases/full.png")
 	else: #is day
 		return load("res://assets/textures/sky/moon_phases/sunShape.png")

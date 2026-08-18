@@ -68,6 +68,16 @@ var desired_CH_height: float = 1.5
 var desired_CH_rotation_z: float = 0.0
 var combat_stance = 0.0
 
+
+#stepping
+var _snapped_to_stairs_last_frame: bool = false
+var MAX_STEP_HEIGHT: float = 0.55
+var jumped_last_frame : bool = false
+#
+
+func is_surface_to_steep(normal : Vector3) -> bool:
+	return normal.angle_to(Vector3.UP) > self.floor_max_angle
+
 func _ready():
 	interaction_sightline.connect("interacted", _on_successful_interaction)
 	PlayerInformation.connect("teleport", tp)
@@ -154,6 +164,7 @@ func air_jump() -> void:
 	air_jumps -= 1
 	velocity.y = jump_strength
 	graphics.air_dash(Vector3.UP)
+	jumped_last_frame = true
 	#if !current_dash >= 1.0:
 		#print("not enough dash charges")
 		#return
@@ -172,7 +183,8 @@ func update_tooltip() -> void:
 @export var sun_sickness_change_speed:float = 1.0;
 var sun_tick_damage_timer = 0.0
 func update_sun_sickness(delta) -> void:
-	if PlayerInformation.world_time < 0.5:
+	#if PlayerInformation.world_time < 0.5:
+	if Global.world_time < 0.5:
 		graphics.shiver(delta)
 	
 	var sun_p = $sunlight_check.in_sunlight_pecentage()
@@ -444,6 +456,7 @@ func _physics_process(delta):
 			velocity.y = jump_strength
 			graphics.jump()
 			airborn = true
+			jumped_last_frame = true
 			#play_anim(get_movement_anim("jump"))
 		elif can_wall_jump():
 			var normal = last_wall_normal
@@ -492,7 +505,7 @@ func _physics_process(delta):
 				play_anim(get_movement_anim("idle"))
 				velocity.x += ((crouch_speed * direction.x) - velocity.x) * delta * acceleration
 				velocity.z += ((crouch_speed * direction.z) - velocity.z) * delta * acceleration
-			elif sprinting:
+			elif sprinting: #TEST this may or may not effect performance
 				graphics.running(delta, velocity)
 				var speed = Vector2(velocity.x,velocity.z).length()
 				var a_speed = clamp((speed/sprint_speed),0.9,10.0)*sprint_animation_speed_mult*graphics.running_speed_mult
@@ -567,7 +580,10 @@ func _physics_process(delta):
 		velocity = velocity.normalized() * clamp(velocity.length(), 0.0, 50.0)
 	
 	
-	move_and_slide()
+	#move_and_slide()
+	if not snap_up_to_stairs_check(delta):
+		move_and_slide()
+		snap_down_to_stairs_check()
 	update_player_information()
 	if is_on_wall():
 		wall_jump_latency_timer = wall_jump_max_latency
@@ -575,6 +591,60 @@ func _physics_process(delta):
 		last_wall_groups = get_slide_collision(0).get_collider(0).get_groups()
 	else:
 		wall_jump_latency_timer -= delta
+	jumped_last_frame = false #its more like a jumped_this_frame but whatever
+
+
+func run_body_test_motion(from: Transform3D, motion: Vector3, result = null) -> bool:
+	if !result:
+		result = PhysicsTestMotionResult3D.new()
+	var params = PhysicsTestMotionParameters3D.new()
+	params.from = from
+	params.motion = motion
+	return PhysicsServer3D.body_test_motion(self.get_rid(), params, result)
+
+func snap_down_to_stairs_check() -> void:
+	if !is_on_floor() and !airborn:
+		if run_body_test_motion(transform,Vector3(0.0,-MAX_STEP_HEIGHT,0.0)):
+			var ocp = cameraHandler.global_position
+			move_and_collide(Vector3(0.0,-MAX_STEP_HEIGHT,0.0))
+			cameraHandler.global_position.y = ocp.y
+	#var did_snap := false
+	#var floor_below : bool = $stepDownCheckRaycast.is_colliding() and not is_surface_to_steep($stepDownCheckRaycast.get_collision_normal())
+	#var was_on_floor_last_frame = Engine.get_physics_frames() - last_frame_was_on_floor == 1
+	#if not is_on_floor() and velocity.y <= 0 and (was_on_floor_last_frame or _snapped_to_stairs_last_frame) and floor_below:# and !jumped_last_frame:
+		#var body_test_result = PhysicsTestMotionResult3D.new()
+		#if run_body_test_motion(self.global_transform, Vector3(0, -MAX_STEP_HEIGHT, 0), body_test_result):
+			#var translate_y = body_test_result.get_travel().y
+			#self.position.y += translate_y
+			#apply_floor_snap()
+			#did_snap = true
+	#_snapped_to_stairs_last_frame = did_snap
+
+func snap_up_to_stairs_check(delta) -> bool:
+	#if jumped_last_frame: return false
+	if airborn: return false #just for jumping while climbing
+	if not is_on_floor() and not _snapped_to_stairs_last_frame: return false
+	var expected_move_motion = self.velocity * Vector3(1, 0, 1) * delta
+	var step_pos_with_clearance = self.global_transform.translated(expected_move_motion + Vector3(0, MAX_STEP_HEIGHT * 2, 0))
+	###
+	var down_check_result = PhysicsTestMotionResult3D.new()
+	if (run_body_test_motion(step_pos_with_clearance, Vector3(0, -MAX_STEP_HEIGHT * 2, 0), down_check_result)
+	and (down_check_result.get_collider().is_class("StaticBody3D") or down_check_result.get_collider().is_class("CSGShape3D"))):
+		var step_height = ((step_pos_with_clearance.origin + down_check_result.get_travel()) - self.global_position).y
+		###
+		if step_height > MAX_STEP_HEIGHT or step_height <= 0.01 or (down_check_result.get_collision_point() - self.global_position).y > MAX_STEP_HEIGHT: return false
+		$stairsAheadRaycast.global_position = down_check_result.get_collision_point() + Vector3(0, MAX_STEP_HEIGHT, 0) + expected_move_motion.normalized() * 0.1
+		$stairsAheadRaycast.force_raycast_update()
+		if $stairsAheadRaycast.is_colliding() and not is_surface_to_steep($stairsAheadRaycast.get_collision_normal()):
+			var travel = down_check_result.get_travel()
+			var ocp = cameraHandler.global_position
+			self.global_position = step_pos_with_clearance.origin + travel#down_check_result.get_travel()
+			#camera.position -= travel
+			cameraHandler.global_position.y = ocp.y
+			apply_floor_snap()
+			_snapped_to_stairs_last_frame = true
+			return true
+	return false
 
 func update_velocity_air(wishdir : Vector3, vel : Vector3, frame_time : float) -> Vector3:
 	#apply friction
@@ -937,7 +1007,8 @@ func perform_action(key : String) -> void:
 	play_anim(key, true, 0.2, 1.0)
 	pass
 
-func _on_projectile_hit_enemy(p_dam_amount:float,p_dam_type:int,entity_node):
+func _on_projectile_hit_enemy(p_dam_amount:int,p_dam_type:int,entity_node):
 	print("recieved projectile hit info")
+	entity_node.take_damage(p_dam_amount,p_dam_type)
 	pass
 

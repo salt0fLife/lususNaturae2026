@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://dwb8rqy5utihe"]
+[gd_scene load_steps=14 format=3 uid="uid://dwb8rqy5utihe"]
 
 [ext_resource type="Script" path="res://scripts/loose_item.gd" id="1_q61v5"]
+[ext_resource type="Texture2D" uid="uid://bq3plyxn32vu5" path="res://assets/textures/sky/stars/star_glow.png" id="2_ml7q0"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_fvxhj"]
 bounce = 0.25
@@ -20,7 +21,7 @@ blend_mode = 1
 cull_mode = 2
 shading_mode = 0
 specular_mode = 2
-albedo_color = Color(0.454902, 0.831373, 0.945098, 1)
+albedo_color = Color(0.772549, 0.772549, 0.517647, 1)
 albedo_texture = SubResource("GradientTexture2D_cjtbe")
 billboard_mode = 2
 distance_fade_min_distance = 15.0
@@ -36,7 +37,7 @@ cull_mode = 2
 shading_mode = 0
 specular_mode = 2
 disable_fog = true
-albedo_color = Color(0.627451, 0.945098, 0.992157, 1)
+albedo_color = Color(0.772549, 0.772549, 0.517647, 1)
 billboard_mode = 3
 particles_anim_h_frames = 1
 particles_anim_v_frames = 1
@@ -49,6 +50,19 @@ distance_fade_max_distance = 15.0
 material = SubResource("StandardMaterial3D_1teii")
 size = Vector2(0.04, 0.04)
 orientation = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v28oa"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.772549, 0.772549, 0.517647, 1)
+albedo_texture = ExtResource("2_ml7q0")
+billboard_mode = 1
+distance_fade_mode = 2
+distance_fade_min_distance = 10.0
+distance_fade_max_distance = 6.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_t8tik"]
+material = SubResource("StandardMaterial3D_v28oa")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t1tne"]
 
@@ -82,6 +96,9 @@ spread = 180.0
 gravity = Vector3(0, 0, 0)
 initial_velocity_min = 0.2
 initial_velocity_max = 0.2
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="senses_helper"]
+mesh = SubResource("QuadMesh_t8tik")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_t1tne")

@@ -24,6 +24,7 @@ uniform vec3 uv2_offset;
 #include "res://assets/shaders/cloud_shadows.gdshaderinc"
 
 global uniform float vertex_snap_scale;
+global uniform float monochrome;
 
 void vertex() {
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
@@ -39,6 +40,8 @@ void fragment() {
 	vec3 albedo_normal = albedo.rgb * albedo_tex.rgb;
 	vec4 albedo_day_tex = texture(texture_albedo_day,base_uv);
 	ALBEDO = mix(albedo.rgb * albedo_tex.rgb, albedo_day.rgb * albedo_day_tex.rgb,day_color_power*day_color_influence);
+	float mono = (ALBEDO.r + ALBEDO.g + ALBEDO.b)*0.333333;
+	ALBEDO = mix(ALBEDO, vec3(mono,mono,mono),monochrome);
 	
 	float c_n = (NORMAL.x + NORMAL.y+NORMAL.z) * 0.333333;
 	//if (((sin(c_n * PI*2.0) + dot(NORMAL, CAMERA_DIRECTION_WORLD-NODE_POSITION_WORLD)) > roughness)){

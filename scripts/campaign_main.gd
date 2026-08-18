@@ -351,7 +351,8 @@ func _process(delta):
 	if day_timer > day_length:
 		day_timer -= day_length
 		in_game_days += 1
-	PlayerInformation.world_time = (day_timer/day_length) #IMPORTANT
+	#PlayerInformation.world_time = (day_timer/day_length) #IMPORTANT
+	Global.world_time = (day_timer/day_length) #IMPORTANT
 	
 	
 	sub_second_counter += delta

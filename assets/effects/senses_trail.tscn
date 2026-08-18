@@ -1,13 +1,31 @@
-[gd_scene load_steps=3 format=3 uid="uid://cvsdxjehh0m7f"]
+[gd_scene load_steps=4 format=3 uid="uid://cvsdxjehh0m7f"]
 
 [ext_resource type="Script" path="res://scripts/senses_trail.gd" id="1_asq1q"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5fp5d"]
 cull_mode = 2
 
+[sub_resource type="ArrayMesh" id="ArrayMesh_hjnw2"]
+_surfaces = [{
+"aabb": AABB(0, -0.5, 0, 1e-05, 1.00001, 1e-05),
+"attribute_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"format": 34359742487,
+"index_count": 6,
+"index_data": PackedByteArray(0, 0, 1, 0, 2, 0, 2, 0, 1, 0, 3, 0),
+"material": SubResource("StandardMaterial3D_5fp5d"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 0, 0, 255, 127, 255, 255, 0, 0, 0, 128, 255, 127, 0, 0, 0, 0, 0, 128, 255, 127, 255, 255, 0, 0, 0, 128, 255, 127, 0, 0, 0, 0, 0, 128)
+}]
+
 [node name="senses_trail" type="Node3D"]
 script = ExtResource("1_asq1q")
 material = SubResource("StandardMaterial3D_5fp5d")
+max_points = 250
 distance_between_points = 1.0
 
 [node name="graphics_handler" type="Node" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("ArrayMesh_hjnw2")

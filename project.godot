@@ -154,6 +154,7 @@ inventory_slot_5={
 3d_physics/layer_4="interactable"
 3d_physics/layer_5="special areas"
 3d_physics/layer_6="hurtbox"
+3d_physics/layer_7="projectile entity"
 
 [rendering]
 
@@ -180,4 +181,8 @@ SunshineClouds_ShapeSpeedMultiplier={
 vertex_snap_scale={
 "type": "float",
 "value": 500.0
+}
+monochrome={
+"type": "float",
+"value": 0.0
 }

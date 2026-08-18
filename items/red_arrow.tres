@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_cqa6n")
-damage_amount = 0
+damage_amount = 15
 damage_type = 7
 drag = 0.2
 gravity = 0.1

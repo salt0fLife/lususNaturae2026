@@ -2,10 +2,12 @@ extends Node3D
 var check_distance = 100.0
 
 func in_sunlight_pecentage():
-	var time = PlayerInformation.world_time
+#	var time = PlayerInformation.world_time
+	var time = Global.world_time
 	if time > 0.5: #is night
 		return 0.0
-	var multiplier = (sin(time*2.0*PI)+1.0)*0.5*(1.0-PlayerInformation.world_overcast)
+#	var multiplier = (sin(time*2.0*PI)+1.0)*0.5*(1.0-PlayerInformation.world_overcast)
+	var multiplier = (sin(time*2.0*PI)+1.0)*0.5*(1.0-Global.world_overcast)
 	var sun_rotation = Vector3(-PI*time*2.0,-0.9,2.76)
 	var val = 0.0
 	var child_count = get_child_count(false)
@@ -39,7 +41,8 @@ func in_sunlight_pecentage():
 	#pass
 
 func get_sun_rotation() -> Vector3:
-	var time = PlayerInformation.world_time
+	#var time = PlayerInformation.world_time
+	var time = Global.world_time
 	if time > 0.5:
 		return Vector3.ZERO;
 	return Vector3(-PI*time*2.0,-0.9,2.76)
