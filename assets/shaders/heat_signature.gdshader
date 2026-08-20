@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded;
+render_mode unshaded, cull_disabled;
 uniform sampler2D heat_map_gradient : source_color, repeat_disable, filter_linear;
 uniform float distance_fade_min = 20;
 uniform float distance_fade_max = 15;

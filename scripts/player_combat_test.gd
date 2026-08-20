@@ -34,6 +34,9 @@ var mouse_sensitivity = 1.5
 var sprinting:bool = true
 var crouching:bool = false
 var aiming_down_sights:bool = false
+var blocking:bool = false
+var blocking_timer:float = 0.0 #counts how long you have been blocking for
+var counter_attack_window:float = 0.0
 #dash
 @export_group("dash")
 @export var max_dash:float = 3.0
@@ -220,6 +223,14 @@ func update_sun_sickness(delta) -> void:
 		$sunlight_indicator/AudioStreamPlayer.volume_db = lerp($sunlight_indicator/AudioStreamPlayer.volume_db, -80.0 ,delta*8.0)
 
 func _process(delta):
+	if counter_attack_window > 0.0:
+		counter_attack_window -= delta
+		if counter_attack_window < 0.0:
+			counter_attack_window = 0.0
+	if blocking:
+		blocking_timer += delta
+	else:
+		blocking_timer = 0.0
 	if drawing_bow:
 		bow_draw_timer += delta
 	update_sun_sickness(delta)
@@ -272,6 +283,9 @@ func _process(delta):
 
 func get_movement_anim(movement : String) -> String:
 	var held_item_data = PlayerInformation.get_held_item_data()
+	if blocking: #important visual queue
+		return "gaurd_sword"
+	
 	match movement:
 		"idle":
 			if held_item_data == []:
@@ -392,6 +406,10 @@ var action_animations = [
 	"shoot_bow_end_full",
 	"shoot_bow_start",
 	"load_bow",
+	"parry_sword",
+	"swing_sword_2_revision",
+	"swing_sword_1_revision",
+	"swing_sword_punish",
 ]
 
 var movement_scaling_anims = {
@@ -510,15 +528,17 @@ func _physics_process(delta):
 				var speed = Vector2(velocity.x,velocity.z).length()
 				var a_speed = clamp((speed/sprint_speed),0.9,10.0)*sprint_animation_speed_mult*graphics.running_speed_mult
 				#play_anim(get_movement_anim("sprinting"),false, 0.5, a_speed)
+				var dsm = 0.9 #small penalty if not running forward
 				if input_dir.y < 0.0:
 					#holding forward
+					dsm = 1.0
 					play_anim(get_movement_anim("sprinting"),false, 0.5, a_speed)
 				else:
 					play_anim(get_movement_anim("idle"))
-				if !speed > sprint_speed:
+				if !speed > sprint_speed*dsm:
 					#play_anim(get_movement_anim("walk"))
-					velocity.x += ((sprint_speed * direction.x) - velocity.x) * delta * acceleration
-					velocity.z += ((sprint_speed * direction.z) - velocity.z) * delta * acceleration
+					velocity.x += ((sprint_speed * direction.x*dsm) - velocity.x) * delta * acceleration
+					velocity.z += ((sprint_speed * direction.z*dsm) - velocity.z) * delta * acceleration
 				else:
 					#play_anim(get_movement_anim("sprinting"))
 					var add_vel = (speed*direction - velocity) * acceleration
@@ -603,8 +623,9 @@ func run_body_test_motion(from: Transform3D, motion: Vector3, result = null) -> 
 	return PhysicsServer3D.body_test_motion(self.get_rid(), params, result)
 
 func snap_down_to_stairs_check() -> void:
-	if !is_on_floor() and !airborn:
+	if !is_on_floor() and !airborn and !velocity.y > 0.0:
 		if run_body_test_motion(transform,Vector3(0.0,-MAX_STEP_HEIGHT,0.0)):
+			#print("snapped down to stairs")
 			var ocp = cameraHandler.global_position
 			move_and_collide(Vector3(0.0,-MAX_STEP_HEIGHT,0.0))
 			cameraHandler.global_position.y = ocp.y
@@ -639,6 +660,7 @@ func snap_up_to_stairs_check(delta) -> bool:
 			var travel = down_check_result.get_travel()
 			var ocp = cameraHandler.global_position
 			self.global_position = step_pos_with_clearance.origin + travel#down_check_result.get_travel()
+			#print("snapped up to stairs")
 			#camera.position -= travel
 			cameraHandler.global_position.y = ocp.y
 			apply_floor_snap()
@@ -721,6 +743,7 @@ var bow_draw_timer : float = 0.0 #how long your bow has been drawn
 var drawing_bow : bool = false #if your drawing it back
 var held_item_attributes: Dictionary = {}
 
+var side_mixup : bool = false
 func use_held_item(special = false):
 	var data = PlayerInformation.get_held_item_data()
 	if data.is_empty():
@@ -742,23 +765,35 @@ func use_held_item(special = false):
 			else:
 				play_anim("punch_empty_2")
 		Items.type.SWORD:
-			var sword_data = data[Items.INDEX_DATA]
-			var attack_speed = sword_data[0]
-			var damage_amount = sword_data[1]
-			var damage_type = sword_data[2]
-			var vfx_method_name = sword_data[3]
-			print("swung sword")
-			play_held_item_sound("swing", attack_speed)
-			weapon_node.slash_close(damage_amount,damage_type,vfx_method_name,special,attack_speed)
-			#velocity += get_look_dir()
-			if !dash_timer > 0.0 and is_on_floor():
-				dash_timer = 0.75
-				velocity_at_dash_start = velocity
-				dash_vel = get_look_dir()
 			if special:
-				play_anim("swing_sword_2", true, 0.0, attack_speed)
+				print("started_blocking")
+				blocking = true
+				aiming_down_sights = true
+				pass
 			else:
-				play_anim("swing_sword_1", true, 0.0, attack_speed)
+				var sword_data = data[Items.INDEX_DATA]
+				var attack_speed = sword_data[0]
+				var damage_amount = sword_data[1]
+				var damage_type = sword_data[2]
+				var vfx_method_name = sword_data[3]
+				print("swung sword")
+				play_held_item_sound("swing", attack_speed)
+				weapon_node.slash_close(damage_amount,damage_type,vfx_method_name,special,attack_speed)
+				#velocity += get_look_dir()
+				if !dash_timer > 0.0 and is_on_floor():
+					dash_timer = 0.75
+					velocity_at_dash_start = velocity
+					dash_vel = (get_look_dir() * Vector3(1.0,0.0,1.0)).normalized()
+				if blocking:
+					play_anim("swing_sword_punish", true, 0.0, attack_speed)
+				else:
+					if side_mixup:
+						side_mixup = false
+						play_anim("swing_sword_2_revision", true, 0.0, attack_speed)
+					else:
+						side_mixup = true
+						play_anim("swing_sword_1_revision", true, 0.0, attack_speed)
+				#play_anim("swing_sword_1", true, 0.0, attack_speed)
 		Items.type.GUN:
 			play_held_item_sound("shoot")
 			play_anim("shoot_gun",true,0.0)
@@ -769,6 +804,7 @@ func use_held_item(special = false):
 			print("swung hammer")
 		Items.type.BOW:
 			start_using_bow(special)
+
 
 func release_held_item(special = false):
 	var data = PlayerInformation.get_held_item_data()
@@ -784,6 +820,8 @@ func release_held_item(special = false):
 	match type:
 		Items.type.SWORD:
 			if special:
+				blocking = false
+				aiming_down_sights = false
 				print("stopped blocking")
 		Items.type.GUN:
 			if special:
@@ -944,6 +982,7 @@ var held_item_models = []
 var prop_item_models = []
 func update_held_item_graphics() -> void:
 	aiming_down_sights = false
+	blocking = false
 	bow_loaded = false
 	for old in held_item_models:#.get_children(false):
 		old.queue_free()

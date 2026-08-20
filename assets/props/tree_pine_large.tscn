@@ -73,7 +73,7 @@ surface_material_override/0 = SubResource("ShaderMaterial_23s2n")
 [node name="Cube_002" parent="pine_tree_test_02" index="1"]
 surface_material_override/0 = SubResource("ShaderMaterial_kg2rn")
 
-[node name="StaticBody3D" parent="pine_tree_test_02/Cube_002" index="0"]
+[node name="StaticBody3D" parent="pine_tree_test_02/Cube_002" index="0" groups=["wood"]]
 visible = false
 
 [editable path="pine_tree_test_02"]

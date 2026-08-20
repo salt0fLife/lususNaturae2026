@@ -6,6 +6,7 @@ extends Node
 @onready var entityHandler = $entityHandler
 @onready var loading_screen = $loading_screen
 @onready var decalHandler = $decalHandler
+@onready var tempHandler = $tempHandler #home of all temporary graphical effects and such
 
 #game variables
 var day_timer: float = 500.1
@@ -27,6 +28,7 @@ func _ready():
 	Global.connect("change_level", change_level)
 	Global.connect("reached_major_point", _on_major_point_reached)
 	Global.connect("spawn_entity_signal", spawn_entity)
+	Global.connect("new_impact_signal", new_impact)
 	Global.connect("create_decal_signal", create_decal)
 	Global.connect("play_cutscene_signal", play_cutscene)
 	Global.connect("drop_item_signal",_on_dropped_item)
@@ -55,6 +57,11 @@ func start_game():
 	change_level(level, false)
 	change_player(player_stage)
 	load_current_level_persistent_data()
+
+func new_impact(type : int, dir : Vector3, pos : Vector3) -> void:
+	var s_c = surface_impact.new_impact(type,dir)
+	s_c.position = pos
+	tempHandler.add_child(s_c)
 
 const default_save_data = {
 	"velocity" : Vector3.ZERO,

@@ -1,9 +1,8 @@
 @tool
 extends Node3D
-
+class_name ribbon_trail_3D
 
 @export_category("point spawning")
-@onready var graphics_handler = $graphics_handler
 var points_list: PackedVector3Array = []
 var points_lifetimes: PackedFloat32Array = []
 @export var material: Material
@@ -17,80 +16,7 @@ var senses_only: bool = true
 @export_category("points behavior")
 @export var gravity: Vector3 = Vector3.ZERO
 
-func test_draw_lines():
-	for old in graphics_handler.get_children(false):
-		old.queue_free()
-	
-	for i in points_list.size():
-		var previous_pos = global_position
-		if i != points_list.size()-1:
-			previous_pos = points_list[i+1]
-		var pos = points_list[i]
-		
-		var average_pos = (previous_pos + pos) * Vector3(0.5,0.5,0.5)
-		var dif = previous_pos - pos
-		var y_rot = atan2(dif.z,dif.x)
-		var flat_dis = Vector2(dif.x,dif.z).length()
-		var x_rot = atan2(flat_dis,dif.y)
-		
-		var test_display = MeshInstance3D.new()
-		test_display.mesh = BoxMesh.new()
-		test_display.set_surface_override_material(0,material)
-		test_display.set_layer_mask_value(1,!senses_only)
-		test_display.set_layer_mask_value(2,senses_only)
-		
-		test_display.position = average_pos
-		test_display.rotation.y = -y_rot+PI*0.5
-		test_display.rotation.x = x_rot+PI*0.5
-		test_display.scale.z = dif.length()
-		test_display.scale.x = width
-		test_display.scale.y = width
-		
-		graphics_handler.add_child(test_display)
-
-
-func test_draw_planes():
-	for old in graphics_handler.get_children(false):
-		old.queue_free()
-	
-	for i in points_list.size():
-		var previous_pos = global_position
-		if i != points_list.size()-1:
-			previous_pos = points_list[i+1]
-		var pos = points_list[i]
-		
-		var average_pos = (previous_pos + pos) * Vector3(0.5,0.5,0.5)
-		var dif = previous_pos - pos
-		var y_rot = atan2(dif.z,dif.x)
-		var flat_dis = Vector2(dif.x,dif.z).length()
-		var x_rot = atan2(flat_dis,dif.y)
-		
-		var test_display = MeshInstance3D.new()
-		test_display.mesh = PlaneMesh.new()
-		test_display.set_surface_override_material(0,material)
-		test_display.set_layer_mask_value(1,!senses_only)
-		test_display.set_layer_mask_value(2,senses_only)
-		
-		test_display.position = average_pos+Vector3(0.0,width,0.0)
-		test_display.rotation.y = -y_rot+PI*0.5
-		test_display.rotation.x = x_rot+PI*0.5
-		test_display.rotation.z = PI*0.5
-		test_display.scale.z = dif.length()*0.5
-		test_display.scale.x = width
-		test_display.scale.y = width
-		
-		graphics_handler.add_child(test_display)
-
-func test_draw():
-	for old in graphics_handler.get_children(false):
-		old.queue_free()
-	for pos in points_list:
-		var test_display = MeshInstance3D.new()
-		test_display.mesh = SphereMesh.new()
-		test_display.position = pos
-		graphics_handler.add_child(test_display)
-
-@onready var mesh_instance = $MeshInstance3D
+var mesh_instance = null
 func draw_meshing_planes():
 	mesh_instance.mesh = null
 	if points_list.is_empty():
@@ -173,7 +99,15 @@ func draw_meshing_planes():
 	
 	pass
 
+func _ready():
+	mesh_instance = MeshInstance3D.new()
+	add_child(mesh_instance)
+	last_decaying_point_pos = global_position
+
 func draw_meshing():
+	if mesh_instance == null:
+		mesh_instance = MeshInstance3D.new()
+		add_child(mesh_instance)
 	mesh_instance.mesh = null
 	if points_list.is_empty():
 		return
@@ -303,9 +237,7 @@ func _process(delta):
 	
 	update_points(delta)
 	
-	if Engine.is_editor_hint() or PlayerInformation.using_senses:
-		#test_draw_planes()
-		draw_meshing()
+	draw_meshing()
 	#test_draw()
 	pass
 

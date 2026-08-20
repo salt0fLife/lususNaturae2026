@@ -50,6 +50,7 @@ func shoot_bullet_hitscan(damage_amount : int, damage_type : int) -> void:
 		else:
 			var surface_info = Global.get_surface_info(h[0].get_groups())
 			var decal_path = Global.bullet_hit_effects[surface_info[Global.BULLET_HIT_EFFECT]][0] #the last [0] gets decal instead of particles
+			Global.new_impact(surface_info[Global.WEAPON_HIT_EFFECT],h[2],h[1])
 			if decal_path == "":
 				return
 			var decal = load(decal_path).instantiate()#load("res://assets/effects/decals/bullet_hole_default.tscn").instantiate()

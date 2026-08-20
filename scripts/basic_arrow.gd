@@ -37,6 +37,8 @@ func _physics_process(delta):
 			emit_signal("hit_target",damage_amount,damage_type,hit)
 		else:
 			var surface_info = Global.get_surface_info(hit.get_groups())
+			#var s_c = surface_impact.new_impact(surface_info[Global.WEAPON_HIT_EFFECT],norm)
+			Global.new_impact(surface_info[Global.WEAPON_HIT_EFFECT],norm,pos)
 			if surface_info[Global.SURFACE_HARDNESS] > 50:
 				print("surface to hard, deflecting arrow")
 				Global.drop_item([item_key,{}],position+norm*0.5,graphics.global_rotation,false,norm*velocity.length()*0.5,Vector3(0.0,1.0,0.0))

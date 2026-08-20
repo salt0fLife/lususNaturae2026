@@ -1,22 +1,28 @@
-[gd_scene load_steps=4 format=3 uid="uid://cvsdxjehh0m7f"]
+[gd_scene load_steps=6 format=3 uid="uid://cvsdxjehh0m7f"]
 
 [ext_resource type="Script" path="res://scripts/senses_trail.gd" id="1_asq1q"]
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_c4652"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_btthx"]
+noise = SubResource("FastNoiseLite_c4652")
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5fp5d"]
 cull_mode = 2
+albedo_texture = SubResource("NoiseTexture2D_btthx")
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_hjnw2"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_0hy1q"]
 _surfaces = [{
-"aabb": AABB(0, -0.5, 0, 1e-05, 1.00001, 1e-05),
-"attribute_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"aabb": AABB(0, -0.125, -0.125, 1e-05, 0.25001, 0.25),
+"attribute_data": PackedByteArray(0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0),
 "format": 34359742487,
-"index_count": 6,
-"index_data": PackedByteArray(0, 0, 1, 0, 2, 0, 2, 0, 1, 0, 3, 0),
+"index_count": 12,
+"index_data": PackedByteArray(0, 0, 1, 0, 4, 0, 4, 0, 1, 0, 5, 0, 2, 0, 3, 0, 6, 0, 6, 0, 3, 0, 7, 0),
 "material": SubResource("StandardMaterial3D_5fp5d"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 4,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 0, 0, 255, 127, 255, 255, 0, 0, 0, 128, 255, 127, 0, 0, 0, 0, 0, 128, 255, 127, 255, 255, 0, 0, 0, 128, 255, 127, 0, 0, 0, 0, 0, 128)
+"vertex_count": 8,
+"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 190, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 190, 0, 0, 0, 0, 0, 0, 0, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 190, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 190, 255, 127, 255, 255, 0, 0, 0, 128, 255, 127, 255, 255, 0, 0, 0, 128, 255, 127, 255, 255, 0, 0, 0, 128, 255, 127, 255, 255, 0, 0, 0, 128, 255, 127, 255, 255, 0, 0, 0, 128, 255, 127, 255, 255, 0, 0, 0, 128, 255, 127, 255, 255, 0, 0, 0, 128, 255, 127, 255, 255, 0, 0, 0, 128)
 }]
 
 [node name="senses_trail" type="Node3D"]
@@ -24,8 +30,10 @@ script = ExtResource("1_asq1q")
 material = SubResource("StandardMaterial3D_5fp5d")
 max_points = 250
 distance_between_points = 1.0
+natrual_point_decay = 60.0
 
 [node name="graphics_handler" type="Node" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("ArrayMesh_hjnw2")
+layers = 6
+mesh = SubResource("ArrayMesh_0hy1q")

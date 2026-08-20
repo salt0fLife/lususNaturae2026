@@ -322,6 +322,8 @@ process_mode = 1
 
 [node name="decalHandler" type="Node3D" parent="."]
 
+[node name="tempHandler" type="Node3D" parent="."]
+
 [node name="cutsceneHandler" type="Node" parent="."]
 
 [node name="Label" type="Label" parent="."]
@@ -450,6 +452,7 @@ number_of_slots = 2
 [node name="item_sounds" type="AudioStreamPlayer" parent="inventory_relations_handler"]
 
 [node name="equipped_items_menu" type="Control" parent="inventory_relations_handler"]
+visible = false
 layout_mode = 3
 anchor_left = 0.669
 anchor_right = 0.999

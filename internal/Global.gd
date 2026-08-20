@@ -85,6 +85,10 @@ func drop_item(data : Array, pos : Vector3, rotation : Vector3 = Vector3.ZERO, s
 	emit_signal("drop_item_signal",data,pos,rotation,stuck,velL,velR)
 	pass
 
+signal new_impact_signal
+func new_impact(type : int, dir : Vector3, pos : Vector3):
+	emit_signal("new_impact_signal", type,dir,pos)
+
 func get_abreviated_time(seconds : int) -> String:
 	var abrev_time = ""
 	if seconds < 60:
@@ -146,6 +150,7 @@ enum {
 enum {
 	STEP_SOUNDS,
 	BULLET_HIT_EFFECT,
+	WEAPON_HIT_EFFECT,
 	SURFACE_HARDNESS, #0 being fluid and 100 being tough metal
 }
 
@@ -154,33 +159,38 @@ const surface_lookup = { #this way i can bundle more info in if i need
 		STEP_SOUNDS : DIRT_KEY,
 		BULLET_HIT_EFFECT : DIRT_KEY,
 		SURFACE_HARDNESS : 5,
+		WEAPON_HIT_EFFECT : surface_impact.DIRT,
 	},
 	"stone" : {
 		STEP_SOUNDS : STONE_KEY,
 		BULLET_HIT_EFFECT : STONE_KEY,
 		SURFACE_HARDNESS : 60,
+		WEAPON_HIT_EFFECT : surface_impact.STONE,
 	},
 	"grass" : {
 		STEP_SOUNDS : GRASS_KEY,
 		BULLET_HIT_EFFECT : DIRT_KEY,
 		SURFACE_HARDNESS : 4,
+		WEAPON_HIT_EFFECT : surface_impact.DIRT,
 	},
 	"metal" : {
 		STEP_SOUNDS : METAL_KEY,
 		BULLET_HIT_EFFECT : STONE_KEY,
 		SURFACE_HARDNESS : 100,
+		WEAPON_HIT_EFFECT : surface_impact.STONE,
 	},
 	"wood" : {
 		STEP_SOUNDS : WOOD_KEY,
 		BULLET_HIT_EFFECT : STONE_KEY,
 		SURFACE_HARDNESS : 30,
+		WEAPON_HIT_EFFECT : surface_impact.WOOD,
 	},
 	"default" : {
 		STEP_SOUNDS : STONE_KEY,
 		BULLET_HIT_EFFECT : DIRT_KEY,
 		SURFACE_HARDNESS : 20, #i have no real reasoning behind this
+		WEAPON_HIT_EFFECT : surface_impact.NONE
 	}
-	
 }
 
 const bullet_hit_effects = {

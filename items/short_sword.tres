@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_g67wk")
 damage = 10
-attack_speed = 2.0
+attack_speed = 1.0
 damage_type = 0
 vfx_method_name = "standard_slash"
 internal_reference_name = "short_sword"
@@ -17,3 +17,4 @@ model_path = "res://assets/items/short_sword/short_sword.tscn"
 has_deformations = false
 texture_path = "res://assets/textures/material/DebuggTexture.png"
 interactions = {}
+equipment_id = 0

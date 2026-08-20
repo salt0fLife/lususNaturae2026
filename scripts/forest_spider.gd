@@ -8,7 +8,7 @@ var injured: int = 0
 @onready var graphics = $graphics
 
 func _physics_process(delta):
-	chase_position(delta,PlayerInformation.position)
+	#chase_position(delta,PlayerInformation.position)
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta

@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://bashlmluew1yf"]
+[gd_scene load_steps=11 format=3 uid="uid://bashlmluew1yf"]
 
 [ext_resource type="Texture2D" uid="uid://c8rjxkflhjtba" path="res://assets/items/short_sword/short_sword_Untitled.png" id="1_hp47x"]
 [ext_resource type="Shader" path="res://assets/shaders/stylized_outline.gdshader" id="2_0mp75"]
 [ext_resource type="Shader" path="res://assets/shaders/stylized_material.gdshader" id="2_rn5da"]
+[ext_resource type="Script" path="res://scripts/weapon_trail.gd" id="4_qqjtp"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fye5v"]
 resource_name = "short_sword"
@@ -49,16 +50,22 @@ shadow_mesh = SubResource("ArrayMesh_n1w0k")
 render_priority = 0
 shader = ExtResource("2_rn5da")
 shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 0.327
+shader_parameter/day_roughness = null
 shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.885
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/NdotL = 0.003
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
 shader_parameter/texture_albedo = ExtResource("1_hp47x")
 shader_parameter/CloudDitherPower = 200.0
 shader_parameter/CloudCutoffAdjust = -0.795
@@ -72,6 +79,13 @@ shader = ExtResource("2_0mp75")
 shader_parameter/albedo = Color(0.4, 0.309804, 0.239216, 1)
 shader_parameter/line_size_change = -0.005
 shader_parameter/center_point_offset = Vector3(0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uw85l"]
+blend_mode = 1
+cull_mode = 2
+shading_mode = 2
+albedo_color = Color(0.352941, 0.352941, 0.352941, 1)
+disable_receive_shadows = true
 
 [node name="ShortSword" type="Node3D"]
 
@@ -87,3 +101,11 @@ visible = false
 mesh = SubResource("ArrayMesh_flq57")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("ShaderMaterial_g4fwa")
+
+[node name="weapon_trail" type="Node3D" parent="."]
+script = ExtResource("4_qqjtp")
+weapon_tip_offset = 0.5
+material = SubResource("StandardMaterial3D_uw85l")
+max_points = 8
+follow_speed = 5.0
+max_follow_distance = 0.8

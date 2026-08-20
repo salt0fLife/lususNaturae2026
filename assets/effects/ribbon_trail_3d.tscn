@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dx2jbn0q31tx3"]
+
+[ext_resource type="Script" path="res://assets/effects/ribbon_trail_3d.gd" id="1_xiqhw"]
+
+[node name="ribbon_trail_3d" type="Node3D"]
+script = ExtResource("1_xiqhw")
