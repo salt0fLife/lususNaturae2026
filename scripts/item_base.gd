@@ -12,6 +12,7 @@ class_name item
 @export var texture_path: String
 @export var interactions: Dictionary
 @export var equipment_id: Items.equipment_id
+@export var collision_shape: Vector3 = Vector3(1.0,1.0,1.0) #careful changing this for items as they may clip out of bounds when loading back in
 #interactions info
 #key = item_key_that_triggers_this_interaction : [inter_id : int, inter_data : Array]
 

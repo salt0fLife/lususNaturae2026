@@ -3,7 +3,7 @@
 shader_type spatial;
 render_mode blend_mix,cull_front,diffuse_burley,specular_disabled,ambient_light_disabled;
 uniform vec4 albedo : source_color;
-uniform float line_size_change = 0.0;
+uniform float line_size_change = -0.009;
 uniform vec3 center_point_offset = vec3(0.0,0.0,0.0);
 
 void vertex() {

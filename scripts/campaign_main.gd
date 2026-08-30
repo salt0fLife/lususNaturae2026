@@ -36,7 +36,7 @@ func _ready():
 	PlayerInformation.connect("slept", _on_player_slept)
 	$pause_menu/buttonHandler/resume.connect("button_down", set_paused.bind(false))
 	$"pause_menu/buttonHandler/save and quit".connect("button_down", save_and_quit)
-	
+	$pause_menu/buttonHandler/settings.connect("button_down",open_settings)
 	setup_dev_controls()
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -161,8 +161,11 @@ func load_current_level_persistent_data():
 		for e in data[2]:
 			#entities
 			#spawn_entity(e[0],e[1])
-			var scene = spawn_entity(e[0])
-			scene.set_data(e[1])
+			if typeof(e[0]) == TYPE_STRING:
+				var scene = spawn_entity(e[0])
+				scene.set_data(e[1])
+			else:
+				printerr("value of " + str(e[0]) + " found in place of entity key")
 	loading_screen.visible = false
 	loading_screen.update_mode(false, "recreating level data")
 
@@ -348,6 +351,10 @@ func _process(delta):
 	else:
 		$Label2.text = "playing"
 	
+	if item_use_frame_buffer > 0:
+		item_use_frame_buffer -= 1
+	
+	
 	if in_cutscene:
 		cutscene_timer -= delta
 		if cutscene_timer < 0.0:
@@ -426,6 +433,12 @@ func save_and_quit() -> void:
 	save_game_data()
 	await get_tree().process_frame
 	get_tree().call_deferred("change_scene_to_file", "res://menus/main_menu.tscn")
+
+func open_settings() -> void:
+	set_paused(true) #just in case
+	print("opened settings menu")
+	var s = load("res://menus/settings_menu.tscn").instantiate()
+	$pause_menu.add_child(s)
 
 ##dev controls
 
@@ -583,7 +596,11 @@ func _on_player_take_damage(amount : float) -> void:
 	PlayerInformation.health -= amount
 	pass
 
+var item_use_frame_buffer : int = 0
 func use_held_item(special = false) -> void:
+	if item_use_frame_buffer > 0:
+		return
+	item_use_frame_buffer = 4
 	for p in playerHandler.get_children(false):
 		if p.has_method("use_held_item"):
 			p.use_held_item(special)

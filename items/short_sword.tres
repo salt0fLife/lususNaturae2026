@@ -18,3 +18,4 @@ has_deformations = false
 texture_path = "res://assets/textures/material/DebuggTexture.png"
 interactions = {}
 equipment_id = 0
+collision_shape = Vector3(0.15, 0.8, 0.3)

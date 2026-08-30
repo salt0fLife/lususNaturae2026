@@ -153,59 +153,62 @@ return m2 * m2 * m;
 
 void light()
 {
+	//bool disabled_shadows = (SunshineClouds_CloudShadowStrength == 0.0);
 	if (LIGHT_IS_DIRECTIONAL){
-		const float CLOUD_SHADOW_STRENGTH = 0.5;
-		float cast_shadow = ATTENUATION;//clamp(ATTENUATION * 2.0 - 1.0, 0, 1.5);
-		//float upDot = (dot(SunshineClouds_SunDirection, vec3(0.0, 1.0, 0.0)) + 1.0) / 2.0;
-		
-		float dither = dither_matrix[int(FRAGCOORD.x + TIME * 100.0) % 4][int(FRAGCOORD.y + TIME * 100.0) % 4];
-		
-		dither = (dither * CloudDitherPower) - CloudDitherPower / 2.0;
-		vec3 origin = fragment_worldpos;
-		float angleUpward = clamp(2.0 - ((dot(SunshineClouds_SunDirection, vec3(0.0, 1.0, 0.0)) + 1.0)) * 180.0, 0.0, 180.0);
-		origin += SunshineClouds_SunDirection * dither;
-		
-		if (origin.y < SunshineClouds_CloudsFloor){
-			float lengthToTravel = (SunshineClouds_CloudsFloor + 200.0) - origin.y / sin(90.0 - angleUpward);
+		float cloud_shadow = 1.0;
+		float shadow = ATTENUATION;
+		if (SunshineClouds_CloudShadowStrength > 0.0){
+			const float CLOUD_SHADOW_STRENGTH = 0.5;
+			float cast_shadow = ATTENUATION;//clamp(ATTENUATION * 2.0 - 1.0, 0, 1.5);
+			//float upDot = (dot(SunshineClouds_SunDirection, vec3(0.0, 1.0, 0.0)) + 1.0) / 2.0;
 			
-			//origin += SunshineClouds_SunDirection * dither;
-			origin += SunshineClouds_SunDirection * lengthToTravel;
+			float dither = dither_matrix[int(FRAGCOORD.x + TIME * 100.0) % 4][int(FRAGCOORD.y + TIME * 100.0) % 4];
+			
+			dither = (dither * CloudDitherPower) - CloudDitherPower / 2.0;
+			vec3 origin = fragment_worldpos;
+			float angleUpward = clamp(2.0 - ((dot(SunshineClouds_SunDirection, vec3(0.0, 1.0, 0.0)) + 1.0)) * 180.0, 0.0, 180.0);
+			origin += SunshineClouds_SunDirection * dither;
+			
+			if (origin.y < SunshineClouds_CloudsFloor){
+				float lengthToTravel = (SunshineClouds_CloudsFloor + 200.0) - origin.y / sin(90.0 - angleUpward);
+				
+				//origin += SunshineClouds_SunDirection * dither;
+				origin += SunshineClouds_SunDirection * lengthToTravel;
+			}
+			else
+			{
+				origin += SunshineClouds_SunDirection * 200.0;
+			}
+			//origin.y = max(origin.y, SunshineClouds_CloudsFloor + 200.0);
+			//float cloud_shadow = 1.0;//(1.0 - clamp(samplecloudmap(origin, TIME) * CloudDensity, 0.0, 1.0));
+			//cloud_shadow = 1.0;
+			//BE all below vvv
+			//vec3 cur_pos = origin;
+			//float ground_exposure = 0.0;
+			//for (int i = 0; i < 64; i++) {
+				//cur_pos += SunshineClouds_SunDirection*100.0;
+				//cloud_shadow -= (1.0 - clamp(samplecloudmap(cur_pos, TIME) * CloudDensity, 0.0, 1.0));
+			//}
+			//cloud_shadow = ground_exposure;
+			//BE all above ^^^
+			
+			
+			//NOTE TESTING STEPPING
+			vec3 cur_pos = origin;
+			float currentDensity = 0.0;
+			float thisDensity = 0.0;
+			vec3 currentColor = vec3(0.5);
+			float cutoffvalue = 0.0;
+			
+			for (int i = 0; i < 32; i++) {
+				cur_pos += 50.0*SunshineClouds_SunDirection;
+				thisDensity = 10.0*samplecloudmap(cur_pos, TIME)  * CloudDensity;
+				currentDensity += thisDensity * 0.015625; //0.015625 == 1/64
+			}
+			cloud_shadow = (1.0 - clamp(currentDensity * CloudDensity, 0.0, 1.0));
+			//END STEPPIING TESTING
+			shadow = mix(ATTENUATION, cast_shadow * (clamp(cloud_shadow * 3.0 - 1.0, 0.0, 1.0) * CLOUD_SHADOW_STRENGTH), CloudOpacity);
 		}
-		else
-		{
-			origin += SunshineClouds_SunDirection * 200.0;
-		}
-		//origin.y = max(origin.y, SunshineClouds_CloudsFloor + 200.0);
-		float cloud_shadow = 1.0;//(1.0 - clamp(samplecloudmap(origin, TIME) * CloudDensity, 0.0, 1.0));
-		//cloud_shadow = 1.0;
-		//BE all below vvv
-		//vec3 cur_pos = origin;
-		//float ground_exposure = 0.0;
-		//for (int i = 0; i < 64; i++) {
-			//cur_pos += SunshineClouds_SunDirection*100.0;
-			//cloud_shadow -= (1.0 - clamp(samplecloudmap(cur_pos, TIME) * CloudDensity, 0.0, 1.0));
-		//}
-		//cloud_shadow = ground_exposure;
-		//BE all above ^^^
-		
-		
-		//NOTE TESTING STEPPING
-		vec3 cur_pos = origin;
-		float currentDensity = 0.0;
-		float thisDensity = 0.0;
-		vec3 currentColor = vec3(0.5);
-		float cutoffvalue = 0.0;
-		
-		for (int i = 0; i < 32; i++) {
-			cur_pos += 50.0*SunshineClouds_SunDirection;
-			thisDensity = 10.0*samplecloudmap(cur_pos, TIME)  * CloudDensity;
-			currentDensity += thisDensity * 0.015625; //0.015625 == 1/64
-		}
-		cloud_shadow = (1.0 - clamp(currentDensity * CloudDensity, 0.0, 1.0));
-		//END STEPPIING TESTING
-		
-		
-		float shadow = mix(ATTENUATION, cast_shadow * (clamp(cloud_shadow * 3.0 - 1.0, 0.0, 1.0) * CLOUD_SHADOW_STRENGTH), CloudOpacity);
 		
 		shadow = mix(ATTENUATION,shadow,SunshineClouds_CloudShadowStrength);
 		

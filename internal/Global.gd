@@ -10,6 +10,7 @@ var settup_clouds = false #to minimize errors because its annoying
 
 var desired_monochrome_value : float = 0.0
 
+const NORTH_DIR : Vector3 = Vector3(0.872,0.0,-0.562)
 
 signal change_level
 func change_level_from_key(key : String) -> void:
@@ -68,12 +69,13 @@ var cutscenes_watched: Array = []
 
 const entities: Dictionary = {
 	"royal_guard" : ["res://campaign/enemies/royal_guard.tscn"],
-	"basic_arrow" : ["res://assets/projectiles/basic_arrow.tscn"]
+	"basic_arrow" : ["res://assets/projectiles/basic_arrow.tscn"],
+	"young_skyfish" : ["res://campaign/entities/young_skyfish.tscn"],
 }
 
 
 signal spawn_entity_signal
-func spawn_entity(key, position : Vector3 = Vector3.ZERO,velocity:Vector3=Vector3.ZERO,custom_data:Array=[]) -> void:
+func spawn_entity(key:StringName, position : Vector3 = Vector3.ZERO,velocity:Vector3=Vector3.ZERO,custom_data:Array=[]) -> void:
 	emit_signal("spawn_entity_signal", key, position, velocity,custom_data)
 
 signal create_decal_signal
@@ -128,7 +130,7 @@ func tooltip(text : String) -> void:
 
 #world information
 var world_time: float = 0.0 #i know its funny to store here but it fits
-var world_overcast : float = 0.0 #1.0 means no sunlight even during day
+var world_overcast : float = 1.0 #1.0 means no sunlight even during day
 var world_wind : Vector3 = Vector3.ZERO
 #
 
@@ -144,7 +146,8 @@ enum {
 	GRASS_KEY,
 	METAL_KEY,
 	STONE_KEY,
-	WOOD_KEY
+	WOOD_KEY,
+	WATER_KEY
 }
 
 enum {
@@ -152,6 +155,7 @@ enum {
 	BULLET_HIT_EFFECT,
 	WEAPON_HIT_EFFECT,
 	SURFACE_HARDNESS, #0 being fluid and 100 being tough metal
+	SCREEN_FILTER, #if you are inside this surface looking out, the screen effect to apply
 }
 
 const surface_lookup = { #this way i can bundle more info in if i need
@@ -190,8 +194,16 @@ const surface_lookup = { #this way i can bundle more info in if i need
 		BULLET_HIT_EFFECT : DIRT_KEY,
 		SURFACE_HARDNESS : 20, #i have no real reasoning behind this
 		WEAPON_HIT_EFFECT : surface_impact.NONE
+	},
+	"water" : {
+		STEP_SOUNDS : STONE_KEY,
+		BULLET_HIT_EFFECT : DIRT_KEY,
+		SURFACE_HARDNESS : 20, #i have no real reasoning behind this
+		WEAPON_HIT_EFFECT : surface_impact.NONE,
+		SCREEN_FILTER : WATER_KEY,
 	}
 }
+
 
 const bullet_hit_effects = {
 	STONE_KEY : ["res://assets/effects/decals/bullet_hole_default.tscn", ""],
@@ -262,3 +274,12 @@ func dir_to_rot(dir :Vector3) -> Vector2:
 	rot.x = atan2(sqrt(dir.z*dir.z+dir.x*dir.x),dir.y)
 	return rot
 
+signal set_post_param_signal
+func set_post_param(key:StringName,val):
+	emit_signal("set_post_param_signal",key,val)
+	pass
+
+signal set_post_pact_signal
+func set_post_pact(key:StringName,val:float) -> void:
+	emit_signal("set_post_pact_signal",key,val)
+	pass

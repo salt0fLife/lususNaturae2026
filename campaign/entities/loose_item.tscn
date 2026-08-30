@@ -1,12 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://dwb8rqy5utihe"]
+[gd_scene load_steps=17 format=3 uid="uid://dwb8rqy5utihe"]
 
 [ext_resource type="Script" path="res://scripts/loose_item.gd" id="1_q61v5"]
 [ext_resource type="Texture2D" uid="uid://bq3plyxn32vu5" path="res://assets/textures/sky/stars/star_glow.png" id="2_ml7q0"]
+[ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="3_iaxpj"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_fvxhj"]
 bounce = 0.25
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_2weyi"]
 
 [sub_resource type="Gradient" id="Gradient_iexqm"]
 offsets = PackedFloat32Array(0, 0.0253165, 1)
@@ -66,21 +65,48 @@ material = SubResource("StandardMaterial3D_v28oa")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t1tne"]
 
-[node name="loose_item" type="RigidBody3D" groups=["interactable"]]
+[sub_resource type="BoxMesh" id="BoxMesh_w3wo1"]
+
+[sub_resource type="Shader" id="Shader_wh27k"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode unshaded,wireframe;
+uniform vec4 albedo : source_color;
+
+void vertex() {
+}
+
+
+
+void fragment() {
+	ALBEDO = albedo.rgb;
+	ALPHA = 1.0;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x58ef"]
+render_priority = 0
+shader = SubResource("Shader_wh27k")
+shader_parameter/albedo = Color(0.901961, 0.666667, 0.501961, 1)
+
+[node name="loose_item" type="RigidBody3D" groups=["interactable", "track_focus"]]
 disable_mode = 1
 collision_layer = 8
 physics_material_override = SubResource("PhysicsMaterial_fvxhj")
 script = ExtResource("1_q61v5")
 
 [node name="Label3D" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.186357, 0)
+visible = false
+offset = Vector2(63.605, 19.16)
 billboard = 1
+no_depth_test = true
 text = "wowzers"
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("SphereShape3D_2weyi")
+font_size = 12
+outline_size = 4
 
 [node name="senses_helper" type="Node3D" parent="."]
+visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="senses_helper"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00007, 0)
@@ -102,3 +128,17 @@ mesh = SubResource("QuadMesh_t8tik")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_t1tne")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("BoxMesh_w3wo1")
+surface_material_override/0 = SubResource("ShaderMaterial_x58ef")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+visible = false
+offset = Vector2(63.73, -7.97)
+pixel_size = 0.005
+billboard = 1
+double_sided = false
+no_depth_test = true
+texture = ExtResource("3_iaxpj")

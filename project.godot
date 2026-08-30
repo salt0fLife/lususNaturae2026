@@ -155,10 +155,13 @@ inventory_slot_5={
 3d_physics/layer_5="special areas"
 3d_physics/layer_6="hurtbox"
 3d_physics/layer_7="projectile entity"
+3d_physics/layer_8="non_collision_environment"
 
 [rendering]
 
 renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/msaa_2d=1
+anti_aliasing/quality/msaa_3d=2
 
 [shader_globals]
 

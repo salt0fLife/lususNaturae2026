@@ -8,9 +8,17 @@ var style : int = 0
 
 func _ready():
 	freeze = stuck
+	update_collision_shape()
 	update_graphics_from_data()
 	PlayerInformation.connect("changed_using_senses", update_from_senses)
 	update_from_senses()
+
+func update_collision_shape() -> void:
+	var bounds:Vector3 = Items.list[data[0]][Items.INDEX_COLLISION_SHAPE]#data[Items.INDEX_COLLISION_SHAPE]
+	var shape = BoxShape3D.new()
+	shape.size = bounds
+	$CollisionShape3D2.shape = shape
+	$MeshInstance3D.scale = bounds
 
 func update_graphics_from_data() -> void:
 	$Label3D.text = str(data[0])
@@ -22,6 +30,8 @@ func update_graphics_from_data() -> void:
 	var mat_1 = $senses_helper/MeshInstance3D2.get_active_material(0).duplicate()
 	mat_1.albedo_color = Items.style_colors[style]
 	$senses_helper/MeshInstance3D2.set_surface_override_material(0,mat_1)
+	var tex = load(item_data[Items.INDEX_TEXTURE])
+	$Sprite3D.texture = tex
 	#model.rotation.x = PI*0.5
 	#model.rotation.z = PI*0.5
 	#model.rotation.y = randf_range(-PI, PI)
@@ -33,5 +43,11 @@ func interact():
 	return [Global.interact_returns.PICKUP_ITEM,get_path()]
 
 func update_from_senses() -> void:
-	$Label3D.visible = !PlayerInformation.using_senses
+	#$Label3D.visible = !PlayerInformation.using_senses
 	$senses_helper.visible = PlayerInformation.using_senses
+
+func update_focus(val:bool) -> void:
+	$MeshInstance3D.visible = val
+	$Sprite3D.visible = val
+	$Label3D.visible = val
+	pass

@@ -1,9 +1,16 @@
-[gd_scene load_steps=15 format=3 uid="uid://dddjtmqsonjvn"]
+[gd_scene load_steps=33 format=3 uid="uid://dddjtmqsonjvn"]
 
 [ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_wp5ay"]
 [ext_resource type="Script" path="res://assets/debug/debug_level.gd" id="1_x8cdl"]
 [ext_resource type="PackedScene" uid="uid://vaiwu5wehwiw" path="res://campaign/enemies/wendigo.tscn" id="2_tfsy4"]
 [ext_resource type="PackedScene" uid="uid://ckbg7if3gaqic" path="res://assets/effects/decals/bullet_hole_default.tscn" id="4_uc6hc"]
+[ext_resource type="PackedScene" uid="uid://rggfr8yhq4vg" path="res://assets/effects/fancy_lens_flare.tscn" id="5_i0rtq"]
+[ext_resource type="PackedScene" uid="uid://cs8myhbkslptu" path="res://assets/debug/style_test_player.tscn" id="6_f2pus"]
+[ext_resource type="PackedScene" uid="uid://wnbpwo413g3n" path="res://assets/glb_temp/gcb_feminine_test_01.glb" id="7_q5k7f"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_material.gdshader" id="8_eml6j"]
+[ext_resource type="Texture2D" uid="uid://eqp2s041qnd2" path="res://assets/glb_temp/gcb_feminine_test_01_generic_feminine_face.png" id="9_o5sba"]
+[ext_resource type="Texture2D" uid="uid://e00cva6kixyt" path="res://assets/glb_temp/gcb_feminine_test_01_pupil.png" id="10_15xrv"]
+[ext_resource type="PackedScene" uid="uid://b105kl2nrj3bn" path="res://assets/props/distant_mountain.tscn" id="11_vnxbd"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_e6kvw"]
 
@@ -37,6 +44,161 @@ sky = SubResource("Sky_5v6xa")
 [sub_resource type="BoxMesh" id="BoxMesh_2h8ir"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5jjkc"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_7xncf"]
+
+[sub_resource type="Gradient" id="Gradient_xyq6v"]
+offsets = PackedFloat32Array(0.394068, 0.805085, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.325351, 0.0134593, 0.0503502, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lyir0"]
+gradient = SubResource("Gradient_xyq6v")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u6d55"]
+render_priority = 0
+shader = ExtResource("8_eml6j")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
+shader_parameter/point_size = null
+shader_parameter/roughness = 0.603
+shader_parameter/day_roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = 1.0
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/specular_highlight = 1.92
+shader_parameter/specular_highlight_day = 1.025
+shader_parameter/sh_day_power = 0.0
+shader_parameter/texture_albedo = ExtResource("9_o5sba")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_lyir0")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_28kkr"]
+render_priority = 0
+shader = ExtResource("8_eml6j")
+shader_parameter/albedo = Color(0.619608, 0.870588, 0, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
+shader_parameter/point_size = null
+shader_parameter/roughness = 0.644
+shader_parameter/day_roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = 1.0
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/texture_albedo = ExtResource("10_15xrv")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1d2cw"]
+size = Vector3(5, 5, 4)
+
+[sub_resource type="Shader" id="Shader_felqc"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+uniform vec4 albedo : source_color;
+uniform vec4 albedo_2 : source_color;
+uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
+uniform float proximity_fade_distance;
+uniform float point_size : hint_range(0,128);
+uniform float roughness : hint_range(0,1);
+uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
+uniform float specular;
+uniform float metallic;
+uniform sampler2D depth_texture : hint_depth_texture, repeat_disable, filter_nearest;uniform sampler2D texture_normal : hint_roughness_normal,filter_linear_mipmap,repeat_enable;
+uniform float normal_scale : hint_range(-16,16);
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+
+void vertex() {
+	UV=UV*uv1_scale.xy+uv1_offset.xy;
+}
+
+
+
+
+
+
+void fragment() {
+	vec2 base_uv = UV+vec2(TIME*0.01,TIME*0.02);
+	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
+	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+	SPECULAR = specular;
+	NORMAL_MAP = texture(texture_normal,base_uv).rgb;
+	NORMAL_MAP += texture(texture_normal,base_uv*1.5-vec2(TIME*0.05,0.0)).rgb;
+	NORMAL_MAP *= 0.5;
+	float fresnel = dot(VIEW,NORMAL);
+	NORMAL_MAP_DEPTH = normal_scale* (1.0-fresnel*0.75);
+	ALPHA *= albedo.a * albedo_tex.a;
+	float depth_tex = textureLod(depth_texture,SCREEN_UV,0.0).r;
+	vec4 world_pos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV*2.0-1.0,depth_tex,1.0);
+	world_pos.xyz/=world_pos.w;
+	ALBEDO = mix(ALBEDO, albedo_2.rgb, clamp(smoothstep(world_pos.z+proximity_fade_distance,world_pos.z,VERTEX.z),0.0,1.0));
+	
+	ALPHA = mix(ALPHA, 1.0,1.0-fresnel);
+	ALBEDO *= (1.0-fresnel*0.5);
+}
+"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_qhlt1"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dv75j"]
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_qhlt1")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_316ey"]
+render_priority = 0
+shader = SubResource("Shader_felqc")
+shader_parameter/albedo = Color(0.239216, 0.482353, 0.654902, 0.972549)
+shader_parameter/albedo_2 = Color(0.203922, 0.529412, 0.611765, 1)
+shader_parameter/proximity_fade_distance = 4.0
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 0.21
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/texture_normal = SubResource("NoiseTexture2D_dv75j")
+
+[sub_resource type="BoxMesh" id="BoxMesh_oyj1k"]
+material = SubResource("ShaderMaterial_316ey")
+size = Vector3(5, 5, 4)
 
 [node name="debug_level" type="Node3D"]
 script = ExtResource("1_x8cdl")
@@ -73,3 +235,48 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.74858, 0, -3.23181)
 
 [node name="bullet_hole_default" parent="." instance=ExtResource("4_uc6hc")]
 transform = Transform3D(2.76, 0, 0, 0, 2.76, 0, 0, 0, 2.76, -0.719537, 0, 4.48619)
+
+[node name="fancy_lens_flare" parent="." instance=ExtResource("5_i0rtq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="fancy_lens_flare"]
+mesh = SubResource("SphereMesh_7xncf")
+
+[node name="style_test_player" parent="fancy_lens_flare" instance=ExtResource("6_f2pus")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -2, -3, 6)
+
+[node name="gcb_feminine_test_01" parent="." instance=ExtResource("7_q5k7f")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 6)
+
+[node name="body_003" parent="gcb_feminine_test_01" index="0"]
+cast_shadow = 0
+surface_material_override/1 = SubResource("ShaderMaterial_u6d55")
+surface_material_override/4 = SubResource("ShaderMaterial_28kkr")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="." groups=["water"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2, 0)
+collision_layer = 128
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+shape = SubResource("BoxShape3D_1d2cw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
+mesh = SubResource("BoxMesh_oyj1k")
+
+[node name="distant_mountain" parent="." instance=ExtResource("11_vnxbd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -887)
+
+[node name="distant_mountain2" parent="." instance=ExtResource("11_vnxbd")]
+transform = Transform3D(0.461284, 0, -0.887253, 0, 1, 0, 0.887253, 0, 0.461284, 522.034, -85.0938, -933.135)
+
+[node name="distant_mountain3" parent="." instance=ExtResource("11_vnxbd")]
+transform = Transform3D(0.99423, 0, 0.107271, 0, 1, 0, -0.107271, 0, 0.99423, -330.121, -324.179, -720.343)
+
+[node name="distant_mountain4" parent="." instance=ExtResource("11_vnxbd")]
+transform = Transform3D(0.564895, 0, 0.825163, 0, 1, 0, -0.825163, 0, 0.564895, -848.371, -82.5951, -394.271)
+
+[node name="distant_mountain5" parent="." instance=ExtResource("11_vnxbd")]
+transform = Transform3D(-0.617475, 0, 0.78659, 0, 1, 0, -0.78659, 0, -0.617475, -848.371, -41.5349, 151.413)
+
+[editable path="gcb_feminine_test_01"]

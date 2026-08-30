@@ -1,4 +1,4 @@
-extends CharacterBody3D
+extends entity_base
 
 #nodepaths
 @onready var cameraHandler = $graphics/cameraHandler
@@ -65,6 +65,7 @@ var wall_run_timer : float = 0.0
 var wall_run_cooldown : float = 0.0
 var last_wall_run_normal = Vector3.ZERO
 var last_wall_groups = []
+@export var wallrun_dash_depletion_speed : float = 0.1
 
 ##graphics
 var desired_CH_height: float = 1.5
@@ -89,6 +90,7 @@ func _ready():
 	PlayerInformation.connect("update_held_item", update_held_item_graphics)
 	PlayerInformation.connect("attempt_to_drop_item", _on_item_drop_attempt)
 	update_held_item_graphics()
+
 
 func _input(event):
 	if event is InputEventMouseMotion and !Global.in_game_mouse:
@@ -292,13 +294,16 @@ func get_movement_anim(movement : String) -> String:
 				if combat_stance > 0.0:
 					return "idle_empty_shown"
 				else:
-					return "idle_empty_shown"
+					return "idle_empty_shown"#"idle_empty"#"idle_empty_shown" ##lol cant decide
 			else:
 				match held_item_data[Items.INDEX_ANIMATIONS]:
 					Items.animation.BREAD_ANIM:
 						return "idle_holding_bread-metarig_001"
 					Items.animation.SWORD_ANIM:
-						return "idle_holding_sword"
+						if !velocity.length() > 1.0:
+							return "idle_holding_sword"
+						else:
+							return "walk_holding_sword"
 					Items.animation.GUN_ANIM:
 						return "idle_holding_gun"
 					Items.animation.HAMMER_ANIM:
@@ -372,13 +377,13 @@ func get_movement_anim(movement : String) -> String:
 						return "vault_empty"
 		"walk":
 			if held_item_data == []:
-				return "idle_empty_shown"
+				return "walk_empty"
 			else:
 				match held_item_data[Items.INDEX_ANIMATIONS]:
 					Items.animation.BREAD_ANIM:
 						return "idle_holding_bread-metarig_001"
 					Items.animation.SWORD_ANIM:
-						return "idle_holding_sword"
+						return "walk_holding_sword"
 					_:
 						return "idle_holding_bread-metarig_001"
 		_:
@@ -453,7 +458,7 @@ func _physics_process(delta):
 			else:
 				coyote_time += delta
 		#combat_stance = 3.5
-		if combat_stance == 0.0:
+		if combat_stance == 0.0 and airborn:
 			combat_stance = 1.0
 		if !dash_timer > 0.0:
 			velocity.y -= gravity * delta
@@ -560,6 +565,11 @@ func _physics_process(delta):
 			#wallrunning
 			wall_run_timer += delta
 			var wr_power = clamp((1.0 - (wall_run_timer/max_wall_run_duration)), 0.0 , 1.0)
+			#dash
+			#wr_power *= (current_dash/max_dash)
+			#if current_dash > 0.0:
+			#	current_dash -= (dash_regen_speed + wallrun_dash_depletion_speed)*delta
+			
 			var h_speed = Vector2(velocity.x,velocity.z).length()
 			if h_speed < min_wallrun_speed:
 				wr_power -= (1.0 - (h_speed / min_wallrun_speed))
@@ -778,7 +788,6 @@ func use_held_item(special = false):
 				var vfx_method_name = sword_data[3]
 				print("swung sword")
 				play_held_item_sound("swing", attack_speed)
-				weapon_node.slash_close(damage_amount,damage_type,vfx_method_name,special,attack_speed)
 				#velocity += get_look_dir()
 				if !dash_timer > 0.0 and is_on_floor():
 					dash_timer = 0.75
@@ -790,9 +799,11 @@ func use_held_item(special = false):
 					if side_mixup:
 						side_mixup = false
 						play_anim("swing_sword_2_revision", true, 0.0, attack_speed)
+						weapon_node.slash_close(damage_amount,damage_type,vfx_method_name,false,attack_speed)
 					else:
 						side_mixup = true
 						play_anim("swing_sword_1_revision", true, 0.0, attack_speed)
+						weapon_node.slash_close(damage_amount,damage_type,vfx_method_name,true,attack_speed)
 				#play_anim("swing_sword_1", true, 0.0, attack_speed)
 		Items.type.GUN:
 			play_held_item_sound("shoot")
@@ -868,6 +879,7 @@ func load_bow() -> void:
 		var arrow_graphics = load(arrow_item[Items.INDEX_MODEL]).instantiate()#load("res://assets/items/arrows/arrow_ph.glb").instantiate()
 		#^^^ get frow quiver aka held_item_attributes["inventory"]
 		prop_1_handler.add_child(arrow_graphics)
+		arrow_graphics.position.y += 0.33 #to make centered on hand
 		prop_item_models.append(arrow_graphics)
 		play_anim("load_bow", true, 0.0)
 		bow_loaded = true
@@ -925,8 +937,11 @@ var vaulting: bool = false
 
 func can_vault() -> bool:
 	if $graphics/vault_check/RayCast3D.is_colliding():
-		desired_vault_pos = $graphics/vault_check/RayCast3D.get_collision_point()
-		return true
+		var norm = $graphics/vault_check/RayCast3D.get_collision_normal()
+		if !is_surface_to_steep(norm):
+			desired_vault_pos = $graphics/vault_check/RayCast3D.get_collision_point()
+			return true
+		else : return false
 	return false
 
 func _on_anim_finished(key) -> void:

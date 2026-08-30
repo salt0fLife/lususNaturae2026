@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://c4rn3nymej4f5"]
+
+[ext_resource type="Script" path="res://scripts/daylight_skydragon.gd" id="1_syf70"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_qmuvy"]
+
+[node name="daylight_skydragon" type="CharacterBody3D" groups=["entity"]]
+script = ExtResource("1_syf70")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+
+[node name="RayCast3D2" type="RayCast3D" parent="."]
+
+[node name="graphics" type="Node3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_qmuvy")

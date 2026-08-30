@@ -18,18 +18,24 @@ func slash_close(damage_amount : int, damage_type : int, vfx_method : StringName
 		call(vfx_method, special, hit_positions, attack_speed)
 	pass
 
+var active_tweens = []
+
 @onready var slash_mesh = $effects/standard_slash/MeshInstance3D
 @onready var slash_mat = $effects/standard_slash/MeshInstance3D.get_active_material(0)
 func standard_slash(towards_right : bool, impact_points : PackedVector3Array,speed: float = 1.0) -> void:
+	for old in active_tweens:
+		if old != null:
+			old.stop()
+	active_tweens = []
 	print("standard_slash")
 	if towards_right:
-		slash_mesh.rotation.z = -0.17
+		slash_mesh.rotation.z = PI*0.25 + PI#-0.17
 	else:
-		slash_mesh.rotation.z = 0.17+PI
+		slash_mesh.rotation.z = -PI*0.25 #0.17+PI
 	var tween = get_tree().create_tween()
 	slash_mat.set("shader_parameter/progress", 0.0)
-	tween.tween_property(slash_mat, "shader_parameter/progress", 1.0, 1.0/speed)
-	
+	tween.tween_property(slash_mat, "shader_parameter/progress", 1.0, (1.0/speed)*0.5)
+	active_tweens.append(tween)
 	
 
 @onready var hitscan = $hitscan

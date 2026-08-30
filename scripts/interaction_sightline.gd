@@ -23,3 +23,18 @@ func get_tooltip() -> String:
 		if hit.is_in_group("interactable"):
 			return hit.tool_tip
 	return "" #nothin
+
+var updating_focus = true
+var last_col = null
+func _process(delta):
+	if updating_focus:
+		if sight.is_colliding():
+			var hit = sight.get_collider()
+			if last_col != hit and hit.get_groups().has("track_focus"):
+				if last_col != null:
+					last_col.update_focus(false)
+				last_col = hit
+				hit.update_focus(true)
+		elif last_col != null:
+			last_col.update_focus(false)
+			last_col = null

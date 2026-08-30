@@ -1,9 +1,15 @@
-[gd_scene load_steps=14 format=3 uid="uid://ctdfqqiyjwq8a"]
+[gd_scene load_steps=30 format=3 uid="uid://ctdfqqiyjwq8a"]
 
 [ext_resource type="Shader" path="res://assets/shaders/stylized_mouth_shader.gdshader" id="1_103pd"]
 [ext_resource type="Shader" path="res://assets/shaders/stylized_eyes.gdshader" id="2_ynw5a"]
 [ext_resource type="Shader" path="res://assets/shaders/heat_signature.gdshader" id="3_eoyc6"]
 [ext_resource type="Texture2D" uid="uid://drscnbar1xv1j" path="res://assets/textures/vfx/heat_map_gradient.tres" id="4_1b65e"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_character_material.gdshader" id="5_q2cfc"]
+[ext_resource type="Texture2D" uid="uid://bqffk6ap5fhi6" path="res://assets/textures/material/face_shader_render_test_albedo.png" id="6_rriwg"]
+[ext_resource type="Texture2D" uid="uid://bfsbyxsvcu8h8" path="res://assets/textures/material/face_shader_render_test.png" id="7_3i4v4"]
+[ext_resource type="PackedScene" uid="uid://wnbpwo413g3n" path="res://assets/glb_temp/gcb_feminine_test_01.glb" id="8_hcqol"]
+[ext_resource type="Texture2D" uid="uid://eqp2s041qnd2" path="res://assets/glb_temp/gcb_feminine_test_01_generic_feminine_face.png" id="9_r5b7f"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_material.gdshader" id="10_qgoe7"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ow4hu"]
 render_priority = 0
@@ -96,6 +102,90 @@ shader_parameter/distance_fade_max = 15.0
 shader_parameter/displacement_amplitude = 0.05
 shader_parameter/heat_map_gradient = ExtResource("4_1b65e")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7qtxq"]
+render_priority = 0
+shader = ExtResource("5_q2cfc")
+shader_parameter/albedo_color = Color(1, 1, 1, 1)
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+shader_parameter/albedo_texture = ExtResource("6_rriwg")
+
+[sub_resource type="SphereMesh" id="SphereMesh_2ulys"]
+material = SubResource("ShaderMaterial_7qtxq")
+
+[sub_resource type="Gradient" id="Gradient_y6slk"]
+offsets = PackedFloat32Array(0.131356, 0.54661, 0.783898)
+colors = PackedColorArray(0, 0, 0, 1, 0.0820961, 0.100207, 0.398695, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_be54y"]
+gradient = SubResource("Gradient_y6slk")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r5w41"]
+render_priority = 0
+shader = ExtResource("5_q2cfc")
+shader_parameter/albedo_color = Color(1, 1, 1, 1)
+shader_parameter/specular_power = 0.03
+shader_parameter/roughness = 0.24
+shader_parameter/metallic = 0.0
+shader_parameter/albedo_texture = ExtResource("6_rriwg")
+shader_parameter/shadows_helper_texture = ExtResource("7_3i4v4")
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_be54y")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s8rws"]
+render_priority = 0
+shader = ExtResource("5_q2cfc")
+shader_parameter/albedo_color = Color(0.258824, 0.219608, 0.168627, 1)
+shader_parameter/specular_power = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hiajr"]
+render_priority = 0
+shader = ExtResource("5_q2cfc")
+shader_parameter/albedo_color = Color(1, 1, 1, 1)
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+shader_parameter/albedo_texture = ExtResource("9_r5b7f")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t1jw6"]
+render_priority = 0
+shader = ExtResource("5_q2cfc")
+shader_parameter/albedo_color = Color(1, 1, 1, 1)
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u8p1e"]
+render_priority = 0
+shader = ExtResource("10_qgoe7")
+shader_parameter/albedo = Color(0.976471, 0.227451, 0.203922, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
+shader_parameter/point_size = null
+shader_parameter/roughness = 0.431
+shader_parameter/day_roughness = 0.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = 1.345
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/specular_highlight = 4.58
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+
+[sub_resource type="Environment" id="Environment_4lalp"]
+background_mode = 1
+
 [node name="shaders_testing_scene" type="Node3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
@@ -118,3 +208,25 @@ mesh = SubResource("QuadMesh_fpbrm")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)
 mesh = SubResource("CapsuleMesh_rls5p")
 surface_material_override/0 = SubResource("ShaderMaterial_4lmdg")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.455172, 0, -0.890404, 0, 1, 0, 0.890404, 0, 0.455172, 2.5, 0, 0)
+mesh = SubResource("SphereMesh_2ulys")
+surface_material_override/0 = SubResource("ShaderMaterial_r5w41")
+
+[node name="gcb_feminine_test_01" parent="." instance=ExtResource("8_hcqol")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, -0.797942, -0.339125)
+
+[node name="body_003" parent="gcb_feminine_test_01" index="0"]
+surface_material_override/0 = SubResource("ShaderMaterial_s8rws")
+surface_material_override/1 = SubResource("ShaderMaterial_hiajr")
+surface_material_override/3 = SubResource("ShaderMaterial_t1jw6")
+surface_material_override/7 = SubResource("ShaderMaterial_u8p1e")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.38781, 0.28622, 3.77398)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_4lalp")
+
+[editable path="gcb_feminine_test_01"]

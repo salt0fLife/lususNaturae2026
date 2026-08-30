@@ -6,6 +6,9 @@
 cull_mode = 2
 albedo_color = Color(0.756863, 0, 0.113725, 1)
 
-[node name="red_arrow" type="MeshInstance3D"]
+[node name="red_arrow" type="Node3D"]
+
+[node name="mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.33, 0)
 mesh = ExtResource("1_q5cu6")
 surface_material_override/0 = SubResource("StandardMaterial3D_isy2i")

@@ -142,6 +142,7 @@ enum {#["display_name", item_style, sounds, item_type, data, texture_path, model
 	INDEX_ANIMATIONS,
 	INDEX_HAS_DEFORMATIONS,
 	INDEX_EQUIPMENT_ID,
+	INDEX_COLLISION_SHAPE,
 }
 
 

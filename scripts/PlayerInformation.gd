@@ -39,11 +39,6 @@ var max_food: int = 5
 var min_sleep_food: int = 4
 var sun_sickness: float = 0.0 #builds up when in sunlight goes down in shade
 
-##world information
-#var world_time: float = 0.0 #i know its funny to store here but it fits
-#var world_overcast : float = 0.0 #1.0 means no sunlight even during day
-#var wind : Vector3 = Vector3.ZERO
-##
 
 var wall_sliding_timer:float = 0.0
 var max_dash:float = 3.0
@@ -113,43 +108,6 @@ func load_inventory(new_inventory : Array) -> void: #so i can do stuffs :D
 		inventory.append([])
 	emit_signal("update_inventory")
 	pass
-
-#signal update_equipped_items
-#var equipped_items: Array = [
-	#[], #backpack
-	#[], #quiver
-#]
-#
-#func steal_equipped_item_slot(index : int) -> Array:
-	#if index >= equipped_items.size() or index < 0:
-		#index = 0
-	#var data = equipped_items[index]
-	#equipped_items[index] = []
-	#emit_signal("update_equipped_items")
-	#return data
-#
-#func set_equipped_item_slot(index : int, data : Array) -> void:
-	#equipped_items[index] = data
-	#emit_signal("update_equipped_items")
-#
-#func get_equipped_item_data(index: int) -> Array:
-	#var key = ""
-	#if index >= equipped_items.size() or index < 0:
-		#index = 0
-	#var data = equipped_items[index]
-	#equipped_items[index] = []
-	#if data.is_empty():
-		#return []
-	#key = data[0]
-	#return Items.list[key]
-#
-#func swap_equipped_item_slot(index : int, new_data : Array) -> Array: #sets item and returns item it replaced
-	#if index >= equipped_items.size() or index < 0:
-		#index = 0
-	#var old_data = equipped_items[index]
-	#equipped_items[index] = new_data
-	#emit_signal("update_equipped_items")
-	#return old_data
 
 func get_backpack_index() -> int:
 	return inventory.size() - equipment_slot_count

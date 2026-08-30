@@ -1,0 +1,39 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://ds36tm6ydisok"]
+
+[ext_resource type="Shader" path="res://assets/shaders/stylized_material.gdshader" id="1_du2o1"]
+[ext_resource type="Texture2D" uid="uid://x38xamgk331n" path="res://campaign/player/graphics/wip/skin_albedo_baked.png" id="2_7uw46"]
+
+[sub_resource type="Gradient" id="Gradient_x4437"]
+offsets = PackedFloat32Array(0.300847, 0.516949, 0.728814, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.0364392, 0.00784931, 7.52043e-10, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mnjyr"]
+gradient = SubResource("Gradient_x4437")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_du2o1")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(0.486275, 0.54902, 0.576471, 1)
+shader_parameter/day_color_power = 0.5
+shader_parameter/point_size = 0.0
+shader_parameter/roughness = 0.596
+shader_parameter/day_roughness = 0.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = 0.0
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/specular_highlight = 0.825
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/texture_albedo = ExtResource("2_7uw46")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_mnjyr")
