@@ -98,6 +98,10 @@ func _input(event):
 		cameraHandler.rotation.x += TempRotation
 		cameraHandler.rotation.x = clamp(cameraHandler.rotation.x, -1.5, 1.5) #formerly -1.25,1.5
 		graphics.rotation.y -= event.relative.x /1000 * mouse_sensitivity
+		if graphics.rotation.y > PI*64.0:
+			graphics.rotation.y -= PI*64.0
+		elif graphics.rotation.y < PI*64.0:
+			graphics.rotation.y += PI*64.0
 	if Input.is_action_just_pressed("sprint"):
 		sprinting = !sprinting
 	#if Input.is_action_just_pressed("sprint") and Input.is_action_pressed("up"):
@@ -118,6 +122,8 @@ func _input(event):
 		dash()
 	if Input.is_action_just_pressed("lunge"):
 		lunge()
+	if Input.is_action_just_pressed("interact"):
+		play_anim("parry_sword",true,0.0)
 
 func lunge() -> void:
 	var lunge_speed = velocity.length()

@@ -1,0 +1,80 @@
+[gd_scene load_steps=2 format=3 uid="uid://duo1ceml246p7"]
+
+[ext_resource type="Script" path="res://scripts/player_info_displayer.gd" id="1_s3xek"]
+
+[node name="player_info_displayer" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_s3xek")
+
+[node name="stamina_display" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ProgressBar" type="ProgressBar" parent="stamina_display"]
+modulate = Color(0, 0.592157, 0.901961, 1)
+layout_mode = 2
+offset_left = -176.0
+offset_right = 175.0
+offset_bottom = 27.0
+value = 33.0
+show_percentage = false
+
+[node name="health_bar" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -79.0
+offset_right = 20.0
+offset_bottom = -39.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ProgressBar" type="ProgressBar" parent="health_bar"]
+modulate = Color(0.92549, 0, 0.376471, 1)
+layout_mode = 0
+offset_left = -176.0
+offset_right = 175.0
+offset_bottom = 27.0
+value = 66.0
+show_percentage = false
+
+[node name="hunger_bar" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -122.0
+offset_right = 20.0
+offset_bottom = -82.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ProgressBar" type="ProgressBar" parent="hunger_bar"]
+modulate = Color(0.670588, 0.392157, 0.623529, 1)
+layout_mode = 0
+offset_left = -176.0
+offset_right = 175.0
+offset_bottom = 27.0
+value = 66.0
+show_percentage = false

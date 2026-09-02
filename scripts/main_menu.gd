@@ -1,6 +1,7 @@
 extends Node
 
 func _ready():
+	#Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 #	MusicHandler.play_song("res://assets/sounds/music/menu_midi_test.wav")
 	MusicHandler.play_song("res://assets/sounds/music/main_menu_music.wav")
 	$control/Panel/VBoxContainer/campaign.connect("button_down", play_campaign)
@@ -21,7 +22,7 @@ func _ready():
 var waiting_timer = 0.0
 func mouse_exited() -> void:
 	#selected_button = null
-	waiting_timer = 0.8
+	waiting_timer = 0.4
 	pass
 
 func save_and_quit():
@@ -77,11 +78,14 @@ var selection_outline_vel = Vector2.ZERO
 @export var sel_out_damp = 0.1
 @export var sel_out_max_acceleration = 100.0
 @export var sel_out_acceleration = 10.0
-
+@export var cursor_spin_speed = 1.0
 @export_category("selection_pulse")
 @export var pulse_decay_speed = 1.0
 @export var pulse_strength = 1.0
+@onready var anim = $control/AnimationPlayer
+@onready var cursor = $cursor
 func _process(delta):
+	cursor.position = get_viewport().get_mouse_position()
 	if selection_pulse > 0.0:
 		selection_pulse -= delta * pulse_decay_speed
 		if selection_pulse < 0.0:
@@ -95,25 +99,31 @@ func _process(delta):
 			waiting_timer = 0.0
 	if selected_button != null:
 		var s_o = $control/Panel/Control
-		var target_pos = selected_button.global_position+Vector2(59.0,34.0)
+		var target_pos = selected_button.global_position+Vector2(59.0,5.0)
 		var dif = (target_pos - s_o.global_position) * sel_out_acceleration
 		var dir = dif.normalized()*clamp(dif.length(),0.0,sel_out_max_acceleration)
 		selection_outline_vel += dir*delta
 		selection_outline_vel -= selection_outline_vel*delta*sel_out_damp
 		s_o.position += selection_outline_vel
-		$control/Panel/Control/selection_outline.visible = true
-		$control/Panel/Control/Control.visible = false
+		#$control/Panel/Control/selection_outline.visible = true
+		#$control/Panel/Control/Control.visible = false
+		$control/Panel/Control/Control.rotation = 0.0#lerp($control/Panel/Control/Control.rotation,0.0,delta*16.0)
+		if anim.current_animation != "frame_idle" and anim.current_animation != "to_frame":
+			anim.play("to_frame")
 	else:
-		$control/Panel/Control/Control.rotation += PI*delta
-		$control/Panel/Control/selection_outline.visible = false
-		$control/Panel/Control/Control.visible = true
+		$control/Panel/Control/Control.rotation += PI*delta*cursor_spin_speed
+		#$control/Panel/Control/selection_outline.visible = false
+		#$control/Panel/Control/Control.visible = true
 		var s_o = $control/Panel/Control
-		var target_pos = get_viewport().get_mouse_position()
-		var dif = (target_pos - s_o.global_position) * sel_out_acceleration
+		var target_pos = get_viewport().get_mouse_position() -Vector2(20.0,20.0)
+		var dif = (target_pos - s_o.global_position) * sel_out_acceleration 
 		var dir = dif.normalized()*clamp(dif.length(),0.0,sel_out_max_acceleration)
 		selection_outline_vel += dir*delta
 		selection_outline_vel -= selection_outline_vel*delta*sel_out_damp
+		#s_o.global_position = lerp(s_o.global_position,target_pos,delta*16.0)
 		s_o.position += selection_outline_vel
+		if anim.current_animation != "cursor_idle" and anim.current_animation != "to_cursor":
+			anim.play("to_cursor")
 
 #var mouse_pos = Vector2.ZERO
 #func _process(delta):
@@ -125,3 +135,8 @@ func _process(delta):
 		#pass
 	#
 	#pass
+
+func _input(event):
+	if event is InputEventMouseMotion:
+		if selected_button == null:
+			$control/Panel/Control.position += event.relative

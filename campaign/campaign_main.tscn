@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=3 uid="uid://xwre6k638wd1"]
+[gd_scene load_steps=72 format=3 uid="uid://xwre6k638wd1"]
 
 [ext_resource type="Script" path="res://scripts/campaign_main.gd" id="1_3biet"]
 [ext_resource type="PackedScene" uid="uid://o5esi8ctymbf" path="res://menus/inventory_menu.tscn" id="2_np8a5"]
@@ -6,7 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://1qwxgkemcxnw" path="res://menus/tooltip_handler.tscn" id="3_xj3p0"]
 [ext_resource type="PackedScene" uid="uid://dacmm1ix3biud" path="res://menus/dialogue_popup_handler.tscn" id="4_5wa0d"]
 [ext_resource type="Script" path="res://scripts/inventory_relations_handler.gd" id="4_6j0cq"]
-[ext_resource type="Script" path="res://scripts/player_info_displayer.gd" id="4_sca2w"]
+[ext_resource type="FontFile" uid="uid://32bvr4xx48cy" path="res://assets/fonts/BKANT.TTF" id="4_gfcst"]
+[ext_resource type="PackedScene" uid="uid://duo1ceml246p7" path="res://menus/player_info_displayer.tscn" id="4_yal5i"]
 [ext_resource type="Script" path="res://scripts/loading_screen.gd" id="5_02oip"]
 [ext_resource type="PackedScene" uid="uid://bdmt3runy3j7k" path="res://menus/radial_menu.tscn" id="6_705ms"]
 [ext_resource type="Script" path="res://scripts/post_effects.gd" id="6_mgka1"]
@@ -15,6 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="7_os0l1"]
 [ext_resource type="Texture2D" uid="uid://s5ir8m7v7p2m" path="res://assets/textures/gui/overlays/sun_sickness_overlay_frame.png" id="7_t2br1"]
 [ext_resource type="Texture2D" uid="uid://cvxg3hvn7vq18" path="res://assets/textures/gui/overlays/sun_sickness_overlAY_MASK.PNG" id="8_0aexh"]
+[ext_resource type="PackedScene" uid="uid://cqbxtb2hqtxng" path="res://menus/item_card.tscn" id="10_crpmm"]
 [ext_resource type="Shader" path="res://assets/shaders/postEffects.gdshader" id="10_muloe"]
 [ext_resource type="Script" path="res://scripts/postEffects.gd" id="11_06tnx"]
 [ext_resource type="Texture2D" uid="uid://etihtd6qpu8i" path="res://assets/textures/movies/mal0/frame0000.png" id="15_q46np"]
@@ -39,6 +41,10 @@
 [ext_resource type="Texture2D" uid="uid://dc1lawwfofykd" path="res://assets/textures/movies/mal0/frame0023.png" id="34_ud344"]
 [ext_resource type="Texture2D" uid="uid://b3nrmylhibjeh" path="res://assets/textures/movies/mal0/frame0024.png" id="35_c0uob"]
 [ext_resource type="Texture2D" uid="uid://jpux1mnbh5pi" path="res://assets/textures/movies/mal0/frame0026.png" id="36_4sbls"]
+[ext_resource type="FontFile" uid="uid://6bbwelw5v73r" path="res://assets/fonts/ANTQUAB.TTF" id="40_83hwd"]
+
+[sub_resource type="Theme" id="Theme_0fhwx"]
+Label/fonts/font = ExtResource("4_gfcst")
 
 [sub_resource type="Shader" id="Shader_3005b"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's CanvasItemMaterial.
@@ -187,7 +193,7 @@ noise = SubResource("FastNoiseLite_gbpf2")
 shader = ExtResource("10_muloe")
 shader_parameter/spiral = 0.0
 shader_parameter/wave = 0.0
-shader_parameter/flash = 0.3
+shader_parameter/flash = 0.0
 shader_parameter/flash_color = Color(0.266667, 0.470588, 0.521569, 1)
 shader_parameter/grading_power = 0.1
 shader_parameter/lightness_map_power = 0.1
@@ -353,6 +359,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_0fhwx")
 
 [node name="left" type="VFlowContainer" parent="debug_menu"]
 layout_mode = 1
@@ -378,7 +385,13 @@ text = "day_timer : 0.0"
 
 [node name="held_item" type="Label" parent="debug_menu/left"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 1, 1)
 text = "held_item : []"
+
+[node name="held_item2" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.956863, 0, 0.207843, 1)
+text = "item_count"
 
 [node name="health" type="Label" parent="debug_menu/left"]
 layout_mode = 2
@@ -397,11 +410,23 @@ text = "dash_charges : 3.0/3.0"
 
 [node name="velocity" type="Label" parent="debug_menu/left"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.415686, 0.556863, 1)
 text = "dash_charges : 3.0/3.0"
 
 [node name="speed" type="Label" parent="debug_menu/left"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.752941, 0.141176, 1)
 text = "dash_charges : 3.0/3.0"
+
+[node name="position" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.560784, 0.964706, 1, 1)
+text = "position"
+
+[node name="rotation" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.560784, 0.964706, 1, 1)
+text = "position"
 
 [node name="right" type="HFlowContainer" parent="debug_menu"]
 layout_mode = 1
@@ -413,82 +438,7 @@ offset_bottom = -0.279999
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="player_info_displayer" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("4_sca2w")
-
-[node name="stamina_display" type="Control" parent="player_info_displayer"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -20.0
-offset_top = -40.0
-offset_right = 20.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="ProgressBar" type="ProgressBar" parent="player_info_displayer/stamina_display"]
-modulate = Color(0, 0.592157, 0.901961, 1)
-layout_mode = 2
-offset_left = -176.0
-offset_right = 175.0
-offset_bottom = 27.0
-value = 33.0
-show_percentage = false
-
-[node name="health_bar" type="Control" parent="player_info_displayer"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -20.0
-offset_top = -79.0
-offset_right = 20.0
-offset_bottom = -39.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="ProgressBar" type="ProgressBar" parent="player_info_displayer/health_bar"]
-modulate = Color(0.92549, 0, 0.376471, 1)
-layout_mode = 0
-offset_left = -176.0
-offset_right = 175.0
-offset_bottom = 27.0
-value = 66.0
-show_percentage = false
-
-[node name="hunger_bar" type="Control" parent="player_info_displayer"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -20.0
-offset_top = -122.0
-offset_right = 20.0
-offset_bottom = -82.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="ProgressBar" type="ProgressBar" parent="player_info_displayer/hunger_bar"]
-modulate = Color(0.670588, 0.392157, 0.623529, 1)
-layout_mode = 0
-offset_left = -176.0
-offset_right = 175.0
-offset_bottom = 27.0
-value = 66.0
-show_percentage = false
+[node name="player_info_displayer" parent="." instance=ExtResource("4_yal5i")]
 
 [node name="inventory_relations_handler" type="Node" parent="."]
 script = ExtResource("4_6j0cq")
@@ -583,6 +533,12 @@ layout_mode = 2
 layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
+
+[node name="grabbed_item_card" parent="inventory_relations_handler" instance=ExtResource("10_crpmm")]
+visible = false
+z_index = 20
+position = Vector2(415, 328)
+scale = Vector2(0.6, 0.6)
 
 [node name="action_menu" parent="." instance=ExtResource("3_km1sh")]
 visible = false
@@ -878,6 +834,7 @@ offset_right = 56.0
 offset_bottom = -17.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_fonts/font = ExtResource("40_83hwd")
 text = "loading level..."
 
 [node name="playSoundHandler" type="AudioStreamPlayer" parent="."]

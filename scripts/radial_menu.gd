@@ -31,6 +31,8 @@ var can_click = false
 @export var highlighted = -1
 
 func _draw():
+	if !visible:
+		return
 	draw_circle(center, outer_rad, col_1)
 	draw_arc(center, inner_rad, 0, TAU, 128, col_2, line_width, true)
 	draw_line(center+Vector2(inner_rad,0.0), center+Vector2(outer_rad,0.0),col_2, line_width)

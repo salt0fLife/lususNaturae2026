@@ -566,6 +566,9 @@ func update_debug_graphics() -> void:
 	$debug_menu/left/dash_charges.text = "dash_charges : " + str(PlayerInformation.current_dash) + " / " + str(PlayerInformation.max_dash)
 	$debug_menu/left/velocity.text = "velocity = " + str(PlayerInformation.velocity)
 	$debug_menu/left/speed.text = "speed = " + str(PlayerInformation.velocity.length())
+	$debug_menu/left/position.text = "position " + str(PlayerInformation.position)
+	$debug_menu/left/rotation.text = "rotation " + str(PlayerInformation.rotation)
+	$debug_menu/left/held_item2.text = "item count " + str(PlayerInformation.get_item_count())
 	pass
 
 func get_time_of_day() -> String:

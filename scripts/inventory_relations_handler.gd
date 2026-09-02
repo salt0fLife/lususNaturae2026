@@ -171,6 +171,7 @@ func select_inventory_slot(i : int) -> void:
 		return
 	PlayerInformation.change_held_item(i)
 
+@onready var grabbed_item_card = $grabbed_item_card
 func _process(delta):
 	if !inventory_open:
 		return
@@ -180,18 +181,21 @@ func _process(delta):
 		if click_downtime < 0:
 			click_downtime = 0 #just in case
 	if grabbed_item:
-		$grabbed_item_name.visible = !item_menu.visible
+		#$grabbed_item_name.visible = !item_menu.visible
+		grabbed_item_card.visible = !item_menu.visible
 		var item_data = PlayerInformation.get_item_data(grabbed_item_index)
 		if item_data.is_empty():
 			grabbed_item = false
 			grabbed_storage_item = false
 			inventory_menu.pretend_empty_index = -1
 			equipped_items_menu.pretend_empty_index = -1
-		var t = "holding_item"
-		$grabbed_item_name.text = t
-		$grabbed_item_name.position = DisplayServer.mouse_get_position()
+		#var t = "holding_item"
+		#$grabbed_item_name.text = t
+		grabbed_item_card.set_style(item_data[Items.INDEX_STYLE])
+		grabbed_item_card.set_item_name(item_data[Items.INDEX_NAME])
+		grabbed_item_card.position = get_viewport().get_mouse_position()
 	else:
-		$grabbed_item_name.visible = false
+		grabbed_item_card.visible = false
 
 var items_interacting = false
 var interactions_list

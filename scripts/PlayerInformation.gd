@@ -102,7 +102,7 @@ var inventory: Array = [
 
 func load_inventory(new_inventory : Array) -> void: #so i can do stuffs :D
 	print("#LOADED INVENTORY#")
-	var to_small = clampi((7- new_inventory.size()),0,1)
+	var to_small = clampi((8- new_inventory.size()),0,1)
 	inventory = new_inventory
 	for i in to_small:
 		inventory.append([])
@@ -256,3 +256,18 @@ func can_sleep() -> bool:
 		print("you are too hungry to sleep")
 		return false
 	return true
+
+func get_item_count() -> int:
+	var x:int = 0
+	var s:int = inventory.size()
+	for i in range(0,s):
+		if i >= s - equipment_slot_count:
+			if !inventory[i].is_empty():
+				x+=1
+				if inventory[i][1].has("inventory"):
+					for ii in inventory[i][1]["inventory"]:
+						if !ii.is_empty():
+							x+=1
+		elif !inventory[i].is_empty():
+			x+=1
+	return x

@@ -1,6 +1,18 @@
 extends Node
 
+#gules (red), azure (blue), vert (green), sable (black), argent (white), 
+#gilt (golden), sanguine (blood), murrey (purple / mulberry), ermine (black and white pattern)
 enum style { #for fonts and effects
+	GULES, #red
+	AZURE, #blue,
+	VERT, #green,
+	SABLE, #black,
+	ARGENT, #white,
+	GILT, #golden,
+	SCARLET, #blood,
+	MURREY, #purple / mulberry,
+	ERMINE, #pattern
+	
 	TAINTED,
 	NORMAL,
 	RARE,
@@ -8,7 +20,63 @@ enum style { #for fonts and effects
 	BLESSED,
 }
 
-const style_colors = [
+enum rarity {
+	NORMAL,
+	UNCOMMON,
+	RARE,
+	OBSCURE,
+	UNIQUE,
+}
+
+const style_icons:Dictionary = {
+	style.GULES : [
+		"res://assets/textures/gui/suits/gules_small.png",
+		"res://assets/textures/gui/suits/gules_obscure_small.png"
+	],
+	style.AZURE : [
+		"res://assets/textures/gui/suits/azure_small.png",
+		"res://assets/textures/gui/suits/azure_obscure_small.png"
+	],
+	style.VERT : [
+		"res://assets/textures/gui/suits/vert_small.png",
+		"res://assets/textures/gui/suits/vert_obscure_small.png"
+	],
+	style.SABLE : [
+		"res://assets/textures/gui/suits/sable_small.png",
+		"res://assets/textures/gui/suits/sable_obscure_small.png"
+	],
+	style.ARGENT : [
+		"res://assets/textures/gui/suits/argent_small.png",
+		"res://assets/textures/gui/suits/argent_obscure_small.png"
+	],
+	style.GILT : [
+		"res://assets/textures/gui/suits/gilt_small.png",
+		"res://assets/textures/gui/suits/gilt_obscure_small.png"
+	],
+	style.SCARLET : [
+		"res://assets/textures/gui/suits/scarlet_small.png",
+		"res://assets/textures/gui/suits/scarlet_obscure_small.png"
+	],
+	style.MURREY : [
+		"res://assets/textures/gui/suits/murrey_small.png",
+		"res://assets/textures/gui/suits/murrey_obscure_small.png"
+	],
+	style.ERMINE : [
+		"res://assets/textures/gui/suits/ermine_small.png",
+		"res://assets/textures/gui/suits/ermine_small.png"
+	],
+}
+
+const style_colors : Array[Color] = [
+	Color.DARK_RED,
+	Color.DARK_BLUE,
+	Color.SEA_GREEN,
+	Color.BLACK,
+	Color.SILVER,
+	Color.GOLDENROD,
+	Color.CRIMSON,
+	Color.WEB_PURPLE,
+	Color.WHITE, #is a texture so white works for now
 	#TAINTED,
 	Color.DIM_GRAY,
 	#NORMAL,
