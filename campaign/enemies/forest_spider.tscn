@@ -1,11 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://cnw5lgwyi4fel"]
+[gd_scene load_steps=9 format=3 uid="uid://cnw5lgwyi4fel"]
 
 [ext_resource type="Script" path="res://scripts/forest_spider.gd" id="1_2pm46"]
 [ext_resource type="PackedScene" uid="uid://b21m67s1dsdtr" path="res://assets/entity_components/hurtbox.tscn" id="2_bghc6"]
-[ext_resource type="PackedScene" uid="uid://dtpprq7ugqfpr" path="res://assets/enemies_wip/forest_spider_test.glb" id="2_bwulf"]
+[ext_resource type="PackedScene" uid="uid://bo21wcw5m066m" path="res://assets/enemies_wip/forest_spider_test_anim.glb" id="2_euf3p"]
 [ext_resource type="Script" path="res://scripts/generic_health_handler.gd" id="3_1kdef"]
-[ext_resource type="PackedScene" uid="uid://bgjwkkae55662" path="res://assets/enemies_wip/forest_spider_test_model.glb" id="3_gay1h"]
-[ext_resource type="PackedScene" uid="uid://b1laosneanwf1" path="res://assets/glb_temp/player_01_wip_rig_test.glb" id="5_t7ir4"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_fjwoi"]
 
@@ -18,7 +16,7 @@ size = Vector3(0.746, 1.023, 1.073)
 [sub_resource type="BoxShape3D" id="BoxShape3D_4lcig"]
 size = Vector3(0.916, 0.948, 1.073)
 
-[node name="forest_spider" type="CharacterBody3D"]
+[node name="forest_spider" type="CharacterBody3D" groups=["entity"]]
 collision_layer = 4
 script = ExtResource("1_2pm46")
 run_speed = 10.0
@@ -29,49 +27,81 @@ shape = SubResource("SphereShape3D_fjwoi")
 
 [node name="graphics" type="Node3D" parent="."]
 
-[node name="forest_spider_avatar" type="Node3D" parent="graphics"]
-transform = Transform3D(0.615, 0, 0, 0, 0.615, 0, 0, 0, 0.615, 0, 0, 0)
+[node name="forest_spider_test_anim" parent="graphics" instance=ExtResource("2_euf3p")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 
-[node name="forest_spider_test" parent="graphics/forest_spider_avatar" instance=ExtResource("2_bwulf")]
-visible = false
-
-[node name="Skeleton3D" parent="graphics/forest_spider_avatar/forest_spider_test/Armature" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.545282, 2.33246, 0)
-bones/0/rotation = Quaternion(-2.66925e-08, -2.66925e-08, -0.707107, 0.707107)
-bones/1/rotation = Quaternion(-2.93062e-08, -5.94136e-08, -0.211461, 0.977387)
-bones/2/scale = Vector3(1, 1, 1)
-bones/3/rotation = Quaternion(2.28925e-07, -3.71028e-10, 0.956632, 0.2913)
-bones/3/scale = Vector3(1, 1, 1)
-
-[node name="Cube_027" parent="graphics/forest_spider_avatar/forest_spider_test/Armature/Skeleton3D" index="1"]
-visible = false
-
-[node name="SkeletonIK3D" type="SkeletonIK3D" parent="graphics/forest_spider_avatar/forest_spider_test/Armature/Skeleton3D" index="2"]
-process_priority = 1
-root_bone = &"Bone"
-tip_bone = &"ik_target"
-use_magnet = true
-magnet = Vector3(10, 10, 0)
-target_node = NodePath("../../ik_target")
-
-[node name="BoneAttachment3D2" type="BoneAttachment3D" parent="graphics/forest_spider_avatar/forest_spider_test/Armature/Skeleton3D" index="3"]
-transform = Transform3D(1, -6.25849e-07, -2.38419e-07, 6.25849e-07, 1, -3.69482e-13, 2.38419e-07, 2.55795e-13, 1, 8.18953, -4.05145, -6.91298e-09)
-bone_name = "ik_target"
-bone_idx = 3
-
-[node name="ik_target" type="Node3D" parent="graphics/forest_spider_avatar/forest_spider_test/Armature" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.65833, -0.0364532, -0.110522)
-
-[node name="Cube_028" parent="graphics/forest_spider_avatar/forest_spider_test" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.33137, 0)
-visible = false
-
-[node name="Cube_031" parent="graphics/forest_spider_avatar/forest_spider_test" index="2"]
-visible = false
-
-[node name="forest_spider_test_model" parent="graphics" instance=ExtResource("3_gay1h")]
+[node name="Skeleton3D" parent="graphics/forest_spider_test_anim/Armature_001" index="0"]
+bones/1/rotation = Quaternion(0.905094, -1.38551e-07, -2.94917e-07, 0.425211)
+bones/1/scale = Vector3(1, 1, 1)
+bones/2/rotation = Quaternion(0.965586, 8.47462e-08, -3.14629e-07, 0.260084)
+bones/4/rotation = Quaternion(-0.291457, 9.63216e-21, 6.47078e-17, 0.956584)
+bones/5/rotation = Quaternion(-0.290151, -1.39943e-06, 6.13385e-07, 0.956981)
+bones/6/rotation = Quaternion(-0.742783, 2.73379e-11, 2.65643e-06, 0.669532)
+bones/6/scale = Vector3(1, 1, 1)
+bones/7/rotation = Quaternion(-0.469552, 0.0783132, 0.807906, 0.347385)
+bones/8/rotation = Quaternion(-0.151997, -0.012421, -0.360589, 0.920173)
+bones/8/scale = Vector3(1, 1, 1)
+bones/9/rotation = Quaternion(-0.0575702, 0.633213, 0.684721, -0.356208)
+bones/10/rotation = Quaternion(-0.381461, 0.00660815, -0.324948, 0.865363)
+bones/11/rotation = Quaternion(-0.19333, -0.0116377, -0.238512, 0.95163)
+bones/11/scale = Vector3(1, 1, 1)
+bones/12/rotation = Quaternion(0.469554, 0.078312, 0.807904, -0.347385)
+bones/12/scale = Vector3(1, 1, 1)
+bones/13/rotation = Quaternion(-0.151997, 0.012421, 0.360589, 0.920173)
+bones/13/scale = Vector3(1, 1, 1)
+bones/14/rotation = Quaternion(0.0575727, 0.633214, 0.684721, 0.356206)
+bones/14/scale = Vector3(1, 1, 1)
+bones/15/rotation = Quaternion(-0.381461, -0.00660816, 0.324948, 0.865363)
+bones/15/scale = Vector3(1, 1, 1)
+bones/16/rotation = Quaternion(-0.19333, 0.0116375, 0.238512, 0.95163)
+bones/17/rotation = Quaternion(0.508866, 0.836488, 0.0519974, -0.19657)
+bones/17/scale = Vector3(1, 1, 1)
+bones/18/rotation = Quaternion(0.296278, -0.00256506, -0.0415431, 0.954194)
+bones/18/scale = Vector3(1, 1, 1)
+bones/19/rotation = Quaternion(-0.409899, -1.22399e-07, -0.230088, 0.882634)
+bones/21/rotation = Quaternion(0.647964, 0.739074, 0.0847741, -0.163481)
+bones/22/rotation = Quaternion(0.210496, -0.118598, 0.06249, 0.96836)
+bones/23/rotation = Quaternion(-0.390037, 0.276122, -0.250008, 0.842095)
+bones/24/scale = Vector3(1, 1, 1)
+bones/25/rotation = Quaternion(0.808898, 0.564274, 0.124168, -0.108911)
+bones/25/scale = Vector3(1, 1, 1)
+bones/26/rotation = Quaternion(0.217854, -0.219153, 0.0301319, 0.950581)
+bones/27/rotation = Quaternion(-0.355087, 0.469924, -0.225918, 0.775916)
+bones/27/scale = Vector3(1, 1, 1)
+bones/28/rotation = Quaternion(-0.0811132, 0.277481, -0.393702, 0.872596)
+bones/28/scale = Vector3(1, 1, 1)
+bones/29/rotation = Quaternion(0.846737, 0.506611, 0.133169, -0.0929935)
+bones/31/rotation = Quaternion(-0.294505, 0.610152, -0.232046, 0.697951)
+bones/32/rotation = Quaternion(-0.0218297, 0.377398, -0.399209, 0.8353)
+bones/32/scale = Vector3(1, 1, 1)
+bones/33/rotation = Quaternion(-0.508866, 0.836489, 0.0519993, 0.196567)
+bones/33/scale = Vector3(1, 1, 1)
+bones/34/rotation = Quaternion(0.296278, 0.00256505, 0.041543, 0.954194)
+bones/35/rotation = Quaternion(-0.409899, 6.33098e-08, 0.230087, 0.882634)
+bones/35/scale = Vector3(1, 1, 1)
+bones/36/rotation = Quaternion(-0.272639, -0.0500275, 0.202051, 0.93933)
+bones/36/scale = Vector3(1, 1, 1)
+bones/37/rotation = Quaternion(-0.647964, 0.739074, 0.0847764, 0.163478)
+bones/37/scale = Vector3(1, 1, 1)
+bones/38/rotation = Quaternion(0.210496, 0.118598, -0.0624899, 0.96836)
+bones/39/rotation = Quaternion(-0.390037, -0.276122, 0.250008, 0.842095)
+bones/39/scale = Vector3(1, 1, 1)
+bones/40/rotation = Quaternion(-0.159597, -0.195301, 0.253566, 0.933858)
+bones/40/scale = Vector3(1, 1, 1)
+bones/41/rotation = Quaternion(0.808897, -0.564275, -0.124171, -0.108909)
+bones/41/scale = Vector3(1, 1, 1)
+bones/42/rotation = Quaternion(0.217854, 0.219153, -0.030132, 0.950581)
+bones/44/scale = Vector3(1, 1, 1)
+bones/45/rotation = Quaternion(0.846736, -0.506612, -0.133172, -0.0929916)
+bones/45/scale = Vector3(1, 1, 1)
+bones/46/rotation = Quaternion(0.165639, 0.282949, -0.154075, 0.932075)
+bones/47/rotation = Quaternion(-0.294505, -0.610152, 0.232046, 0.697951)
+bones/47/scale = Vector3(1, 1, 1)
+bones/48/rotation = Quaternion(-0.0218297, -0.377398, 0.39921, 0.8353)
+bones/48/scale = Vector3(1, 1, 1)
 
 [node name="hurtbox" parent="." node_paths=PackedStringArray("health_handler") instance=ExtResource("2_bghc6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.973311, 0.300015)
 health_handler = NodePath("../health_handler")
 limb_key = &"body"
 limb_health = 5
@@ -81,7 +111,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0174255, 0.0274658, -0.0410
 shape = SubResource("BoxShape3D_rmtae")
 
 [node name="hurtbox2" parent="." node_paths=PackedStringArray("health_handler") instance=ExtResource("2_bghc6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.644543, 0.5, 0)
+transform = Transform3D(0.587121, 0.809499, 0, -0.809499, 0.587121, 0, 0, 0, 1, 0.971573, 1.24369, 0)
 health_handler = NodePath("../health_handler")
 limb_key = &"legs_left"
 
@@ -90,7 +120,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0174255, 0.0274658, 0.00017
 shape = SubResource("BoxShape3D_60jxm")
 
 [node name="hurtbox3" parent="." node_paths=PackedStringArray("health_handler") instance=ExtResource("2_bghc6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.624881, 0.5, 0)
+transform = Transform3D(0.572547, -0.819872, 0, 0.819872, 0.572547, 0, 0, 0, 1, -0.956038, 1.2272, 0)
 health_handler = NodePath("../health_handler")
 limb_key = &"legs_right"
 
@@ -99,7 +129,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0174255, 0.0274658, 0.00017
 shape = SubResource("BoxShape3D_60jxm")
 
 [node name="hurtbox4" parent="." node_paths=PackedStringArray("health_handler") instance=ExtResource("2_bghc6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.853312)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00698, -0.853312)
 health_handler = NodePath("../health_handler")
 limb_key = &"abdomen"
 
@@ -110,7 +140,4 @@ shape = SubResource("BoxShape3D_4lcig")
 [node name="health_handler" type="Node" parent="."]
 script = ExtResource("3_1kdef")
 
-[node name="player_01_wip_rig_test" parent="." instance=ExtResource("5_t7ir4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
-
-[editable path="graphics/forest_spider_avatar/forest_spider_test"]
+[editable path="graphics/forest_spider_test_anim"]

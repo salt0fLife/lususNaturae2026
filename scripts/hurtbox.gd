@@ -16,6 +16,7 @@ func update_resistances() -> void:
 func take_damage(amount : int,type : int) :
 	var dealt = get_real_amount(amount,type)
 	emit_signal("took_damage",dealt,type,limb_key)
+	Global.indicate_damage(dealt,type,global_position)
 	return dealt
 
 signal took_damage #(amount,type,limb)

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bms6j1jdvhi5p"]
+
+[ext_resource type="ArrayMesh" uid="uid://b0mvt7c2sb7y4" path="res://assets/items/hunters_bow/hunters_bow.res" id="1_qeujp"]
+
+[node name="hunters_bow_with_def" type="MeshInstance3D"]
+mesh = ExtResource("1_qeujp")

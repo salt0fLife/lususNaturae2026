@@ -11,6 +11,7 @@ extends entity_base
 @onready var item_sounds = $graphics/item_sounds
 @onready var skeleton = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D
 @onready var weapon_node = $graphics/cameraHandler/senses_camera/weapon_node
+@onready var special_area_sense = $special_area_sense
 
 #attributes
 @export_group("attributes")
@@ -23,6 +24,8 @@ extends entity_base
 @export var floor_friction: float = 8.0
 @export var max_floor_slow_per_second: float = 45.0
 @export var max_crouch_slow_per_second: float = 10.0
+@export var swimming_acceleration : float = 3.0
+@export var swimming_speed : float = 5.0
 var sprinting_timer: float = 0.0 #how long you have been sprinting
 
 #misc
@@ -37,6 +40,8 @@ var aiming_down_sights:bool = false
 var blocking:bool = false
 var blocking_timer:float = 0.0 #counts how long you have been blocking for
 var counter_attack_window:float = 0.0
+var swimming:bool = false
+var swimming_val:float = 1.0
 #dash
 @export_group("dash")
 @export var max_dash:float = 3.0
@@ -66,6 +71,7 @@ var wall_run_cooldown : float = 0.0
 var last_wall_run_normal = Vector3.ZERO
 var last_wall_groups = []
 @export var wallrun_dash_depletion_speed : float = 0.1
+@export var wallrun_start_speed_threshhold:float = 1.0
 
 ##graphics
 var desired_CH_height: float = 1.5
@@ -90,7 +96,8 @@ func _ready():
 	PlayerInformation.connect("update_held_item", update_held_item_graphics)
 	PlayerInformation.connect("attempt_to_drop_item", _on_item_drop_attempt)
 	update_held_item_graphics()
-
+	special_area_sense.connect("body_entered", _on_special_area_entered)
+	special_area_sense.connect("body_exited",_on_special_area_exited)
 
 func _input(event):
 	if event is InputEventMouseMotion and !Global.in_game_mouse:
@@ -100,7 +107,7 @@ func _input(event):
 		graphics.rotation.y -= event.relative.x /1000 * mouse_sensitivity
 		if graphics.rotation.y > PI*64.0:
 			graphics.rotation.y -= PI*64.0
-		elif graphics.rotation.y < PI*64.0:
+		elif graphics.rotation.y < -PI*64.0:
 			graphics.rotation.y += PI*64.0
 	if Input.is_action_just_pressed("sprint"):
 		sprinting = !sprinting
@@ -456,7 +463,11 @@ var coyote_time:float = 0
 @export var max_coyote_time :float = 0.1
 func _physics_process(delta):
 	# Add the gravity.
-	if not is_on_floor():
+	if swimming:
+		velocity -= velocity*0.5*delta
+		velocity.y += delta*0.5
+		pass
+	elif not is_on_floor():
 		if !airborn:
 			if coyote_time > max_coyote_time:
 				airborn = true
@@ -528,8 +539,15 @@ func _physics_process(delta):
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (graphics.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	if direction and !dash_timer > 0.0 and !vaulting:
-		if !airborn:#is_on_floor():
+	if (direction or swimming) and !dash_timer > 0.0 and !vaulting:
+		var h_speed = Vector2(velocity.x,velocity.z).length()
+		if swimming:
+			if Input.is_action_pressed("jump"):
+				direction.y += 1.0
+			elif Input.is_action_pressed("crouch"):
+				direction.y -= 1.0
+			velocity = lerp(velocity,direction*swimming_speed,delta*swimming_acceleration)
+		elif !airborn:#is_on_floor():
 			if crouching or aiming_down_sights:
 				play_anim(get_movement_anim("idle"))
 				velocity.x += ((crouch_speed * direction.x) - velocity.x) * delta * acceleration
@@ -567,7 +585,7 @@ func _physics_process(delta):
 				play_anim(get_movement_anim("idle"))
 				velocity.x += ((walk_speed * direction.x) - velocity.x) * delta * acceleration
 				velocity.z += ((walk_speed * direction.z) - velocity.z) * delta * acceleration
-		elif sprinting and is_on_wall() and !wall_run_cooldown > 0.0:
+		elif sprinting and is_on_wall() and !wall_run_cooldown > 0.0 and h_speed > wallrun_start_speed_threshhold:
 			#wallrunning
 			wall_run_timer += delta
 			var wr_power = clamp((1.0 - (wall_run_timer/max_wall_run_duration)), 0.0 , 1.0)
@@ -576,7 +594,6 @@ func _physics_process(delta):
 			#if current_dash > 0.0:
 			#	current_dash -= (dash_regen_speed + wallrun_dash_depletion_speed)*delta
 			
-			var h_speed = Vector2(velocity.x,velocity.z).length()
 			if h_speed < min_wallrun_speed:
 				wr_power -= (1.0 - (h_speed / min_wallrun_speed))
 			velocity.y += gravity * delta * wr_power
@@ -767,6 +784,7 @@ func use_held_item(special = false):
 		combat_stance = 3.5
 		if special:
 			play_anim("punch_empty_2")
+			weapon_node.standard_slash(false)
 		else:
 			play_anim("punch_empty_1")
 		return
@@ -1072,3 +1090,22 @@ func _on_projectile_hit_enemy(p_dam_amount:int,p_dam_type:int,entity_node):
 	entity_node.take_damage(p_dam_amount,p_dam_type)
 	pass
 
+var overlapping_special_areas:Dictionary = {}
+
+func _on_special_area_entered(body) -> void:
+	var groups = body.get_groups()
+	var s_info = Global.get_surface_info(groups)
+	overlapping_special_areas[body] = s_info
+	if s_info.has(Global.SWIMABLE):
+		swimming = true
+		swimming_val = s_info[Global.SWIMABLE]
+
+func _on_special_area_exited(body) -> void:
+	if overlapping_special_areas.has(body):
+		overlapping_special_areas.erase(body)
+	swimming = false
+	for k in overlapping_special_areas.keys():
+		if overlapping_special_areas[k].has(Global.SWIMABLE):
+			swimming = true
+			swimming_val = overlapping_special_areas[k][Global.SWIMABLE]
+			return #got what we needed to know for now

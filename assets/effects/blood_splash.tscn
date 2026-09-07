@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bnnqurbm78rqe"]
+
+[ext_resource type="Script" path="res://assets/effects/blood_splash.gd" id="1_bdold"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_e5kyh"]
+
+[node name="blood_splash" type="Node3D"]
+script = ExtResource("1_bdold")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_e5kyh")

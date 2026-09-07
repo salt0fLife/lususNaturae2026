@@ -32,6 +32,8 @@ func _ready():
 	Global.connect("create_decal_signal", create_decal)
 	Global.connect("play_cutscene_signal", play_cutscene)
 	Global.connect("drop_item_signal",_on_dropped_item)
+	Global.connect("update_debug_render", _on_update_debug_render)
+	Global.connect("indicate_damage_signal",_on_indicate_damage)
 	PlayerInformation.connect("change_player", change_player)
 	PlayerInformation.connect("slept", _on_player_slept)
 	$pause_menu/buttonHandler/resume.connect("button_down", set_paused.bind(false))
@@ -62,6 +64,12 @@ func new_impact(type : int, dir : Vector3, pos : Vector3) -> void:
 	var s_c = surface_impact.new_impact(type,dir)
 	s_c.position = pos
 	tempHandler.add_child(s_c)
+
+func _on_indicate_damage(amount,type,pos) -> void:
+	var di = damage_indicator.new_indicator(amount,type)
+	di.position = pos
+	tempHandler.add_child(di)
+	
 
 const default_save_data = {
 	"velocity" : Vector3.ZERO,
@@ -94,6 +102,7 @@ func change_level(level_key : String, update_persistent_data = true) -> void:
 	if changing_level:
 		printerr("already loading different level")
 		return
+	
 	loading_screen.visible = true
 	level_status = 0.0
 	set_paused(true)
@@ -105,6 +114,9 @@ func change_level(level_key : String, update_persistent_data = true) -> void:
 	level_to_change_too = Global.levels[level][0]
 	ResourceLoader.load_threaded_request(Global.levels[level][0])
 	changing_level = true
+	
+	var level_texture = load(Global.levels[level][1])
+	loading_screen.set_background(level_texture)
 	
 	#level = level_key
 	#var level_data = Global.levels[level]
@@ -395,6 +407,12 @@ func _input(_event):
 		set_action_menu_open(true)
 	if Input.is_action_just_released("action_wheel"):
 		set_action_menu_open(false)
+	if Input.is_action_just_pressed("debug_menu"):
+		#$debug_menu.visible = !$debug_menu.visible
+		Global.set_debug_render(!Global.debug_render)
+
+func _on_update_debug_render(val : bool) -> void:
+	$debug_menu.visible = val
 
 var paused = false
 
@@ -569,6 +587,7 @@ func update_debug_graphics() -> void:
 	$debug_menu/left/position.text = "position " + str(PlayerInformation.position)
 	$debug_menu/left/rotation.text = "rotation " + str(PlayerInformation.rotation)
 	$debug_menu/left/held_item2.text = "item count " + str(PlayerInformation.get_item_count())
+	$debug_menu/right/version.text = str(Global.version)
 	pass
 
 func get_time_of_day() -> String:

@@ -1,0 +1,26 @@
+[remap]
+
+importer="2d_array_texture"
+type="CompressedTexture2DArray"
+uid="uid://b6amu678ko7ki"
+path="res://.godot/imported/dark_tower.exr-b947ad02b7458e49b306e48b09777a13.ctexarray"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://campaign/lighting_information/dark_tower.exr"
+dest_files=["res://.godot/imported/dark_tower.exr-b947ad02b7458e49b306e48b09777a13.ctexarray"]
+
+[params]
+
+compress/mode=3
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/channel_pack=1
+mipmaps/generate=false
+mipmaps/limit=-1
+slices/horizontal=1
+slices/vertical=4

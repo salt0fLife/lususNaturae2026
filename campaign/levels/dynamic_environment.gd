@@ -77,7 +77,7 @@ const presets = {
 			#"light_color" : Color("2c3847"),
 			"light_color" : Color("d5e2e8"),#Color("98a9b2"),
 			"light_energy" : 1.0,
-			"shadow_blur" : 7.15,
+			"shadow_blur" : 1.0,#7.15,
 		},
 		#environment environment
 		{

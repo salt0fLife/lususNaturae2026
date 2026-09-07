@@ -22,7 +22,7 @@ var active_tweens = []
 
 @onready var slash_mesh = $effects/standard_slash/MeshInstance3D
 @onready var slash_mat = $effects/standard_slash/MeshInstance3D.get_active_material(0)
-func standard_slash(towards_right : bool, impact_points : PackedVector3Array,speed: float = 1.0) -> void:
+func standard_slash(towards_right : bool, impact_points : PackedVector3Array = [],speed: float = 1.0) -> void:
 	for old in active_tweens:
 		if old != null:
 			old.stop()

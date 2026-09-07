@@ -499,7 +499,9 @@ max_crouch_slow_per_second = 20.0
 dash_distance = 40.0
 dash_speed = 3.0
 max_air_jumps = 0
+min_wallrun_speed = 7.0
 wallrun_dash_depletion_speed = 0.0
+wallrun_start_speed_threshhold = 4.0
 sun_sickness_change_speed = 0.25
 wall_jump_max_latency = 0.5
 sprint_animation_speed_mult = 1.333
@@ -580,7 +582,7 @@ script = ExtResource("9_d3lmj")
 
 [node name="vision_area_sense" type="Area3D" parent="graphics/cameraHandler/senses_camera/vision_area_overlay"]
 collision_layer = 0
-collision_mask = 129
+collision_mask = 16
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="graphics/cameraHandler/senses_camera/vision_area_overlay/vision_area_sense"]
 shape = SubResource("SphereShape3D_fs3ml")
@@ -680,20 +682,25 @@ bones/52/scale = Vector3(1, 1, 1)
 bones/53/rotation = Quaternion(-0.00157867, 0.00156592, -2.47209e-06, 0.999998)
 
 [node name="arm2" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="0"]
+layers = 16
 surface_material_override/0 = SubResource("ShaderMaterial_pj1h4")
 
 [node name="@MeshInstance3D@25823" type="MeshInstance3D" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="1"]
+layers = 16
 mesh = SubResource("ArrayMesh_0ggqi")
 skin = SubResource("Skin_yasc2")
 surface_material_override/0 = SubResource("ShaderMaterial_xeag3")
 
 [node name="bandages" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="2"]
+layers = 16
 surface_material_override/0 = SubResource("ShaderMaterial_h25mk")
 
 [node name="bodyMin_004" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="3"]
+layers = 16
 surface_material_override/0 = SubResource("ShaderMaterial_v6yo4")
 
 [node name="bodyMin_006" type="MeshInstance3D" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="4"]
+layers = 16
 mesh = SubResource("ArrayMesh_4n458")
 skin = SubResource("Skin_yasc2")
 surface_material_override/0 = SubResource("ShaderMaterial_7vpn5")
@@ -746,15 +753,19 @@ visible = false
 target_position = Vector3(-0.84, 0, 0)
 
 [node name="Cube_008" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="13"]
+layers = 16
 surface_material_override/0 = ExtResource("16_b35ji")
 
 [node name="glove" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="14"]
+layers = 16
 surface_material_override/0 = SubResource("ShaderMaterial_rnxrv")
 
 [node name="shirt_002" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="15"]
+layers = 16
 surface_material_override/0 = SubResource("ShaderMaterial_sdij2")
 
 [node name="shirt_004" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="16"]
+layers = 16
 surface_material_override/0 = SubResource("ShaderMaterial_sdij2")
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D" index="17"]
@@ -844,24 +855,31 @@ script = ExtResource("19_pa0r2")
 [node name="RayCast3D" type="RayCast3D" parent="sunlight_check"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0407601, 0)
 target_position = Vector3(0, 0, 1)
+collision_mask = 129
 
 [node name="RayCast3D2" type="RayCast3D" parent="sunlight_check"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.71669, 0)
+collision_mask = 129
 
 [node name="RayCast3D3" type="RayCast3D" parent="sunlight_check"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.01256, 0)
+collision_mask = 129
 
 [node name="RayCast3D4" type="RayCast3D" parent="sunlight_check"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.345745, 1.01256, 0)
+collision_mask = 129
 
 [node name="RayCast3D5" type="RayCast3D" parent="sunlight_check"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34768, 1.01256, 0)
+collision_mask = 129
 
 [node name="RayCast3D6" type="RayCast3D" parent="sunlight_check"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0195832, 1.01256, 0.341599)
+collision_mask = 129
 
 [node name="RayCast3D7" type="RayCast3D" parent="sunlight_check"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0195832, 1.01256, -0.356712)
+collision_mask = 129
 
 [node name="Label" type="Label" parent="."]
 anchors_preset = 3

@@ -3,7 +3,10 @@ extends Node
 func _ready():
 	#Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 #	MusicHandler.play_song("res://assets/sounds/music/menu_midi_test.wav")
-	MusicHandler.play_song("res://assets/sounds/music/main_menu_music.wav")
+	MusicHandler.play_song("main_menu")
+	
+	
+	
 	$control/Panel/VBoxContainer/campaign.connect("button_down", play_campaign)
 	$control/Panel/VBoxContainer/multiplayer.connect("button_down", play_multiplayer)
 	$control/Panel/VBoxContainer/settings.connect("button_down", open_settings)

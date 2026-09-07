@@ -32,17 +32,18 @@ enum major_points {
 var major_points_reached = []
 
 const levels: Dictionary = {
-	"debug" : ["res://campaign/levels/debug_level.tscn"],
-	"debug_v2" : ["res://campaign/levels/debug_level_v2.tscn"],
-	"level_01" : ["res://campaign/levels/level_1.tscn"],
-	"level_001" : ["res://campaign/levels/level_001.tscn"],
-	"lighting_test" : ["res://campaign/levels/baked_lighting_test_level.tscn"],
-	"dark_rooms" : ["res://campaign/levels/dark_rooms.tscn"],
-	"stone_forest" : ["res://campaign/levels/stone_forest.tscn"],
-	"warzone_laboratory" : ["res://campaign/levels/warzone_laboratory.tscn"],
-	"canyon_cave_entrance" : ["res://campaign/levels/canyon_cave_entrance.tscn"],
-	"abandoned_laboratory" : ["res://campaign/levels/abandoned_laboratory.tscn"],
-	"laboratory_courtyard" : ["res://campaign/levels/laboratory_courtyard.tscn"],
+	"debug" : ["res://campaign/levels/debug_level.tscn","res://assets/textures/gui/suits/murrey_small.png"],
+	"debug_v2" : ["res://campaign/levels/debug_level_v2.tscn","res://assets/textures/gui/loading_screens/debug_level_2_l_bgr.png"],
+	"level_01" : ["res://campaign/levels/level_1.tscn","res://assets/textures/material/DebuggTexture.png"],
+	"level_001" : ["res://campaign/levels/level_001.tscn","res://assets/textures/material/DebuggTexture.png"],
+	"lighting_test" : ["res://campaign/levels/baked_lighting_test_level.tscn","res://assets/textures/material/DebuggTexture.png"],
+	"dark_rooms" : ["res://campaign/levels/dark_rooms.tscn","res://assets/textures/material/DebuggTexture.png"],
+	"stone_forest" : ["res://campaign/levels/stone_forest.tscn","res://assets/textures/material/DebuggTexture.png"],
+	"warzone_laboratory" : ["res://campaign/levels/warzone_laboratory.tscn","res://assets/textures/material/DebuggTexture.png"],
+	"canyon_cave_entrance" : ["res://campaign/levels/canyon_cave_entrance.tscn","res://assets/textures/material/DebuggTexture.png"],
+	"abandoned_laboratory" : ["res://campaign/levels/abandoned_laboratory.tscn","res://assets/textures/material/DebuggTexture.png"],
+	"laboratory_courtyard" : ["res://campaign/levels/laboratory_courtyard.tscn","res://assets/textures/gui/suits/gilt_obscure_small.png"],
+	"spiders_domain" : ["res://campaign/levels/spiders_domain/spiders_domain.tscn","res://assets/textures/material/DebuggTexture.png"]
 }
 
 var levels_persistent_data: Dictionary = {
@@ -71,6 +72,7 @@ const entities: Dictionary = {
 	"royal_guard" : ["res://campaign/enemies/royal_guard.tscn"],
 	"basic_arrow" : ["res://assets/projectiles/basic_arrow.tscn"],
 	"young_skyfish" : ["res://campaign/entities/young_skyfish.tscn"],
+	"forest_spider" : ["res://campaign/enemies/forest_spider.tscn"],
 }
 
 
@@ -104,6 +106,10 @@ func get_abreviated_time(seconds : int) -> String:
 			abrev_time = "' " + str(hours) + " hours"
 	return abrev_time
 
+signal indicate_damage_signal
+func indicate_damage(amount:int, type:int, pos:Vector3) -> void:
+	emit_signal("indicate_damage_signal",amount,type,pos)
+
 var in_game_mouse = false #mouse visible while playing, ie in inventory
 
 enum interact_returns {
@@ -130,7 +136,7 @@ func tooltip(text : String) -> void:
 
 #world information
 var world_time: float = 0.0 #i know its funny to store here but it fits
-var world_overcast : float = 1.0 #1.0 means no sunlight even during day
+var world_overcast : float = 0.0 #1.0 means no sunlight even during day
 var world_wind : Vector3 = Vector3.ZERO
 #
 
@@ -156,6 +162,7 @@ enum {
 	WEAPON_HIT_EFFECT,
 	SURFACE_HARDNESS, #0 being fluid and 100 being tough metal
 	SCREEN_FILTER, #if you are inside this surface looking out, the screen effect to apply
+	SWIMABLE,
 }
 
 const surface_lookup = { #this way i can bundle more info in if i need
@@ -201,6 +208,7 @@ const surface_lookup = { #this way i can bundle more info in if i need
 		SURFACE_HARDNESS : 20, #i have no real reasoning behind this
 		WEAPON_HIT_EFFECT : surface_impact.NONE,
 		SCREEN_FILTER : WATER_KEY,
+		SWIMABLE : 1.0, #the number is how swimmable :3
 	}
 }
 
@@ -238,8 +246,6 @@ const surface_step_sounds = {
 		"res://assets/sounds/footsteps/wood/footstepWood6.wav"
 	],
 }
-
-
 
 ##
 
@@ -283,3 +289,13 @@ signal set_post_pact_signal
 func set_post_pact(key:StringName,val:float) -> void:
 	emit_signal("set_post_pact_signal",key,val)
 	pass
+
+
+
+var debug_render = false
+signal update_debug_render
+func set_debug_render(val : bool) -> void:
+	if debug_render == val:
+		return
+	debug_render = val
+	emit_signal("update_debug_render",debug_render)

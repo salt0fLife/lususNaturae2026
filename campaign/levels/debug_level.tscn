@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://dddjtmqsonjvn"]
+[gd_scene load_steps=35 format=3 uid="uid://dddjtmqsonjvn"]
 
 [ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_wp5ay"]
 [ext_resource type="Script" path="res://assets/debug/debug_level.gd" id="1_x8cdl"]
@@ -171,14 +171,14 @@ void fragment() {
 }
 "
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_qhlt1"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ukdv5"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dv75j"]
 seamless = true
 as_normal_map = true
-noise = SubResource("FastNoiseLite_qhlt1")
+noise = SubResource("FastNoiseLite_ukdv5")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_316ey"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ebdew"]
 render_priority = 0
 shader = SubResource("Shader_felqc")
 shader_parameter/albedo = Color(0.239216, 0.482353, 0.654902, 0.972549)
@@ -197,8 +197,18 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 shader_parameter/texture_normal = SubResource("NoiseTexture2D_dv75j")
 
 [sub_resource type="BoxMesh" id="BoxMesh_oyj1k"]
-material = SubResource("ShaderMaterial_316ey")
+material = SubResource("ShaderMaterial_ebdew")
 size = Vector3(5, 5, 4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_41kp6"]
+distance_fade_mode = 2
+distance_fade_min_distance = 3.0
+distance_fade_max_distance = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_r80se"]
+material = SubResource("StandardMaterial3D_41kp6")
+flip_faces = true
+size = Vector3(4.9, 4.9, 3.9)
 
 [node name="debug_level" type="Node3D"]
 script = ExtResource("1_x8cdl")
@@ -255,7 +265,7 @@ surface_material_override/4 = SubResource("ShaderMaterial_28kkr")
 
 [node name="StaticBody3D2" type="StaticBody3D" parent="." groups=["water"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2, 0)
-collision_layer = 128
+collision_layer = 144
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
@@ -263,6 +273,9 @@ shape = SubResource("BoxShape3D_1d2cw")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
 mesh = SubResource("BoxMesh_oyj1k")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="StaticBody3D2"]
+mesh = SubResource("BoxMesh_r80se")
 
 [node name="distant_mountain" parent="." instance=ExtResource("11_vnxbd")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -887)

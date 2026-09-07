@@ -133,3 +133,4 @@ texture = ExtResource("5_agvx4")
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
 top_level = true
+collision_mask = 129

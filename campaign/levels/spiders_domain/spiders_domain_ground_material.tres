@@ -1,0 +1,24 @@
+[gd_resource type="ShaderMaterial" load_steps=7 format=3 uid="uid://cexqhit0cd4vg"]
+
+[ext_resource type="Shader" path="res://assets/shaders/stylized_terrain.gdshader" id="1_rp0fd"]
+[ext_resource type="Texture2D" uid="uid://brkjyruvhmoqw" path="res://assets/textures/material/dirt_albedo.png" id="2_8hqpe"]
+[ext_resource type="Texture2D" uid="uid://punv7sd18hhq" path="res://assets/textures/material/path_albedo.png" id="3_4ypgf"]
+[ext_resource type="Texture2D" uid="uid://cl73kmfratmp" path="res://assets/textures/material/grass_albedo.png" id="4_wu2yk"]
+[ext_resource type="Texture2D" uid="uid://bbejdpyfjabte" path="res://assets/textures/material/stone_albedo.png" id="5_gvjvo"]
+[ext_resource type="Texture2D" uid="uid://dy7vs6odhks8e" path="res://assets/imported_scenes/spiders_domain/spiders_domain_tb_ground_map_tex.png" id="6_1xxpk"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_rp0fd")
+shader_parameter/base_scale = Vector2(100, 100)
+shader_parameter/scale_01 = Vector2(1, 1)
+shader_parameter/scale_02 = Vector2(1, 1)
+shader_parameter/scale_03 = Vector2(2, 2)
+shader_parameter/scale_04 = Vector2(1, 1)
+shader_parameter/dither_scale = 100.0
+shader_parameter/dither_strength = 0.11
+shader_parameter/mapping_texture = ExtResource("6_1xxpk")
+shader_parameter/albedo_01 = ExtResource("2_8hqpe")
+shader_parameter/albedo_02 = ExtResource("3_4ypgf")
+shader_parameter/albedo_03 = ExtResource("4_wu2yk")
+shader_parameter/albedo_04 = ExtResource("5_gvjvo")

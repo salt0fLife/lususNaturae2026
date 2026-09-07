@@ -1,4 +1,4 @@
-[gd_scene load_steps=72 format=3 uid="uid://xwre6k638wd1"]
+[gd_scene load_steps=73 format=3 uid="uid://xwre6k638wd1"]
 
 [ext_resource type="Script" path="res://scripts/campaign_main.gd" id="1_3biet"]
 [ext_resource type="PackedScene" uid="uid://o5esi8ctymbf" path="res://menus/inventory_menu.tscn" id="2_np8a5"]
@@ -24,6 +24,7 @@
 [ext_resource type="Texture2D" uid="uid://7veg42kqcnjc" path="res://assets/textures/movies/mal0/frame0003.png" id="17_ut84x"]
 [ext_resource type="Texture2D" uid="uid://b02lyt73a80ml" path="res://assets/textures/movies/mal0/frame0004.png" id="18_emvlh"]
 [ext_resource type="Texture2D" uid="uid://cxygtm02rslhv" path="res://assets/textures/movies/mal0/frame0005.png" id="19_srotm"]
+[ext_resource type="Texture2D" uid="uid://cjgk2xpv4j7vw" path="res://assets/textures/gui/suits/gilt_obscure_small.png" id="20_dsffu"]
 [ext_resource type="Texture2D" uid="uid://dpi213srfeh8u" path="res://assets/textures/movies/mal0/frame0006.png" id="20_v61p4"]
 [ext_resource type="Texture2D" uid="uid://cnb2q8tynnu56" path="res://assets/textures/movies/mal0/frame0007.png" id="21_uucs5"]
 [ext_resource type="Texture2D" uid="uid://dyehh1eetmd7b" path="res://assets/textures/movies/mal0/frame0008.png" id="22_0qe7i"]
@@ -328,8 +329,10 @@ process_mode = 1
 process_mode = 1
 
 [node name="decalHandler" type="Node3D" parent="."]
+process_mode = 1
 
 [node name="tempHandler" type="Node3D" parent="."]
+process_mode = 1
 
 [node name="cutsceneHandler" type="Node" parent="."]
 
@@ -353,6 +356,7 @@ visible = false
 [node name="tooltip" parent="." instance=ExtResource("3_xj3p0")]
 
 [node name="debug_menu" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -431,12 +435,23 @@ text = "position"
 [node name="right" type="HFlowContainer" parent="debug_menu"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.33
+anchor_left = 0.669
+anchor_top = 0.068
+anchor_right = 0.998
 anchor_bottom = 0.485
-offset_right = -0.160004
+offset_left = 0.311951
+offset_top = -1.064
+offset_right = 1.30396
 offset_bottom = -0.279999
 grow_horizontal = 2
 grow_vertical = 2
+alignment = 2
+
+[node name="version" type="Label" parent="debug_menu/right"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.333333, 0.498039, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+text = "version "
 
 [node name="player_info_displayer" parent="." instance=ExtResource("4_yal5i")]
 
@@ -756,7 +771,6 @@ step = 0.01
 
 [node name="loading_screen" type="Control" parent="."]
 process_mode = 3
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -765,6 +779,15 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("5_02oip")
 
+[node name="TextureRect" type="TextureRect" parent="loading_screen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_dsffu")
+
 [node name="ColorRect" type="ColorRect" parent="loading_screen"]
 layout_mode = 1
 anchors_preset = 15
@@ -772,7 +795,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0)
 
 [node name="ProgressBar" type="ProgressBar" parent="loading_screen"]
 layout_mode = 1
