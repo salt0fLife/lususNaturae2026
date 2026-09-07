@@ -200,7 +200,7 @@ void light()
 			vec3 currentColor = vec3(0.5);
 			float cutoffvalue = 0.0;
 			
-			for (int i = 0; i < 32; i++) {
+			for (int i = 0; i < 8; i++) { //was formerly i < 32 but performance :/
 				cur_pos += 50.0*SunshineClouds_SunDirection;
 				thisDensity = 10.0*samplecloudmap(cur_pos, TIME)  * CloudDensity;
 				currentDensity += thisDensity * 0.015625; //0.015625 == 1/64

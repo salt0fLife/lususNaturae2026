@@ -11,19 +11,21 @@ uniform vec2 scale_03 = vec2(1.0,1.0);
 uniform vec2 scale_04 = vec2(1.0,1.0);
 uniform float dither_scale = 100.0;
 uniform float dither_strength = 1.0;
+#include "res://assets/shaders/cloud_shadows.gdshaderinc"
 
-const mat4 dither_matrix = mat4(
-  vec4(0.0625, 0.5625, 0.1875,  0.6875),
-  vec4(0.8125, 0.3125, 0.9375,  0.4375),
-  vec4(0.25, 0.75, 0.125, 0.625),
-  vec4(1.0, 0.5, 0.875,  0.375)
-);
+//const mat4 dither_matrix = mat4(
+  //vec4(0.0625, 0.5625, 0.1875,  0.6875),
+  //vec4(0.8125, 0.3125, 0.9375,  0.4375),
+  //vec4(0.25, 0.75, 0.125, 0.625),
+  //vec4(1.0, 0.5, 0.875,  0.375)
+//);
 
 void vertex() {
 	// Called for every vertex the material is visible on.
 }
 
 void fragment() {
+	fragment_worldpos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	vec2 base_uv = UV * base_scale;
 	vec3 map_col = texture(mapping_texture,UV).rgb;
 	float dither = dither_matrix[int(UV.x*base_scale.x*dither_scale) % 4][int(UV.y*base_scale.y*dither_scale) % 4];

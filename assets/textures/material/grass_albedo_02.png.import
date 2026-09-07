@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cmhje4f4ubits"
-path.s3tc="res://.godot/imported/gilt_small.png-44ada1ae7f6d408d3059a6caf9348b0b.s3tc.ctex"
+uid="uid://dsydav8qswkm2"
+path.s3tc="res://.godot/imported/grass_albedo_02.png-bc2266c0d2e615c8fcf80cf4a0d23bbf.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/gui/suits/gilt_small.png"
-dest_files=["res://.godot/imported/gilt_small.png-44ada1ae7f6d408d3059a6caf9348b0b.s3tc.ctex"]
+source_file="res://assets/textures/material/grass_albedo_02.png"
+dest_files=["res://.godot/imported/grass_albedo_02.png-bc2266c0d2e615c8fcf80cf4a0d23bbf.s3tc.ctex"]
 
 [params]
 

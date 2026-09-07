@@ -16,6 +16,7 @@ var seconds_played = 0
 var level = "debug"
 var player_stage = -2
 var in_game_days = 0
+var time_paused = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -373,7 +374,8 @@ func _process(delta):
 			end_cutscene()
 		return
 	
-	day_timer += delta
+	if !time_paused:
+		day_timer += delta
 	if day_timer > day_length:
 		day_timer -= day_length
 		in_game_days += 1
@@ -514,6 +516,11 @@ func setup_dev_controls():
 	
 	$pause_menu/devtools/HFlowContainer/PanelContainer7/VBoxContainer/HSlider.connect("value_changed", set_time_of_day)
 	
+	$pause_menu/devtools/HFlowContainer/PanelContainer8/CheckButton.connect("toggled",set_time_frozen)
+
+func set_time_frozen(val) -> void:
+	time_paused = val
+	pass
 
 func set_time_of_day(val : float) -> void: #0.0 -> 1.0
 	day_timer = day_length*val

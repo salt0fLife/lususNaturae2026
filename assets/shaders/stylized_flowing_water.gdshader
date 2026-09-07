@@ -1,7 +1,8 @@
 shader_type spatial;
 uniform sampler2D depth_texture : hint_depth_texture;
 uniform float prox_fade_distance = 5.0;
-uniform sampler2D water_texture : source_color, filter_linear, repeat_enable;
+uniform sampler2D water_deep_texture : source_color, filter_linear, repeat_enable;
+uniform sampler2D water_shallow_texture : source_color, filter_linear, repeat_enable;
 uniform float current_speed = 1.0;
 uniform vec2 uv_scale = vec2(1.0,1.0);
 void vertex() {
@@ -13,10 +14,12 @@ void fragment() {
 	vec4 world_pos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV*2.0-1.0,depth_tex,1.0);
 	world_pos.xyz/=world_pos.w;
 	float v = clamp(smoothstep(world_pos.z+prox_fade_distance,world_pos.z,VERTEX.z),0.0,1.0);
-	ALBEDO.r = v;
+	//ALBEDO.r = v;
 	vec2 current_uv = UV*uv_scale + vec2(TIME*current_speed,0.0);
-	vec3 col = texture(water_texture,current_uv).rgb;
-	ALBEDO.gb = col.gb;
+	vec3 col = texture(water_deep_texture,current_uv).rgb;
+	col = mix(col,texture(water_shallow_texture,current_uv).rgb,v);
+	
+	ALBEDO.rgb = col.rgb;
 	// Called for every pixel the material is visible on.
 }
 

@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cmhje4f4ubits"
-path.s3tc="res://.godot/imported/gilt_small.png-44ada1ae7f6d408d3059a6caf9348b0b.s3tc.ctex"
+uid="uid://cv3tbdp4mjtr4"
+path.s3tc="res://.godot/imported/water_shallow.png-263907cb83fcaa784bb24311246cf5c2.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/gui/suits/gilt_small.png"
-dest_files=["res://.godot/imported/gilt_small.png-44ada1ae7f6d408d3059a6caf9348b0b.s3tc.ctex"]
+source_file="res://assets/textures/material/water_shallow.png"
+dest_files=["res://.godot/imported/water_shallow.png-263907cb83fcaa784bb24311246cf5c2.s3tc.ctex"]
 
 [params]
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://dddjtmqsonjvn"]
+[gd_scene load_steps=36 format=3 uid="uid://dddjtmqsonjvn"]
 
 [ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_wp5ay"]
 [ext_resource type="Script" path="res://assets/debug/debug_level.gd" id="1_x8cdl"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://eqp2s041qnd2" path="res://assets/glb_temp/gcb_feminine_test_01_generic_feminine_face.png" id="9_o5sba"]
 [ext_resource type="Texture2D" uid="uid://e00cva6kixyt" path="res://assets/glb_temp/gcb_feminine_test_01_pupil.png" id="10_15xrv"]
 [ext_resource type="PackedScene" uid="uid://b105kl2nrj3bn" path="res://assets/props/distant_mountain.tscn" id="11_vnxbd"]
+[ext_resource type="PackedScene" uid="uid://b2x2phyjo8bb" path="res://tools/grass_populator.tscn" id="12_prcwh"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_e6kvw"]
 
@@ -291,5 +292,8 @@ transform = Transform3D(0.564895, 0, 0.825163, 0, 1, 0, -0.825163, 0, 0.564895, 
 
 [node name="distant_mountain5" parent="." instance=ExtResource("11_vnxbd")]
 transform = Transform3D(-0.617475, 0, 0.78659, 0, 1, 0, -0.78659, 0, -0.617475, -848.371, -41.5349, 151.413)
+
+[node name="grass_populator" parent="." instance=ExtResource("12_prcwh")]
+update_all_meshes = false
 
 [editable path="gcb_feminine_test_01"]

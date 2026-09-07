@@ -1,0 +1,31 @@
+[gd_resource type="ArrayMesh" load_steps=4 format=3 uid="uid://crmu3jbhnbe1"]
+
+[ext_resource type="Shader" path="res://assets/shaders/stylized_ground_cover.gdshader" id="1_51sln"]
+[ext_resource type="ArrayMesh" uid="uid://bos1lbe4tyiwg" path="res://assets/meshes/grass_mesh.tres" id="2_b4nr1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rg5lu"]
+render_priority = 0
+shader = ExtResource("1_51sln")
+shader_parameter/distance_fade_min = 40.0
+shader_parameter/distance_fade_max = 30.0
+shader_parameter/point_size = 1.0
+shader_parameter/color_base = Color(0.231373, 0.25098, 0.160784, 1)
+shader_parameter/color_top = Color(0.376471, 0.341176, 0.270588, 1)
+
+[resource]
+resource_name = "foliage_Plane_014"
+_surfaces = [{
+"aabb": AABB(-0.345947, 0, -0.349456, 0.743939, 0.402642, 0.737537),
+"attribute_data": PackedByteArray(0, 0, 255, 255, 255, 255, 255, 255, 0, 0, 209, 177, 255, 255, 41, 174, 255, 127, 255, 255, 255, 127, 222, 151, 0, 0, 255, 255, 255, 255, 255, 255, 0, 0, 209, 177, 255, 255, 41, 174, 255, 127, 255, 255, 255, 127, 222, 151, 0, 0, 255, 255, 255, 255, 255, 255, 0, 0, 209, 177, 255, 255, 41, 174, 255, 127, 255, 255, 255, 127, 222, 151),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray(4, 0, 3, 0, 1, 0, 4, 0, 5, 0, 3, 0, 0, 0, 5, 0, 4, 0, 0, 0, 2, 0, 5, 0, 10, 0, 9, 0, 7, 0, 10, 0, 11, 0, 9, 0, 6, 0, 11, 0, 10, 0, 6, 0, 8, 0, 11, 0, 16, 0, 15, 0, 13, 0, 16, 0, 17, 0, 15, 0, 12, 0, 17, 0, 16, 0, 12, 0, 14, 0, 17, 0),
+"material": SubResource("ShaderMaterial_rg5lu"),
+"name": "foliage_02",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 18,
+"vertex_data": PackedByteArray(102, 210, 0, 0, 70, 212, 108, 233, 162, 42, 0, 0, 59, 17, 9, 209, 133, 223, 50, 192, 202, 200, 108, 233, 95, 56, 47, 201, 54, 5, 9, 209, 144, 96, 0, 0, 247, 140, 61, 221, 11, 114, 255, 255, 171, 125, 19, 221, 0, 0, 0, 0, 1, 162, 209, 141, 255, 255, 0, 0, 1, 162, 209, 141, 0, 0, 50, 192, 136, 179, 209, 141, 255, 255, 47, 201, 90, 180, 209, 141, 255, 127, 0, 0, 2, 122, 189, 134, 255, 127, 255, 255, 89, 145, 189, 134, 138, 103, 0, 0, 190, 3, 207, 188, 210, 48, 0, 0, 255, 255, 41, 213, 145, 86, 50, 192, 0, 0, 207, 188, 14, 31, 47, 201, 19, 252, 41, 213, 235, 114, 0, 0, 107, 138, 255, 200, 79, 92, 255, 255, 110, 133, 41, 201, 95, 125, 212, 11, 36, 122, 210, 14, 95, 125, 212, 11, 36, 122, 210, 14, 173, 123, 202, 13, 167, 123, 207, 13, 47, 86, 36, 48, 218, 79, 46, 214, 47, 86, 36, 48, 218, 79, 46, 214, 0, 0, 255, 127, 249, 2, 53, 131, 209, 109, 133, 246, 188, 113, 190, 250, 209, 109, 133, 246, 188, 113, 190, 250, 85, 111, 144, 248, 92, 111, 151, 248)
+}]
+blend_shape_mode = 0
+shadow_mesh = ExtResource("2_b4nr1")

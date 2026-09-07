@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://b2x2phyjo8bb"]
+
+[ext_resource type="Script" path="res://scripts/grass_populator.gd" id="1_ifind"]
+[ext_resource type="Texture2D" uid="uid://cmhje4f4ubits" path="res://assets/textures/gui/suits/gilt_small.png" id="2_7fgss"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_2fys5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qwq5m"]
+transparency = 4
+shading_mode = 0
+albedo_color = Color(1, 0.517647, 0.247059, 0.141176)
+
+[node name="grass_populator" type="Node3D"]
+script = ExtResource("1_ifind")
+update_all_meshes = null
+
+[node name="multimesh_handler" type="Node3D" parent="."]
+top_level = true
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(0.951606, -0.207219, 0.226951, 0, 0.73848, 0.674275, -0.307321, -0.641644, 0.702742, 2.50546, 8.53511, 6.82667)
+visible = false
+target_position = Vector3(0, 0, -200)
+
+[node name="cursor_broken" type="Decal" parent="."]
+visible = false
+texture_albedo = ExtResource("2_7fgss")
+
+[node name="cursor" type="Node3D" parent="."]
+top_level = true
+visible = false
+
+[node name="cursor_graphics" type="MeshInstance3D" parent="cursor"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("SphereMesh_2fys5")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_qwq5m")

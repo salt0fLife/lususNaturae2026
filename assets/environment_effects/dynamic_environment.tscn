@@ -298,10 +298,8 @@ set_preset = "night"
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_fknbc")
 
-[node name="CloudsSystem" parent="." node_paths=PackedStringArray("sunLight", "worldEnvironment") instance=ExtResource("3_uwqub")]
+[node name="CloudsSystem" parent="." instance=ExtResource("3_uwqub")]
 updateConstantly = true
-sunLight = NodePath("")
-worldEnvironment = NodePath("")
 windSpeed = 0.005
 cloudsCutoff = -0.045
 cloudsFloor = -1000.0
