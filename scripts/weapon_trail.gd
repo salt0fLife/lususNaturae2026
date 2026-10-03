@@ -8,6 +8,7 @@ class_name weapon_trail extends Node3D
 @export var taper_curve : Curve
 @export var max_follow_distance : float = 2.0
 @export var step_distance : float = 0.2 #distance between steps
+@export var taper_power:float = 1.0
 
 var points_list_top: PackedVector3Array = []
 var points_list_bot: PackedVector3Array = []
@@ -64,7 +65,7 @@ func _process(delta):
 				rel_dif_bot = rel_dif_bot.normalized() * max_follow_distance
 				points_list_bot[i] = global_position + rel_dif_bot
 			
-			taper[i] = rel_dif_top.length()/max_follow_distance
+			taper[i] = (rel_dif_top.length()/max_follow_distance)*taper_power
 			
 			if i != count-1:
 				points_list_top[i] -= (points_list_top[i]-points_list_top[i+1]).normalized() * delta*follow_speed

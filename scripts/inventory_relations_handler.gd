@@ -12,7 +12,12 @@ var grabbed_storage_item = false
 var grabbed_storage_item_index = 0 #grabbed_item_index would be backpack, this would be slot in backpack
 var click_downtime:int = 0
 
+func _ready():
+	$full_inventory_menu/close.connect("button_down", safe_close_inventory)
+
 func _input(event):
+	if Input.is_action_just_pressed("pause"):
+		set_inventory_open(false)
 	if Input.is_action_just_pressed("inventory"):
 		set_inventory_open(true)
 	if Input.is_action_just_released("inventory"):
@@ -150,11 +155,13 @@ func set_inventory_open(val : bool) -> void:
 	inventory_menu.visible = val
 	equipped_items_menu.visible = val
 	if val:
+		close_full_menu() #just in case
 		Global.in_game_mouse = true
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		inventory_menu._update_inventory_graphics() #just incase pretend_empty_index changed
 		equipped_items_menu._update_inventory_graphics()
 	else:
+		
 		grabbed_item = false
 		grabbed_storage_item = false
 		items_interacting = false
@@ -164,6 +171,14 @@ func set_inventory_open(val : bool) -> void:
 		select_inventory_slot(inventory_menu.get_menu_selection())
 		Global.in_game_mouse = false
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func safe_close_inventory() -> void:
+	inventory_menu.visible = false
+	inventory_open = false
+	close_full_menu()
+	Global.in_game_mouse = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	pass
 
 func select_inventory_slot(i : int) -> void:
 	if i >= PlayerInformation.inventory.size():
@@ -362,3 +377,14 @@ func _on_item_menu_selected_half_stored(index_1 : int, index_2 : int, index_2_su
 	
 	pass
 
+func open_full_menu() -> void:
+	inventory_menu.visible = false
+	full_menu.visible = true
+	
+	
+	pass
+
+@onready var full_menu = $full_inventory_menu
+func close_full_menu() -> void:
+	full_menu.visible = false
+	pass

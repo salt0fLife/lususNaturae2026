@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://ifpn0do4gv41"]
+[gd_scene load_steps=61 format=3 uid="uid://ifpn0do4gv41"]
 
 [ext_resource type="Script" path="res://scripts/player_combat_test.gd" id="1_t5q6g"]
 [ext_resource type="Script" path="res://scripts/combat_test_graphics.gd" id="2_0icll"]
@@ -27,12 +27,13 @@
 [ext_resource type="Texture2D" uid="uid://dv3owqkyal14f" path="res://assets/glb_temp/player_01_wip_rig_test_shirtGradient.png" id="18_xxkfw"]
 [ext_resource type="Script" path="res://scripts/sunlight_check.gd" id="19_pa0r2"]
 [ext_resource type="AudioStream" uid="uid://di2p4bddmjc1b" path="res://assets/sounds/immersion/sunlight_sickness.ogg" id="20_jogrh"]
+[ext_resource type="PackedScene" uid="uid://dx2jbn0q31tx3" path="res://assets/effects/ribbon_trail_3d.tscn" id="25_rgyjm"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vt6p6"]
 radius = 0.371076
 
 [sub_resource type="Gradient" id="Gradient_42b58"]
-colors = PackedColorArray(0.312453, 0.705047, 0.710448, 1, 0.231373, 0.537255, 0.588235, 1)
+colors = PackedColorArray(0.543742, 0, 0.0800039, 1, 0.909525, 0, 0.176307, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_p6vg8"]
 gradient = SubResource("Gradient_42b58")
@@ -146,12 +147,13 @@ shader_parameter/specular_highlight_day = 0.015
 shader_parameter/sh_day_power = 1.0
 shader_parameter/texture_albedo = ExtResource("7_nox7n")
 shader_parameter/texture_albedo_day = ExtResource("7_nox7n")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_t5227")
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
 shader_parameter/CloudOpacity = 1.0
 shader_parameter/cloudSoftness = 0.85
-shader_parameter/luminance_gradient = SubResource("GradientTexture1D_t5227")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_0ggqi"]
 resource_name = "fp_hands_wip_male_genericMesh_004"
@@ -425,12 +427,13 @@ shader_parameter/specular_highlight = 0.04
 shader_parameter/specular_highlight_day = 0.01
 shader_parameter/sh_day_power = 0.0
 shader_parameter/texture_albedo = ExtResource("16_3unrx")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_4rnfc")
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
 shader_parameter/CloudOpacity = 1.0
 shader_parameter/cloudSoftness = 0.85
-shader_parameter/luminance_gradient = SubResource("GradientTexture1D_4rnfc")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sdij2"]
 render_priority = 0
@@ -442,6 +445,14 @@ shader_parameter/specular_power = 0.0
 shader_parameter/roughness = 1.0
 shader_parameter/metallic = 0.0
 shader_parameter/albedo_texture = ExtResource("18_xxkfw")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cgb6m"]
+transparency = 1
+cull_mode = 2
+albedo_color = Color(1, 1, 1, 0.0509804)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_dmini"]
+size = Vector2(0.1, 0.1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_m7w8t"]
 
@@ -830,6 +841,25 @@ bones/14/rotation = Quaternion(-0.707107, 0, 0, 0.707107)
 
 [node name="pants" parent="graphics/legs/fp_legs_wip/metarig/Skeleton3D" index="6"]
 cast_shadow = 0
+
+[node name="air_jump_effects" type="Node3D" parent="."]
+
+[node name="ribbon_trail_3d" parent="air_jump_effects" instance=ExtResource("25_rgyjm")]
+material = SubResource("StandardMaterial3D_cgb6m")
+max_points = 50
+distance_between_points = 0.5
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="air_jump_effects"]
+emitting = false
+amount = 32
+one_shot = true
+explosiveness = 1.0
+lifetime_randomness = 0.5
+mesh = SubResource("PlaneMesh_dmini")
+direction = Vector3(0, 1, 0)
+gravity = Vector3(0, -4, 0)
+initial_velocity_min = 3.0
+initial_velocity_max = 5.0
 
 [node name="special_area_sense" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

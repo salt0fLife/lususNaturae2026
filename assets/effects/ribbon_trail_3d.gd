@@ -211,7 +211,17 @@ func draw_meshing():
 var natrual_decay_timer = 0.0
 var last_decaying_point_pos = Vector3.ZERO
 
+var disabled = false
+
+func set_disabled(val : bool) -> void:
+	disabled = val
+	if val:
+		points_list = []
+		points_lifetimes = []
+
 func _process(delta):
+	if disabled:
+		return
 	natrual_decay_timer += delta
 	if natrual_decay_timer > natrual_point_decay and !points_list.is_empty():
 		points_list.remove_at(0)

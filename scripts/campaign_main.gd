@@ -177,6 +177,7 @@ func load_current_level_persistent_data():
 			if typeof(e[0]) == TYPE_STRING:
 				var scene = spawn_entity(e[0])
 				scene.set_data(e[1])
+				pass
 			else:
 				printerr("value of " + str(e[0]) + " found in place of entity key")
 	loading_screen.visible = false
@@ -263,6 +264,8 @@ func save_game_data():
 	"min_sleep_food" : PlayerInformation.min_sleep_food,
 	"health" : PlayerInformation.health,
 	"max_health" : PlayerInformation.max_health,
+	"blood" : PlayerInformation.blood,
+	"max_blood" : PlayerInformation.max_blood,
 	"in_game_days" : in_game_days,
 	"version" : Global.version
 	}
@@ -280,6 +283,7 @@ func save_game_data():
 	preview_data = JSON.parse_string(preview_data)
 	preview_data["progress_summary"] = summary
 	preview_data["seconds_played"] = seconds_played
+	preview_data["last_played"] = Time.get_datetime_dict_from_system()
 	preview_data = JSON.stringify(preview_data)
 	SaveHandler.save_file(Global.save_filepath,"preview.dat",preview_data)
 	
@@ -517,6 +521,32 @@ func setup_dev_controls():
 	$pause_menu/devtools/HFlowContainer/PanelContainer7/VBoxContainer/HSlider.connect("value_changed", set_time_of_day)
 	
 	$pause_menu/devtools/HFlowContainer/PanelContainer8/CheckButton.connect("toggled",set_time_frozen)
+	
+	$pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer/current_blood/Button.connect("button_down", debug_change_health.bind(false,true,-1))
+	$pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer/current_blood/Button2.connect("button_down", debug_change_health.bind(false,true,1))
+	
+	$pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer/current_health/Button.connect("button_down", debug_change_health.bind(false,false,-1))
+	$pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer/current_health/Button2.connect("button_down", debug_change_health.bind(false,false,1))
+	
+	$pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer/max_blood/Button.connect("button_down", debug_change_health.bind(true,true,-1))
+	$pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer/max_blood/Button2.connect("button_down", debug_change_health.bind(true,true,1))
+	
+	$pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer/max_health/Button.connect("button_down", debug_change_health.bind(true,false,-1))
+	$pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer/max_health/Button2.connect("button_down", debug_change_health.bind(true,false,1))
+
+func debug_change_health(is_max : bool, is_blood : bool, change : int):
+	if is_max:
+		if is_blood:
+			PlayerInformation.max_blood += change
+			PlayerInformation.emit_signal("blood_changed")
+		else:
+			PlayerInformation.max_health += change
+			PlayerInformation.emit_signal("health_changed")
+	else:
+		if is_blood:
+			PlayerInformation.set_blood(PlayerInformation.blood + change)
+		else:
+			PlayerInformation.set_health(PlayerInformation.health + change)
 
 func set_time_frozen(val) -> void:
 	time_paused = val
@@ -664,14 +694,18 @@ func purge_world() -> void:
 ##checkpoints and dying
 func _on_player_death() -> void:
 	print("player_died")
-	#print("loading last checkpoint")
-	#purge_world()
-	load_data_from_checkpoint()
-	player_stage = -2 #the digging up from the ground
-	#save_game_data()
-	#play_cutscene("respawn")
-	#load_data_from_save()
-	start_game()
+	PlayerInformation.tp(Vector3.ZERO)
+	#change_player(-2)
+	
+	return
+	##print("loading last checkpoint")
+	##purge_world()
+	#load_data_from_checkpoint()
+	#player_stage = -2 #the digging up from the ground
+	##save_game_data()
+	##play_cutscene("respawn")
+	##load_data_from_save()
+	#start_game()
 
 func load_data_from_checkpoint() -> void:
 	var file_path = Global.save_filepath + "checkpoint/"

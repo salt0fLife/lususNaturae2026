@@ -11,6 +11,18 @@ shader_parameter/distance_fade_max = 30.0
 shader_parameter/point_size = 1.0
 shader_parameter/color_base = Color(0.231373, 0.25098, 0.160784, 1)
 shader_parameter/color_top = Color(0.376471, 0.341176, 0.270588, 1)
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+shader_parameter/wind_speed_effect = 1.0
+shader_parameter/wind_strength = 1.0
+shader_parameter/backlight = null
 
 [resource]
 resource_name = "foliage_Plane_014"

@@ -12,7 +12,7 @@ blend_mode = 1
 [node name="fancy_lens_flare" type="Node3D"]
 script = ExtResource("1_5c8t2")
 
-[node name="control" type="Control" parent="."]
+[node name="control" type="Control" parent="." groups=["light"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

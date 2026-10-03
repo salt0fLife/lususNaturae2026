@@ -4,7 +4,11 @@ extends Node
 #ie, day_timer, all monster statistics, questlines, etc...
 
 var save_filepath = "" #specifically the path to the save you are playing on
-var version = "early-dev"
+var version = "early-dev-post_health_change"
+
+const portable_versions = [ #all other versions that can be upgraded
+	"early-dev-post_health_change",
+]
 
 var settup_clouds = false #to minimize errors because its annoying
 
@@ -73,6 +77,7 @@ const entities: Dictionary = {
 	"basic_arrow" : ["res://assets/projectiles/basic_arrow.tscn"],
 	"young_skyfish" : ["res://campaign/entities/young_skyfish.tscn"],
 	"forest_spider" : ["res://campaign/enemies/forest_spider.tscn"],
+	"enemy_01" : ["res://campaign/enemies/enemy_01.tscn"],
 }
 
 
@@ -136,7 +141,7 @@ func tooltip(text : String) -> void:
 
 #world information
 var world_time: float = 0.0 #i know its funny to store here but it fits
-var world_overcast : float = 0.0 #1.0 means no sunlight even during day
+var world_overcast : float = 1.0 #1.0 means no sunlight even during day
 var world_wind : Vector3 = Vector3.ZERO
 #
 
@@ -259,7 +264,8 @@ enum damage_types{ #any kind of damage you can think of, this is the location fo
 	MAGIC,
 	BLEED,
 	FIRE,
-	FROST
+	FROST,
+	TRUE_DAMAGE, #unavoidable
 }
 
 #categories for resistances, weaknesses and such

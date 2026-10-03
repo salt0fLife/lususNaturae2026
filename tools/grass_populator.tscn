@@ -12,13 +12,12 @@ albedo_color = Color(1, 0.517647, 0.247059, 0.141176)
 
 [node name="grass_populator" type="Node3D"]
 script = ExtResource("1_ifind")
-update_all_meshes = null
 
 [node name="multimesh_handler" type="Node3D" parent="."]
 top_level = true
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
-transform = Transform3D(0.951606, -0.207219, 0.226951, 0, 0.73848, 0.674275, -0.307321, -0.641644, 0.702742, 2.50546, 8.53511, 6.82667)
+transform = Transform3D(0.744337, -0.243643, 0.621772, 0, 0.931069, 0.364842, -0.667805, -0.271565, 0.693029, 6.83298, 5.14352, 6.72021)
 visible = false
 target_position = Vector3(0, 0, -200)
 

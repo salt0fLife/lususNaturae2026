@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://dd5on7qh1v8pi"]
+[gd_scene load_steps=30 format=3 uid="uid://dd5on7qh1v8pi"]
 
 [ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_0tl5v"]
 [ext_resource type="LightmapGIData" uid="uid://bx0au8h5n1ql4" path="res://campaign/lighting_information/baked_lighting_test_level.lmbake" id="2_tr61k"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://eqp2s041qnd2" path="res://assets/glb_temp/gcb_feminine_test_01_generic_feminine_face.png" id="5_gd5s2"]
 [ext_resource type="Texture2D" uid="uid://e00cva6kixyt" path="res://assets/glb_temp/gcb_feminine_test_01_pupil.png" id="6_d52up"]
 [ext_resource type="Shader" path="res://assets/shaders/stylized_outline.gdshader" id="7_8xsm1"]
+[ext_resource type="PackedScene" uid="uid://5v7kljlis4wr" path="res://assets/glb_temp/vidica_test_model_export.glb" id="8_n1kbb"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_q42es"]
 lightmap_size_hint = Vector2i(104, 106)
@@ -382,23 +383,6 @@ surface_material_override/1 = SubResource("ShaderMaterial_i2nch")
 surface_material_override/3 = SubResource("ShaderMaterial_rkpop")
 surface_material_override/7 = SubResource("ShaderMaterial_i2nch")
 
-[node name="gcb_feminine_test_03" parent="." instance=ExtResource("3_nilfi")]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, -4)
-
-[node name="body_003" parent="gcb_feminine_test_03" index="0"]
-surface_material_override/0 = SubResource("ShaderMaterial_ct2jx")
-surface_material_override/1 = SubResource("ShaderMaterial_ohfcw")
-surface_material_override/3 = SubResource("ShaderMaterial_rkpop")
-surface_material_override/7 = SubResource("ShaderMaterial_uxjv6")
-
-[node name="body_004" type="MeshInstance3D" parent="gcb_feminine_test_03"]
-mesh = SubResource("ArrayMesh_gf78p")
-skeleton = NodePath("")
-surface_material_override/0 = SubResource("ShaderMaterial_i2nch")
-surface_material_override/1 = SubResource("ShaderMaterial_i2nch")
-surface_material_override/3 = SubResource("ShaderMaterial_rkpop")
-surface_material_override/7 = SubResource("ShaderMaterial_i2nch")
-
 [node name="gcb_feminine_test_04" parent="." instance=ExtResource("3_nilfi")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 4, 0, -4)
 
@@ -433,25 +417,15 @@ surface_material_override/1 = SubResource("ShaderMaterial_i2nch")
 surface_material_override/3 = SubResource("ShaderMaterial_rkpop")
 surface_material_override/7 = SubResource("ShaderMaterial_i2nch")
 
-[node name="gcb_feminine_test_06" parent="." instance=ExtResource("3_nilfi")]
-transform = Transform3D(-6.55671e-08, 0, 1.5, 0, 1.5, 0, -1.5, 0, -6.55671e-08, -4, 0, 0)
+[node name="vidica_test_model_export" parent="." instance=ExtResource("8_n1kbb")]
+transform = Transform3D(1.615, 0, 0, 0, 1.615, 0, 0, 0, 1.615, 1.24647, 0, 0)
 
-[node name="body_003" parent="gcb_feminine_test_06" index="0"]
-surface_material_override/0 = SubResource("ShaderMaterial_ct2jx")
-surface_material_override/1 = SubResource("ShaderMaterial_ohfcw")
-surface_material_override/3 = SubResource("ShaderMaterial_rkpop")
-surface_material_override/7 = SubResource("ShaderMaterial_uxjv6")
+[node name="vidica_test_model_export2" parent="." instance=ExtResource("8_n1kbb")]
+transform = Transform3D(1.615, 0, 0, 0, 1.615, 0, 0, 0, 1.615, 2.76933, 0, -4.3827)
 
-[node name="body_004" type="MeshInstance3D" parent="gcb_feminine_test_06"]
-mesh = SubResource("ArrayMesh_gf78p")
-skeleton = NodePath("")
-surface_material_override/0 = SubResource("ShaderMaterial_i2nch")
-surface_material_override/1 = SubResource("ShaderMaterial_i2nch")
-surface_material_override/3 = SubResource("ShaderMaterial_rkpop")
-surface_material_override/7 = SubResource("ShaderMaterial_i2nch")
+[node name="vidica_test_model_export3" parent="." instance=ExtResource("8_n1kbb")]
+transform = Transform3D(-0.188425, 0, 1.5939, 0, 1.605, 0, -1.5939, 0, -0.188425, -4.578, 0, 2.32135)
 
 [editable path="gcb_feminine_test_02"]
-[editable path="gcb_feminine_test_03"]
 [editable path="gcb_feminine_test_04"]
 [editable path="gcb_feminine_test_05"]
-[editable path="gcb_feminine_test_06"]

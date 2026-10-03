@@ -32,6 +32,7 @@ global uniform vec3 SunshineClouds_StartingOffset;
 
 group_uniforms LightingAdjustments;
 uniform sampler2D luminance_gradient : repeat_disable, hint_default_black;
+uniform vec3 specular_mult : source_color  = vec3(1.0,1.0,1.0);
 //uniform float gradient_shadow_effect : hint_range(0.0, 1.0, 0.01) = 0.0;
 
 group_uniforms DensityControls;
@@ -251,6 +252,6 @@ void light()
 	vec3 specular_brdf_NL = NdotL * D * F * G;
 	
 	float specular_blob_intensity = 0.25;
-	SPECULAR_LIGHT += specular_brdf_NL * LIGHT_COLOR * specular_blob_intensity * ATTENUATION;
+	SPECULAR_LIGHT += (specular_brdf_NL * LIGHT_COLOR * specular_blob_intensity * ATTENUATION*2.0)*specular_mult;
 	
 }

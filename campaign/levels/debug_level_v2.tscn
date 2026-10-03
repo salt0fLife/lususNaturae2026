@@ -1,4 +1,4 @@
-[gd_scene load_steps=97 format=3 uid="uid://cr72kg6xrvq30"]
+[gd_scene load_steps=103 format=3 uid="uid://cr72kg6xrvq30"]
 
 [ext_resource type="Shader" path="res://assets/shaders/parallax_grass.gdshader" id="1_3p6yo"]
 [ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_konvq"]
@@ -31,6 +31,7 @@
 [ext_resource type="PackedScene" uid="uid://dsulkfu7150ar" path="res://campaign/levels/dark_tower/dark_tower.tscn" id="32_gerqm"]
 [ext_resource type="PackedScene" uid="uid://wnbpwo413g3n" path="res://assets/glb_temp/gcb_feminine_test_01.glb" id="35_7gw2q"]
 [ext_resource type="Texture2D" uid="uid://eqp2s041qnd2" path="res://assets/glb_temp/gcb_feminine_test_01_generic_feminine_face.png" id="36_1vvpn"]
+[ext_resource type="PackedScene" uid="uid://5v7kljlis4wr" path="res://assets/glb_temp/vidica_test_model_export.glb" id="36_vb3g0"]
 [ext_resource type="Texture2D" uid="uid://e00cva6kixyt" path="res://assets/glb_temp/gcb_feminine_test_01_pupil.png" id="37_jmmmx"]
 [ext_resource type="Shader" path="res://assets/shaders/stylized_character_material.gdshader" id="38_s14pm"]
 [ext_resource type="Texture2D" uid="uid://5dvbuqqegcj3" path="res://assets/textures/vfx/skyfish_shine.png" id="39_slay7"]
@@ -783,6 +784,56 @@ material = SubResource("StandardMaterial3D_y4i7w")
 flip_faces = true
 size = Vector3(4.9, 4.9, 3.9)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vm0fw"]
+render_priority = 0
+shader = ExtResource("38_s14pm")
+shader_parameter/albedo_color = Color(0.819608, 0.74902, 0.741176, 1)
+shader_parameter/luminance_shadow_power = 0.6
+shader_parameter/luminance_shadow_cuttoff = 1.0
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vxh0u"]
+render_priority = 0
+shader = ExtResource("38_s14pm")
+shader_parameter/albedo_color = Color(0.819608, 0.74902, 0.741176, 1)
+shader_parameter/luminance_shadow_power = 0.6
+shader_parameter/luminance_shadow_cuttoff = 1.0
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h20xx"]
+render_priority = 0
+shader = ExtResource("38_s14pm")
+shader_parameter/albedo_color = Color(0.819608, 0.74902, 0.741176, 1)
+shader_parameter/luminance_shadow_power = 0.6
+shader_parameter/luminance_shadow_cuttoff = 1.0
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7dq2a"]
+render_priority = 0
+shader = ExtResource("38_s14pm")
+shader_parameter/albedo_color = Color(0.819608, 0.74902, 0.741176, 1)
+shader_parameter/luminance_shadow_power = 0.6
+shader_parameter/luminance_shadow_cuttoff = 1.0
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ispye"]
+render_priority = 0
+shader = ExtResource("38_s14pm")
+shader_parameter/albedo_color = Color(0.819608, 0.74902, 0.741176, 1)
+shader_parameter/luminance_shadow_power = 0.6
+shader_parameter/luminance_shadow_cuttoff = 1.0
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+
 [node name="debug_level_v2" type="Node3D"]
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." groups=["grass"]]
@@ -1376,6 +1427,24 @@ size = Vector3(4.39429, 3.72803, 4.74695)
 texture_albedo = ExtResource("39_slay7")
 cull_mask = 1048559
 
+[node name="vidica_test_model_export" parent="." instance=ExtResource("36_vb3g0")]
+transform = Transform3D(1.545, 0, 0, 0, 1.545, 0, 0, 0, 1.545, -10, 0, 20.0238)
+
+[node name="head_001" parent="vidica_test_model_export" index="0"]
+surface_material_override/0 = SubResource("ShaderMaterial_vm0fw")
+
+[node name="body_006" parent="vidica_test_model_export" index="3"]
+surface_material_override/0 = SubResource("ShaderMaterial_vxh0u")
+
+[node name="hands_001" parent="vidica_test_model_export" index="4"]
+surface_material_override/0 = SubResource("ShaderMaterial_h20xx")
+
+[node name="face_01_001" parent="vidica_test_model_export" index="12"]
+surface_material_override/0 = SubResource("ShaderMaterial_7dq2a")
+
+[node name="pointed_ears_002" parent="vidica_test_model_export" index="13"]
+surface_material_override/0 = SubResource("ShaderMaterial_ispye")
+
 [connection signal="body_entered" from="launcher" to="launcher" method="_on_body_entered"]
 
 [editable path="catherdral_tower_test"]
@@ -1386,3 +1455,4 @@ cull_mask = 1048559
 [editable path="catherdral_tower_test6"]
 [editable path="gcb_feminine_test_01"]
 [editable path="gcb_feminine_test_02"]
+[editable path="vidica_test_model_export"]

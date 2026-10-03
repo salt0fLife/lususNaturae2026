@@ -1,7 +1,7 @@
 @tool
 extends Node3D
 @export var drawing:bool = false
-var align_rotation:bool = false
+@export var align_rotation:bool = false
 @export var visualize_multimesh_scattering : bool = false
 @export var distance_between_multimeshes : float = 20.0 
 @export var brush_size:float = 5.0
@@ -10,6 +10,7 @@ var is_vis = false
 @export var grass_mesh :Mesh
 @export var update_all_meshes : bool = false
 # Called when the node enters the scene tree for the first time.
+@export var distance_check_height : float = 10.0
 func _ready():
 	multimesh_handler.connect("child_entered_tree",_on_multimesh_added)
 	pass # Replace with function body.
@@ -79,8 +80,17 @@ func set_mouse_3d_transform() -> void:
 	if ray_cast.is_colliding():
 		#pos = ray_cast.get_collision_point()
 		cursor.position = ray_cast.get_collision_point()
-		var rot2 = dir_to_rot(ray_cast.get_collision_normal())
-		cursor.rotation = Vector3(rot2.x,rot2.y,0.0)
+		var norm = ray_cast.get_collision_normal()
+		if norm != Vector3.UP and align_rotation:
+			#cursor.look_at(cursor.position + norm)
+			var rot = dir_to_rot(norm)
+			cursor.rotation.x = rot.x
+			cursor.rotation.y = rot.y
+			
+		else:
+			cursor.rotation = Vector3.ZERO
+		#var rot2 = dir_to_rot(ray_cast.get_collision_normal())
+		#cursor.rotation = Vector3(rot2.x,rot2.y,0.0)
 	#return pos
 
 @onready var cursor = $cursor
@@ -88,7 +98,7 @@ func drawing_stuff() -> void:
 	#cursor.transform = get_mouse_3d_transform()
 	set_mouse_3d_transform()
 	
-	if !align_rotation: cursor.rotation = Vector3.ZERO
+	#if !align_rotation: cursor.rotation = Vector3.ZERO
 	if Input.is_action_just_pressed("ui_accept"):
 		_on_brush_clicked(cursor.transform)
 	pass
@@ -100,7 +110,7 @@ func _on_brush_clicked(tran : Transform3D):
 	for x in range(0,brush_count):
 		var offset = Vector2(randf_range(-1.0,1.0),randf_range(-1.0,1.0)).normalized()
 		offset *= randf_range(0.0,1.0) * brush_size * 0.5
-		var ray = PhysicsRayQueryParameters3D.create(pos+Vector3(offset.x,10.0,offset.y),pos+Vector3(offset.x,-10.0,offset.y))
+		var ray = PhysicsRayQueryParameters3D.create(pos+Vector3(offset.x,distance_check_height,offset.y),pos+Vector3(offset.x,-distance_check_height,offset.y))
 		var result = get_world_3d().direct_space_state.intersect_ray(ray)
 		var t = tran
 		t.origin = result.position
@@ -124,7 +134,8 @@ func place_mesh(tran:Transform3D) -> void:
 		multimesh.set("visibility_range_end",50.0)
 	
 	#multimesh is now just the closest mesh to the point clicked
-	tran *= multimesh.transform.inverse() #so its local to multimesh
+	#tran *= multimesh.transform.inverse() #so its local to multimesh
+	tran.origin -= multimesh.position
 	
 	var mm = multimesh.multimesh
 	if mm == null:

@@ -11,12 +11,15 @@ func _on_slot_selected(index):
 	print("slot selected")
 	print(index)
 
-func get_menu_selection():
+func get_menu_selection() -> int:
 	var val = $RadialMenu.selected
 	if val == -1:
 		return PlayerInformation.held_item_index
 	else:
 		return val
+
+func get_real_menu_selection() -> int: #returns -1 on center dot
+	return $RadialMenu.selected
 
 func _update_inventory_graphics_old():
 	$RadialMenu.highlighted = PlayerInformation.held_item_index

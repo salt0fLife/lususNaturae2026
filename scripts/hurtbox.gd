@@ -21,7 +21,7 @@ func take_damage(amount : int,type : int) :
 
 signal took_damage #(amount,type,limb)
 
-func get_real_amount(amount : int, type : int):
+func get_real_amount(amount : int, type : int) -> int:
 	var val = float(amount) * damage_multiplier
 	if health_handler == null:
 		return amount #just in case

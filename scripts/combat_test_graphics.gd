@@ -365,3 +365,12 @@ func shiver(delta):
 	hands.rotation.x += sin(shiver_timer*PI*0.5+PI*0.2)*shiver_strength*0.01
 	hands.rotation.z += cos(shiver_timer*PI*0.25+PI*0.6)*shiver_strength*0.01
 	pass
+
+func set_air_jump_trail(val : bool):
+	print("set_airjump to " + str(val))
+	#$"../air_jump_effects/ribbon_trail_3d".set_disabled(!val)
+	$"../air_jump_effects/ribbon_trail_3d".natrual_point_decay = 0.5
+	$"../air_jump_effects/CPUParticles3D".emitting = val
+	$"../air_jump_effects/ribbon_trail_3d".set_disabled(!val)
+	$"../air_jump_effects".visible = val
+	pass

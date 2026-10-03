@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://bru7rve2d8ac8"]
+
+[ext_resource type="Script" path="res://scripts/detaching_ribbon_trail.gd" id="1_d0eum"]
+[ext_resource type="PackedScene" uid="uid://dx2jbn0q31tx3" path="res://assets/effects/ribbon_trail_3d.tscn" id="2_hv67x"]
+
+[node name="detachable_ribbon_trail" type="Node3D"]
+script = ExtResource("1_d0eum")
+
+[node name="ribbon_trail_3d" parent="." instance=ExtResource("2_hv67x")]

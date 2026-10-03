@@ -19,10 +19,11 @@ func change_player_scene(key : int) -> void:
 
 const player_scenes = {
 	01 : ["res://campaign/player/player_01.tscn"],
+	02 : ["res://campaign/player/player_default.tscn"],
 	99 : ["res://campaign/player/player_99.tscn"],
 	00 : ["res://campaign/player/player_character_test_model.tscn"],
 	-1 : ["res://campaign/player/player_combat_test.tscn"],
-	-2 : ["res://campaign/player/emerge_from_ground_player.tscn"]
+	-2 : ["res://campaign/player/emerge_from_ground_player.tscn"],
 }
 
 var upgrades = [
@@ -32,8 +33,10 @@ var upgrades = [
 
 
 #gameplay
-var health: float = 5.0
-var max_health: float = 5.0
+var health: int = 25
+var max_health: int = 40
+var blood:int = 40
+var max_blood:int = 40
 var food: int = 1
 var max_food: int = 5
 var min_sleep_food: int = 4
@@ -70,10 +73,25 @@ func take_damage(amount : int, tag : int) -> void:
 	if health < 0.0:
 		die()
 
+signal health_changed
+func set_health(val : int) -> void:
+	if health == val:
+		return
+	health = val
+	emit_signal("health_changed")
+
+signal blood_changed
+func set_blood(val : int) -> void:
+	if blood == val:
+		return
+	blood = val
+	emit_signal("blood_changed")
+
 signal perished
 func die():
 	print("perished")
-	health = max_health
+	set_health(max_health)
+	set_blood(max_blood)
 	sun_sickness = 0.0
 	emit_signal("perished")
 
@@ -91,6 +109,18 @@ signal update_inventory
 signal update_held_item
 const equipment_slot_count = 2 #number of slots at end that are for equipment instead of real item slot
 var inventory: Array = [
+	[],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[], #backpack
+	[], #quiver
+]
+
+var defaulted_inventory: Array = [ #the items empty slots default too
+	["blood_sword",{}],
 	[],
 	[],
 	[],
@@ -156,9 +186,22 @@ func get_held_item_data() -> Array:
 		return []
 	var data = inventory[held_item_index]
 	if data.is_empty():
-		return []
+		data = defaulted_inventory[held_item_index]
+		if data.is_empty():
+			return []
 	key = data[0]
 	return Items.list[key]
+
+func get_held_item_attributes() -> Dictionary:
+	var key = ""
+	if held_item_index == -1:
+		return {}
+	var data = inventory[held_item_index]
+	if data.is_empty():
+		data = defaulted_inventory[held_item_index]
+		if data.is_empty():
+			return {}
+	return data[1]
 
 func get_item_data(index : int) -> Array:
 	var key = ""

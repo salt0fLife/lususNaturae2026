@@ -1,0 +1,60 @@
+[gd_scene load_steps=7 format=3 uid="uid://bgv1d2cui7wdb"]
+
+[ext_resource type="Script" path="res://scripts/player_default.gd" id="1_7rf31"]
+[ext_resource type="PackedScene" uid="uid://dyl2fckihvk6a" path="res://campaign/player/components/interaction_sightline.tscn" id="2_iiild"]
+[ext_resource type="Script" path="res://scripts/default_player_graphics.gd" id="2_mavfc"]
+[ext_resource type="PackedScene" uid="uid://c4woxbpboh1ky" path="res://campaign/player/components/senses_camera.tscn" id="2_ofvxp"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_obro3"]
+radius = 0.371076
+
+[sub_resource type="BoxMesh" id="BoxMesh_jhflw"]
+size = Vector3(0.165, 0.18, 1)
+
+[node name="player_campaign" type="CharacterBody3D"]
+collision_layer = 38
+collision_mask = 5
+script = ExtResource("1_7rf31")
+gravity = Vector3(2, -14.7, 0)
+air_acceleration = 2.0
+tilt_jump_speed = 12.0
+jump_strength = 7.5
+
+[node name="physics_collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_obro3")
+
+[node name="graphics" type="Node3D" parent="."]
+script = ExtResource("2_mavfc")
+hands_return_power = 275.0
+hands_return_damp = 18.0
+hands_rot_return_power = 150.0
+hands_rot_return_damp = 15.0
+hands_rot_big_motion_power = 50.0
+hands_rot_big_motion_damp = 10.0
+running_camera_drop = 0.75
+
+[node name="cameraHandler" type="Node3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.653, 0)
+
+[node name="senses_camera" parent="graphics/cameraHandler" instance=ExtResource("2_ofvxp")]
+
+[node name="interaction_sightline" parent="graphics/cameraHandler" instance=ExtResource("2_iiild")]
+visible = false
+
+[node name="look_dir_reference" type="Node3D" parent="graphics/cameraHandler"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+
+[node name="hands" type="Node3D" parent="graphics/cameraHandler"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="graphics/cameraHandler/hands"]
+transform = Transform3D(0.975103, 0.221753, -3.72529e-09, -0.215718, 0.948568, -0.231697, -0.0513794, 0.225928, 0.972788, 0.425, -0.361, -0.044)
+mesh = SubResource("BoxMesh_jhflw")
+
+[node name="held_item_handler" type="Node3D" parent="graphics/cameraHandler/hands"]
+transform = Transform3D(0.975103, 0.221753, -3.72529e-09, -0.215718, 0.948568, -0.231697, -0.0513794, 0.225928, 0.972788, 0.41995, -0.228279, -0.530267)
+
+[node name="step_sounds" type="AudioStreamPlayer3D" parent="graphics"]
+
+[node name="floor_check" type="RayCast3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.10806, 0)

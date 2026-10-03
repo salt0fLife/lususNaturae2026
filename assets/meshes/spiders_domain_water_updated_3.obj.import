@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://e76tbe2jgr33"
+path="res://.godot/imported/spiders_domain_water_updated_3.obj-173fb3bb924507f5128c9ca7413c74ed.mesh"
+
+[deps]
+
+files=["res://.godot/imported/spiders_domain_water_updated_3.obj-173fb3bb924507f5128c9ca7413c74ed.mesh"]
+
+source_file="res://assets/meshes/spiders_domain_water_updated_3.obj"
+dest_files=["res://.godot/imported/spiders_domain_water_updated_3.obj-173fb3bb924507f5128c9ca7413c74ed.mesh", "res://.godot/imported/spiders_domain_water_updated_3.obj-173fb3bb924507f5128c9ca7413c74ed.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

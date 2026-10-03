@@ -318,7 +318,7 @@ shape_speed_multiplier = 0.0
 shape_starting_offset = Vector3(0.105, 0, 0)
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="." groups=["light"]]
-transform = Transform3D(-0.368951, -0.601057, -0.708946, 0.311367, -0.798615, 0.515038, -0.875743, -0.0307186, 0.481799, 0, 0, 0)
+transform = Transform3D(-0.368951, -0.860836, -0.35048, 0.311367, -0.46977, 0.826055, -0.875743, 0.195646, 0.441358, 0, 0, 0)
 light_color = Color(0.835294, 0.886275, 0.909804, 1)
 shadow_enabled = true
 script = ExtResource("4_nlc57")

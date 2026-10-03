@@ -22,34 +22,67 @@ var saves_list = [
 
 @onready var save_button_handler = $Control/Panel/PanelContainer/ScrollContainer/savesButtonHandler
 
+func is_time_greater(time_in_question:Dictionary, com_time:Dictionary) -> bool:
+	if time_in_question["year"] > com_time["year"]:
+		return true
+	if time_in_question["month"] > com_time["month"]:
+		return true
+	if time_in_question["weekday"] > com_time["weekday"]:
+		return true
+	if time_in_question["hour"] > com_time["hour"]:
+		return true
+	if time_in_question["minute"] > com_time["minute"]:
+		return true
+	if time_in_question["second"] > com_time["second"]:
+		return true
+	return false #there is a better way to do this
+
 func populate_saves_list() -> void:
 	saves_list = []
-	
+	var dates_list = []
+	var order_changes = []
 	print("populating saves list")
 	var saves = SaveHandler.get_saves_list(save_path)
+	var k = 0
 	for folder in saves:
 		var path = save_path + folder + "/"
 		print(path)
 		var info = SaveHandler.load_file(path, "preview.dat")
 		info = JSON.parse_string(info)
-		var data = [
-			info["name"],
-			path,
-			info["progress_percent"],
-			info["progress_summary"],
-			folder,
-			info["version"],
-			info["seconds_played"],
-			info["version"]
-		]
-		if info["active"]:
-			saves_list += [data]
+		if Global.portable_versions.has(info["version"]) and info["active"]:
+			var data = [
+				info["name"],
+				path,
+				info["progress_percent"],
+				info["progress_summary"],
+				folder,
+				info["version"],
+				info["seconds_played"],
+				info["version"],
+				info["last_played"]
+			]
+			saves_list.append(data)
+			dates_list.append(info["last_played"])
+			order_changes.append(k)
+			k += 1
+	
+	#for i in range(0,dates_list.size()): #was going to sort by most recently played
+		#var date = dates_list[i]
+		#
+		#for di in range(0,dates_list.size()):
+			#if di != i:
+				#if !is_time_greater(date,dates_list[di]):
+					#
+					#pass
+				#pass
 	
 	for x in save_button_handler.get_children(false):
 		x.queue_free()
-	
+	var bt = Time.get_datetime_dict_from_system()
+	bt["year"] -= 100 #yeah that should just about do it
 	for i in range(0,saves_list.size()):
 		var button_name = saves_list[i][0] + " | " + saves_list[i][4]
+		
 		var b = Button.new()
 		if saves_list[i][7] != Global.version: #outdated version
 			b.set("theme_override_colors/font_color", Color.INDIAN_RED)
@@ -59,8 +92,9 @@ func populate_saves_list() -> void:
 		b.connect("pressed", select_save.bind(i))
 		b.connect("pressed", _on_button_pressed)
 		b.connect("mouse_entered",_on_button_hovered)
-		save_button_handler.add_child(b)
 		
+		save_button_handler.add_child(b)
+		print(saves_list[i][8])
 
 var selected_save = -1
 func select_save(indx : int) -> void:

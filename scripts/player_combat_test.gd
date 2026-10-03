@@ -42,6 +42,7 @@ var blocking_timer:float = 0.0 #counts how long you have been blocking for
 var counter_attack_window:float = 0.0
 var swimming:bool = false
 var swimming_val:float = 1.0
+var air_jumping : bool = false
 #dash
 @export_group("dash")
 @export var max_dash:float = 3.0
@@ -53,6 +54,9 @@ var dash_timer: float = 0.0 #goes from 1.0 -> 0.0 during dash
 @export var dash_speed:float = 5.0
 @export var dash_end_friction : float = 0.03 #nice 0.02
 var velocity_at_dash_start : Vector3 = Vector3.ZERO
+var air_dash:bool = false
+var air_jump_time : float = 2.0
+var air_jump_timer : float = 0.0
 
 #lunge
 var min_lunge_speed: float = 15.0
@@ -152,8 +156,6 @@ func dash() -> void:
 		print("dash spam")
 		#velocity -= velocity * 0.5
 		return
-	current_dash -= 1.0
-	dash_timer = 1.0
 	velocity_at_dash_start = velocity
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var input_vertical = 0.0
@@ -162,11 +164,20 @@ func dash() -> void:
 	if Input.is_action_pressed("crouch"):
 		input_vertical -= 1.0
 	var direction = (graphics.global_transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
+	if !is_on_floor() and Input.is_action_pressed("jump"):
+		air_dash = true
+		direction = Vector3(0.0,-1.0,0.0)
+	else:
+		air_jumping = false
+		
 	#if !is_on_floor():
 		#direction = (cameraHandler.global_transform.basis * Vector3(input_dir.x, input_vertical, input_dir.y)).normalized()
-	
 	if !direction:
-		direction = Vector3(0.0,-1.0,0.0)
+		if current_dash >= 2.0:
+			direction = Vector3(0.0,1.0,0.0)
+			current_dash -= 1.0
+	current_dash -= 1.0
+	dash_timer = 1.0
 	dash_vel = direction
 	print(direction)
 	graphics.air_dash(direction)
@@ -237,6 +248,7 @@ func update_sun_sickness(delta) -> void:
 	else:
 		$sunlight_indicator/AudioStreamPlayer.volume_db = lerp($sunlight_indicator/AudioStreamPlayer.volume_db, -80.0 ,delta*8.0)
 
+
 func _process(delta):
 	if counter_attack_window > 0.0:
 		counter_attack_window -= delta
@@ -281,8 +293,21 @@ func _process(delta):
 		current_dash += delta*dash_regen_speed
 		if current_dash > max_dash:
 			current_dash = max_dash
+	if air_jumping:
+		air_jump_timer += delta
+		if air_jump_timer > air_jump_time:
+			air_jumping = false
+			air_jump_timer = 0.0
+			graphics.set_air_jump_trail(false)
 	if dash_timer > 0.0:
 		dash_timer -= delta * dash_speed
+		if air_dash and is_on_floor():
+			velocity.y = jump_strength*2.0
+			dash_timer = 0.0
+			air_dash = false
+			airborn = true
+			graphics.set_air_jump_trail(true)
+			air_jumping = true
 		if dash_timer > 0.5:
 			#var mult = -sin(dash_timer*PI+PI*0.75) #1 -> -1
 			#velocity += dash_vel * mult * dash_distance * dash_speed * delta
@@ -840,7 +865,6 @@ func use_held_item(special = false):
 		Items.type.BOW:
 			start_using_bow(special)
 
-
 func release_held_item(special = false):
 	var data = PlayerInformation.get_held_item_data()
 	if data.is_empty():
@@ -1034,7 +1058,7 @@ func update_held_item_graphics() -> void:
 		play_anim(get_movement_anim("idle"),true)
 		#interupts drop animation :/
 		return
-	held_item_attributes = PlayerInformation.inventory[PlayerInformation.held_item_index][1]
+	held_item_attributes = PlayerInformation.get_held_item_attributes()#PlayerInformation.inventory[PlayerInformation.held_item_index][1]
 	print(held_item_attributes)
 	#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]
 	var path = item_data[Items.INDEX_MODEL]

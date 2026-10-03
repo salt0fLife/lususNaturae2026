@@ -2,7 +2,8 @@ extends AudioStreamPlayer
 
 const songs = {
 	#"main_menu" : "res://assets/sounds/music/north_of_eden_menu.wav",
-	"main_menu" : "res://assets/sounds/music/main_menu_music.wav",
+	#"main_menu" : "res://assets/sounds/music/main_menu_music.wav",
+	"main_menu" : "res://assets/sounds/music/northofedenmenumusic.wav",
 	"menu_midi" : "res://assets/sounds/music/menu_midi_test.wav"
 }
 

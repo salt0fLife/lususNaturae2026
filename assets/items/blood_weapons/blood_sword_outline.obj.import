@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dgll07kigvx1k"
+path="res://.godot/imported/blood_sword_outline.obj-a320c1c070502fe288f759a851488539.mesh"
+
+[deps]
+
+files=["res://.godot/imported/blood_sword_outline.obj-a320c1c070502fe288f759a851488539.mesh"]
+
+source_file="res://assets/items/blood_weapons/blood_sword_outline.obj"
+dest_files=["res://.godot/imported/blood_sword_outline.obj-a320c1c070502fe288f759a851488539.mesh", "res://.godot/imported/blood_sword_outline.obj-a320c1c070502fe288f759a851488539.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

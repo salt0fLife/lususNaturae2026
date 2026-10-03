@@ -1,0 +1,171 @@
+[gd_scene load_steps=24 format=3 uid="uid://bdka3ph2llevq"]
+
+[ext_resource type="ArrayMesh" uid="uid://dnsjkd37sgbnj" path="res://assets/items/blood_weapons/blood_sword.obj" id="2_5n26a"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_outline.gdshader" id="2_ftuuu"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_layered_crystal_material.gdshader" id="2_iwc51"]
+[ext_resource type="Texture2D" uid="uid://dtul0537p1mku" path="res://assets/items/blood_weapons/blood_sword_01.png" id="4_w25f7"]
+[ext_resource type="Texture2D" uid="uid://dxk3r6wcdfjh5" path="res://assets/items/blood_weapons/blood_sword_02.png" id="5_06gdc"]
+[ext_resource type="Texture2D" uid="uid://dggo5ok4g3ajx" path="res://assets/items/blood_weapons/blood_sword_03.png" id="6_0fpur"]
+[ext_resource type="Texture2D" uid="uid://clt4q8nemj3i1" path="res://assets/textures/material/metallic_atlas/metallic_atlas_vidica_armor.png" id="7_5pwcj"]
+[ext_resource type="ArrayMesh" uid="uid://dgll07kigvx1k" path="res://assets/items/blood_weapons/blood_sword_outline.obj" id="7_d5ppg"]
+[ext_resource type="Texture2D" uid="uid://d2todxngigwc0" path="res://assets/items/blood_weapons/blood_sword_04.png" id="7_hmc4v"]
+[ext_resource type="Texture2D" uid="uid://v1rwtuqu2kn7" path="res://assets/textures/vfx/blood_aura_particles.png" id="7_xohow"]
+[ext_resource type="Texture2D" uid="uid://bq3plyxn32vu5" path="res://assets/textures/sky/stars/star_glow.png" id="11_qsq4h"]
+[ext_resource type="Texture2D" uid="uid://clliic1v8x2v3" path="res://assets/textures/material/generic_smoke_normal.png" id="15_y0iu4"]
+
+[sub_resource type="Gradient" id="Gradient_54o3d"]
+offsets = PackedFloat32Array(0, 0.510204, 1)
+colors = PackedColorArray(0.0552358, 0.29199, 1, 1, 0.87485, 0, 0.222002, 1, 1.99743e-06, 0.60397, 0.135144, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_5cg0i"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7x64p"]
+width = 64
+height = 64
+seamless = true
+color_ramp = SubResource("Gradient_54o3d")
+noise = SubResource("FastNoiseLite_5cg0i")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ttx27"]
+render_priority = 0
+shader = ExtResource("2_iwc51")
+shader_parameter/depth_scale = 0.1
+shader_parameter/roughness_1 = 0.25
+shader_parameter/roughness_2 = 0.5
+shader_parameter/roughness_3 = 0.5
+shader_parameter/roughness_4 = 0.5
+shader_parameter/metallic = 0.5
+shader_parameter/wobble = 0.05
+shader_parameter/wobble_speed = 1.0
+shader_parameter/wobble_frequency = 3.075
+shader_parameter/texture_movement = 0.158
+shader_parameter/texture_morph = 1.0
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/layer_01 = ExtResource("4_w25f7")
+shader_parameter/layer_02 = ExtResource("5_06gdc")
+shader_parameter/layer_03 = ExtResource("6_0fpur")
+shader_parameter/layer_04 = ExtResource("7_hmc4v")
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_7x64p")
+shader_parameter/metallic_atlas = ExtResource("7_5pwcj")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ehecw"]
+render_priority = 0
+shader = ExtResource("2_ftuuu")
+shader_parameter/albedo = Color(0.67451, 0, 0.145098, 1)
+shader_parameter/line_size_change = -0.009
+shader_parameter/center_point_offset = Vector3(0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j7tu2"]
+transparency = 1
+cull_mode = 2
+specular_mode = 2
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.415686, 0.415686, 0.415686, 1)
+albedo_texture = ExtResource("7_xohow")
+emission = Color(0.811765, 0, 0.0745098, 1)
+normal_texture = ExtResource("15_y0iu4")
+backlight_enabled = true
+backlight = Color(0.443137, 0.443137, 0.443137, 1)
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+proximity_fade_enabled = true
+proximity_fade_distance = 0.1
+
+[sub_resource type="QuadMesh" id="QuadMesh_ojy1a"]
+material = SubResource("StandardMaterial3D_j7tu2")
+size = Vector2(0.29, 0.225)
+
+[sub_resource type="Curve" id="Curve_mc6hs"]
+max_value = 2.0
+_data = [Vector2(0, 0.737723), 0.0, 2.53906, 0, 0, Vector2(0.131429, 1.5067), -2.76989, -2.76989, 0, 0, Vector2(1, 0.868304), -1.62883, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_rlvj3"]
+offsets = PackedFloat32Array(0, 0.0869565, 0.201863, 0.319876)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_umwmc"]
+transparency = 1
+blend_mode = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.996078, 0.490196, 0.552941, 1)
+albedo_texture = ExtResource("11_qsq4h")
+backlight_enabled = true
+backlight = Color(1, 1, 1, 1)
+billboard_mode = 1
+billboard_keep_scale = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_514fb"]
+material = SubResource("StandardMaterial3D_umwmc")
+size = Vector2(0.1, 0.1)
+orientation = 2
+
+[node name="blood_sword" type="Node3D"]
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
+transform = Transform3D(-2.18557e-08, 0, -0.5, 0, 0.5, 0, 0.5, 0, -2.18557e-08, 0, 0, 0)
+mesh = ExtResource("2_5n26a")
+surface_material_override/0 = SubResource("ShaderMaterial_ttx27")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="."]
+transform = Transform3D(-2.18557e-08, 0, -0.5, 0, 0.5, 0, 0.5, 0, -2.18557e-08, 0, 0, 0)
+mesh = ExtResource("7_d5ppg")
+surface_material_override/0 = SubResource("ShaderMaterial_ehecw")
+
+[node name="CPUParticles3D2" type="CPUParticles3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.571779, 0)
+visible = false
+amount = 2
+lifetime_randomness = 1.0
+mesh = SubResource("QuadMesh_ojy1a")
+emission_shape = 3
+emission_box_extents = Vector3(0.03, 0.36, 0)
+direction = Vector3(0, 1, 0)
+spread = 10.88
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.36
+initial_velocity_max = 0.45
+angular_velocity_min = -85.62
+angular_velocity_max = 62.27
+damping_min = 0.085
+damping_max = 0.085
+angle_min = -490.4
+angle_max = 365.8
+scale_amount_min = 0.36
+scale_amount_max = 0.36
+scale_amount_curve = SubResource("Curve_mc6hs")
+color_ramp = SubResource("Gradient_rlvj3")
+
+[node name="CPUParticles3D3" type="CPUParticles3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.387887, 0)
+amount = 2
+lifetime = 5.0
+lifetime_randomness = 1.0
+local_coords = true
+mesh = SubResource("PlaneMesh_514fb")
+emission_shape = 3
+emission_box_extents = Vector3(0.03, 0.36, 0.025)
+direction = Vector3(0, 1, 0)
+spread = 10.88
+gravity = Vector3(0, 0, 0)
+angular_velocity_min = -85.62
+angular_velocity_max = 62.27
+damping_min = 0.085
+damping_max = 0.085
+angle_min = -490.4
+angle_max = 365.8
+scale_amount_min = 0.36
+scale_amount_max = 0.36
+scale_amount_curve = SubResource("Curve_mc6hs")
+color_ramp = SubResource("Gradient_rlvj3")
