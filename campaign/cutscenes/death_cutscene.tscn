@@ -1,0 +1,358 @@
+[gd_scene load_steps=28 format=3 uid="uid://t0fb8ix8tjbj"]
+
+[ext_resource type="Texture2D" uid="uid://bpjxourm8w55k" path="res://assets/textures/movies/death/frame0000.png" id="1_ctol7"]
+[ext_resource type="Script" path="res://scripts/death_cutscene.gd" id="1_dse1h"]
+[ext_resource type="Texture2D" uid="uid://d1wpvpw1plg7d" path="res://assets/textures/movies/death/frame0004.png" id="2_6aff7"]
+[ext_resource type="Texture2D" uid="uid://nwnt4ynbtbqo" path="res://assets/textures/movies/death/frame0006.png" id="3_sbnjl"]
+[ext_resource type="Texture2D" uid="uid://0h6jokbx8bot" path="res://assets/textures/movies/death/frame0008.png" id="4_16vlo"]
+[ext_resource type="Texture2D" uid="uid://dvib3838q3urr" path="res://assets/textures/movies/death/frame0010.png" id="5_t51lm"]
+[ext_resource type="Texture2D" uid="uid://ct4vkiohmunv" path="res://assets/textures/movies/death/frame0012.png" id="6_0pev8"]
+[ext_resource type="Texture2D" uid="uid://chfrus4hspchf" path="res://assets/textures/movies/death/frame0014.png" id="7_btfar"]
+[ext_resource type="Texture2D" uid="uid://cjfrtm85dahvx" path="res://assets/textures/movies/death/frame0016.png" id="8_h82jd"]
+[ext_resource type="Texture2D" uid="uid://bsbfbch6gtwej" path="res://assets/textures/movies/death/frame0018.png" id="9_fectr"]
+[ext_resource type="Texture2D" uid="uid://b2wvyrai35q3y" path="res://assets/textures/movies/death/frame0020.png" id="10_rbcbk"]
+[ext_resource type="Texture2D" uid="uid://koxmrk62teyy" path="res://assets/textures/movies/death/frame0022.png" id="11_fnsua"]
+[ext_resource type="Texture2D" uid="uid://b48yvo2ibwnsh" path="res://assets/textures/movies/death/frame0024.png" id="12_14icd"]
+[ext_resource type="Texture2D" uid="uid://k6lytnkjisdd" path="res://assets/textures/movies/death/frame0026.png" id="13_6bypu"]
+[ext_resource type="Texture2D" uid="uid://cp0rm55bnrlyf" path="res://assets/textures/movies/death/frame0028.png" id="14_sk32w"]
+[ext_resource type="Texture2D" uid="uid://uoisehvrricf" path="res://assets/textures/movies/death/frame0030.png" id="15_lb3tw"]
+[ext_resource type="Texture2D" uid="uid://txyvekrxvkq5" path="res://assets/textures/movies/death/frame0032.png" id="16_ylwhk"]
+[ext_resource type="Texture2D" uid="uid://cwbc2h2vb0255" path="res://assets/textures/movies/death/frame0034.png" id="17_dcwga"]
+[ext_resource type="Texture2D" uid="uid://b1i6tqes5t5o8" path="res://assets/textures/movies/death/frame0036.png" id="18_6g3vr"]
+[ext_resource type="Texture2D" uid="uid://dhmhbh27kask7" path="res://assets/textures/movies/death/frame0038.png" id="19_h42jj"]
+[ext_resource type="Texture2D" uid="uid://bqfl86wrusluw" path="res://assets/textures/movies/death/frame0040.png" id="20_urmus"]
+[ext_resource type="Texture2D" uid="uid://5uk8y717k5qb" path="res://assets/textures/movies/death/frame0042.png" id="21_mmteq"]
+[ext_resource type="AudioStream" uid="uid://b62hkt0uv2o3l" path="res://assets/sounds/misc_effects/respawn_sound.ogg" id="23_e5tey"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_f6gog"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ctol7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_6aff7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_sbnjl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_16vlo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_t51lm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_0pev8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_btfar")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_h82jd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_fectr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_rbcbk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_fnsua")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_14icd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_6bypu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_sk32w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_lb3tw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_ylwhk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_dcwga")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_6g3vr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_h42jj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_urmus")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_mmteq")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
+
+[sub_resource type="Animation" id="Animation_8u3ym"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Control2/TextureRect:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("1_ctol7")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = false
+tracks/1/path = NodePath("AudioStreamPlayer:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ColorRect2:color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 0, 0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("extra_info:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Control2:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_e7rv4"]
+resource_name = "death"
+length = 3.0
+step = 0.083
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Control2/TextureRect:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.083, 0.166, 0.249, 0.332, 0.415, 0.498, 0.581, 0.664, 0.747, 0.83, 0.913, 0.996, 1.079, 1.162, 1.245, 1.328, 1.411, 1.494, 1.577, 1.66, 2.075, 2.158, 2.241, 2.324, 2.407),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("1_ctol7"), ExtResource("2_6aff7"), ExtResource("3_sbnjl"), ExtResource("4_16vlo"), ExtResource("5_t51lm"), ExtResource("6_0pev8"), ExtResource("7_btfar"), ExtResource("8_h82jd"), ExtResource("9_fectr"), ExtResource("10_rbcbk"), ExtResource("11_fnsua"), ExtResource("12_14icd"), ExtResource("13_6bypu"), ExtResource("14_sk32w"), ExtResource("15_lb3tw"), ExtResource("16_ylwhk"), ExtResource("17_dcwga"), ExtResource("18_6g3vr"), ExtResource("19_h42jj"), ExtResource("20_urmus"), ExtResource("21_mmteq"), ExtResource("20_urmus"), ExtResource("19_h42jj"), ExtResource("17_dcwga"), ExtResource("15_lb3tw"), ExtResource("12_14icd")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.83),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ColorRect2:color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(2.075, 2.8, 3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 0, 0, 0), Color(1, 0, 0, 1), Color(0, 0, 0, 0)]
+}
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.913),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"update_life_info"
+}]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("extra_info:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(2.8),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Control2:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 2.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_q140y"]
+_data = {
+"RESET": SubResource("Animation_8u3ym"),
+"death": SubResource("Animation_e7rv4")
+}
+
+[node name="death_cutscene" type="Node"]
+script = ExtResource("1_dse1h")
+
+[node name="Control2" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Control2"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.133333, 0.184314, 0.160784, 1)
+
+[node name="Control" type="Control" parent="Control2"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Control2/Control"]
+sprite_frames = SubResource("SpriteFrames_f6gog")
+
+[node name="TextureRect" type="TextureRect" parent="Control2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_ctol7")
+expand_mode = 1
+
+[node name="extra_info" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="extra_info"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.305833
+anchor_bottom = 1.00027
+offset_right = -0.32
+offset_bottom = -0.176003
+theme_override_colors/default_color = Color(1, 0.898039, 0.282353, 1)
+theme_override_font_sizes/normal_font_size = 57
+text = "wgrwhghrwhwhghrwrhwrhwrh"
+metadata/_edit_use_anchors_ = true
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="extra_info"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.693576
+anchor_right = 0.99941
+anchor_bottom = 1.00027
+offset_right = -0.32
+offset_bottom = -0.176003
+theme_override_colors/default_color = Color(1, 0.898039, 0.282353, 1)
+theme_override_font_sizes/normal_font_size = 57
+text = "aiujnrgoasngboanrgbpoikargnbopiakerngbaorgnbaoikerngbaoergbn[a'oikerae"
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="extra_info"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.492188
+anchor_top = 0.340278
+anchor_right = 0.507812
+anchor_bottom = 0.517747
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_font_sizes/font_size = 101
+text = "99"
+metadata/_edit_use_anchors_ = true
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 0)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("23_e5tey")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_q140y")
+}

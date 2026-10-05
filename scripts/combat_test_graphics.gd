@@ -2,16 +2,22 @@ extends Node3D
 
 @onready var audio_player = $AudioStreamPlayer
 @onready var voice_audio_player = $AudioStreamPlayer2
+@onready var impact_audio_player = $AudioStreamPlayer3
+
+@export var movmement_voice_chance = 0.25 #25% chance
+
 func vault() -> void:
 	audio_player.stream = load("res://assets/sounds/footsteps/snow/snow5.wav")
 	audio_player.play()
 	camera_rot_vel -= Vector3(1.0,0.0,0.0)*0.05
 
-func wall_jump(normal : Vector3) -> void:
+func wall_jump(normal : Vector3, groups := []) -> void:
 	normal = normal * transform.basis
 	camera_rot_vel -= Vector3(normal.y,0.0,normal.x) * 0.02
-	audio_player.stream = load("res://assets/sounds/player_movement/wall_jump.ogg")
-	audio_player.play()
+	impact_audio_player.pitch_scale = randf_range(0.97,1.03)
+	impact_audio_player.stream = load("res://assets/sounds/item_sounds/sword_grab_end.ogg")
+	impact_audio_player.play()
+	step_sound(groups)
 
 func jump() -> void:
 	#camera_rot_vel += Vector3(0.02,0.0,0.0)
@@ -21,8 +27,9 @@ func jump() -> void:
 	
 	
 	#hands_pos_vel += Vector3(0.0,1.0,0.0)
-	voice_audio_player.stream = load("res://assets/sounds/player_movement/player_jump.ogg")
-	voice_audio_player.play()
+	if randf_range(0.0,1.0) < movmement_voice_chance:
+		voice_audio_player.stream = load("res://assets/sounds/player_movement/player_jump.ogg")
+		voice_audio_player.play()
 	if floor_check.is_colliding():
 		var hit = floor_check.get_collider()
 		var groups = hit.get_groups()
@@ -53,8 +60,14 @@ var hands_rot_big_motion_vel : Vector3 = Vector3.ZERO
 
 @onready var last_frame_camera_rot = Vector2(rotation.y, cameraHandler.rotation.x)
 @onready var anim = $cameraHandler/fp_hands_wip/AnimationPlayer
+
+@export var mat_basic : Material
+@export var mat_senses : Material
+
+var first_active_frame = true
 func _process(delta):
 	camera.position = lerp(camera.position, Vector3.ZERO, delta*4.0)
+	
 	
 	if wall_run_active:
 		wall_run_active = false
@@ -64,11 +77,17 @@ func _process(delta):
 	camera_rot_vel += -(camera.rotation) *delta #-camera_bone.rotation)* delta
 	camera_rot_vel -= camera_rot_vel * delta * 10.0
 	camera.rotation += camera_rot_vel
-	speed_appeal(delta)
 	
 	var camera_rot = Vector2(rotation.y, cameraHandler.rotation.x)
 	
 	var dif = (camera_rot - last_frame_camera_rot)*hands_rot_lag_power
+	
+	if first_active_frame:
+		dif = Vector2.ZERO
+		first_active_frame = false
+	else:
+		speed_appeal(delta)
+	
 	hands.rotation.y += dif.x*0.2*0.25 #looks better for some reason
 	hands.rotation.x -= dif.y*0.2
 	hands.position.x += dif.x*0.1
@@ -79,7 +98,7 @@ func _process(delta):
 	hands.position.x = clamp(hands.position.x, -0.1,0.1)
 	hands.position.y = clamp(hands.position.y, -0.1,0.1)
 	
-	hands_pos_vel += (Vector3(0.0,0.0,0.14)-hands.position)*delta*hands_return_power
+	hands_pos_vel += (Vector3(0.0,-0.05,0.14)-hands.position)*delta*hands_return_power
 	hands_pos_vel -= hands_pos_vel*delta*hands_return_damp
 	hands.position += hands_pos_vel * delta
 	
@@ -132,7 +151,8 @@ func wall_running(normal : Vector3, delta : float, power : float, groups : Array
 	if !$wall_run_sounds.playing:
 		var t = (1.0 - power) * 5.0 - 0.017 #because yeah sure
 		$wall_run_sounds.play(t)
-		print("wallrunning time " + str(t) + " : wallrunning power " + str(power))
+		step_sound(groups)
+		#print("wallrunning time " + str(t) + " : wallrunning power " + str(power))
 	val += delta * power
 	if val > 1.0:
 		val -= 1.0
@@ -189,18 +209,23 @@ func _ready():
 	pass
 
 @onready var arm_meshes = [
-	$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_003,
-	$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_005
+	#$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_003,
+	#$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_005
+	$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/arm2,
+	$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_004,
+	$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/Cube_008
 ]
 
 func update_using_senses() -> void:
 	if PlayerInformation.using_senses:
-		var mat = $"../senses_trail".material.duplicate(true)
+		#var mat = $"../senses_trail".material.duplicate(true)
+		$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bandages.visible = false
 		for am in arm_meshes:
-			am.set_surface_override_material(0, mat)
+			am.set_surface_override_material(0, mat_senses)
 	else:
+		$cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bandages.visible = true
 		for am in arm_meshes:
-			am.set_surface_override_material(0, null)
+			am.set_surface_override_material(0, mat_basic)
 
 @onready var legs = $legs
 var val = 0.0
@@ -211,6 +236,7 @@ func walking(delta, velocity) -> void:
 	velocity = velocity*global_basis
 	var dir = Vector2(velocity.x,velocity.z).normalized()
 	var theta = atan2(dir.x,dir.y) + PI
+	
 	
 	if dir.y > 0.0:
 		#backwards
@@ -248,6 +274,9 @@ func running(delta, velocity) -> void:
 	var theta = atan2(dir.x,dir.y) + PI
 	legs.rotation.y = lerp_angle(legs.rotation.y, theta,delta * 16.0)
 	legs.rotation.y = clamp(legs.rotation.y, -PI*0.4,PI*0.4)
+	
+	camera_rot_vel.z -= dir.x*delta*0.05
+	camera_rot_vel.x += dir.y*delta*0.05
 	
 	play_leg_anim("sprint_forward", 0.2, running_speed*running_speed_mult)
 	val += delta * 1.5 * running_speed_mult * running_speed
@@ -291,8 +320,9 @@ func land() -> void:
 	hands_pos_vel.y -= 1.0*2.0
 	hands_rot_vel.x -= 0.2*PI*5.0
 	#hands_rot_vel.x += 0.1
-	voice_audio_player.stream = load("res://assets/sounds/player_movement/player_land.ogg")
-	voice_audio_player.play()
+	if randf_range(0.0,1.0) < movmement_voice_chance:
+		voice_audio_player.stream = load("res://assets/sounds/player_movement/player_land.ogg")
+		voice_audio_player.play()
 	if floor_check.is_colliding():
 		var hit = floor_check.get_collider()
 		var groups = hit.get_groups()
@@ -334,4 +364,13 @@ func shiver(delta):
 	hands.rotation.y += sin(shiver_timer*PI)*shiver_strength*0.02
 	hands.rotation.x += sin(shiver_timer*PI*0.5+PI*0.2)*shiver_strength*0.01
 	hands.rotation.z += cos(shiver_timer*PI*0.25+PI*0.6)*shiver_strength*0.01
+	pass
+
+func set_air_jump_trail(val : bool):
+	print("set_airjump to " + str(val))
+	#$"../air_jump_effects/ribbon_trail_3d".set_disabled(!val)
+	$"../air_jump_effects/ribbon_trail_3d".natrual_point_decay = 0.5
+	$"../air_jump_effects/CPUParticles3D".emitting = val
+	$"../air_jump_effects/ribbon_trail_3d".set_disabled(!val)
+	$"../air_jump_effects".visible = val
 	pass

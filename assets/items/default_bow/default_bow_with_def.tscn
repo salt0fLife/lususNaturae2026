@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b32ydvb8g0145"]
+
+[ext_resource type="ArrayMesh" uid="uid://b6renqglqsd1i" path="res://assets/items/default_bow/default_bow_test.res" id="1_8ulof"]
+
+[node name="MeshInstance3D" type="MeshInstance3D"]
+mesh = ExtResource("1_8ulof")

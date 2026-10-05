@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://c4k6hu8hxovwo"]
+
+[ext_resource type="ArrayMesh" uid="uid://crmu3jbhnbe1" path="res://assets/meshes/foliage_01_mesh.tres" id="1_cwti6"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_foliage.gdshader" id="2_p24h8"]
+[ext_resource type="Texture2D" uid="uid://chqkigbq5i4uq" path="res://assets/glb_temp/foliage_foliage_02.png" id="5_4nqtf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wu27b"]
+render_priority = 0
+shader = ExtResource("2_p24h8")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
+shader_parameter/point_size = null
+shader_parameter/roughness = 1.0
+shader_parameter/day_roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/wind_speed_effect = 4.0
+shader_parameter/wind_strength = 5.0
+shader_parameter/backlight = Color(1, 1, 1, 1)
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/texture_albedo = ExtResource("5_4nqtf")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+
+[node name="foliage_01" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00967765, 0, -0.0329273)
+mesh = ExtResource("1_cwti6")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("ShaderMaterial_wu27b")

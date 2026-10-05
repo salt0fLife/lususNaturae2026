@@ -66,7 +66,7 @@ func die():
 	state = "dead"
 	play_anim("die")
 	velocity.y += 1.0
-	var data = ["dead_bat"]
+	var data = ["dead_bat", {}]
 	PlayerInformation.emit_signal("dropped_item", data, position)
 
 var decision_timer = 0.0
@@ -107,4 +107,4 @@ func fly_aimlessly_without_landing(delta):
 func play_anim(key : StringName, blend_time: float = 0.0) -> void:
 	if $graphics/bat_creature_blockout/AnimationPlayer.current_animation != key:
 		$graphics/bat_creature_blockout/AnimationPlayer.play(key,blend_time)
-		print(key)
+		#print(key)

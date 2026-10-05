@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dacmm1ix3biud"]
+[gd_scene load_steps=4 format=3 uid="uid://dacmm1ix3biud"]
 
 [ext_resource type="Script" path="res://scripts/dialogue_popup_handler.gd" id="1_yhwoe"]
+[ext_resource type="Texture2D" uid="uid://dgrwe5apmn4ad" path="res://assets/textures/gui/gameplay_always/popup_background.png" id="2_mfylk"]
 [ext_resource type="AudioStream" uid="uid://d3hmwakvr7uy3" path="res://assets/sounds/text_voices/voice_popup.ogg" id="2_tu6hx"]
 
 [node name="dialogue_popup_handler" type="Control"]
@@ -23,13 +24,29 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Panel"]
+[node name="TextureRect" type="TextureRect" parent="Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("2_mfylk")
+expand_mode = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 11.0
+offset_top = 11.0
+offset_right = -89.0002
+offset_bottom = -9.99982
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0.117647, 0.117647, 0.117647, 1)
+text = "ouwihgefuhwgohnwoge"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_tu6hx")

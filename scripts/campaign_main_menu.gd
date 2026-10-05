@@ -2,6 +2,7 @@ extends Node
 var save_path = "campaign/saves/"
 
 func _ready():
+	#MusicHandler.play_song("res://assets/sounds/music/menu_midi_test.wav")
 	print("started campaign")
 	$Control/Panel/back.connect("button_down", return_to_main_menu)
 	$"Control/Panel/save info/continue game".connect("button_down", play_selected_save)
@@ -21,34 +22,67 @@ var saves_list = [
 
 @onready var save_button_handler = $Control/Panel/PanelContainer/ScrollContainer/savesButtonHandler
 
+func is_time_greater(time_in_question:Dictionary, com_time:Dictionary) -> bool:
+	if time_in_question["year"] > com_time["year"]:
+		return true
+	if time_in_question["month"] > com_time["month"]:
+		return true
+	if time_in_question["weekday"] > com_time["weekday"]:
+		return true
+	if time_in_question["hour"] > com_time["hour"]:
+		return true
+	if time_in_question["minute"] > com_time["minute"]:
+		return true
+	if time_in_question["second"] > com_time["second"]:
+		return true
+	return false #there is a better way to do this
+
 func populate_saves_list() -> void:
 	saves_list = []
-	
+	var dates_list = []
+	var order_changes = []
 	print("populating saves list")
 	var saves = SaveHandler.get_saves_list(save_path)
+	var k = 0
 	for folder in saves:
 		var path = save_path + folder + "/"
 		print(path)
 		var info = SaveHandler.load_file(path, "preview.dat")
 		info = JSON.parse_string(info)
-		var data = [
-			info["name"],
-			path,
-			info["progress_percent"],
-			info["progress_summary"],
-			folder,
-			info["version"],
-			info["seconds_played"],
-			info["version"]
-		]
-		if info["active"]:
-			saves_list += [data]
+		if Global.portable_versions.has(info["version"]) and info["active"]:
+			var data = [
+				info["name"],
+				path,
+				info["progress_percent"],
+				info["progress_summary"],
+				folder,
+				info["version"],
+				info["seconds_played"],
+				info["version"],
+				info["last_played"]
+			]
+			saves_list.append(data)
+			dates_list.append(info["last_played"])
+			order_changes.append(k)
+			k += 1
+	
+	#for i in range(0,dates_list.size()): #was going to sort by most recently played
+		#var date = dates_list[i]
+		#
+		#for di in range(0,dates_list.size()):
+			#if di != i:
+				#if !is_time_greater(date,dates_list[di]):
+					#
+					#pass
+				#pass
 	
 	for x in save_button_handler.get_children(false):
 		x.queue_free()
-	
+	var bt = Time.get_datetime_dict_from_system()
+	bt["year"] -= 100 #yeah that should just about do it
 	for i in range(0,saves_list.size()):
 		var button_name = saves_list[i][0] + " | " + saves_list[i][4]
+		
 		var b = Button.new()
 		if saves_list[i][7] != Global.version: #outdated version
 			b.set("theme_override_colors/font_color", Color.INDIAN_RED)
@@ -56,8 +90,11 @@ func populate_saves_list() -> void:
 			b.set("theme_override_colors/font_color", Color.WEB_GREEN)
 		b.text = button_name
 		b.connect("pressed", select_save.bind(i))
-		save_button_handler.add_child(b)
+		b.connect("pressed", _on_button_pressed)
+		b.connect("mouse_entered",_on_button_hovered)
 		
+		save_button_handler.add_child(b)
+		print(saves_list[i][8])
 
 var selected_save = -1
 func select_save(indx : int) -> void:
@@ -90,7 +127,36 @@ func play_selected_save() -> void:
 	print("loading game from filepath " + saves_list[selected_save][1])
 	Global.save_filepath = saves_list[selected_save][1]
 	
-	get_tree().call_deferred("change_scene_to_file", "res://campaign/campaign_main.tscn")
+	#get_tree().call_deferred("change_scene_to_file", "res://campaign/campaign_main.tscn")
+	
+	
+	game_status = 0.0
+	scene_to_change_to = "res://campaign/campaign_main.tscn"
+	ResourceLoader.load_threaded_request(scene_to_change_to)
+	starting_game = true
+
+var game_status = 0.0
+var starting_game = false
+var scene_to_change_to = ""
+@onready var loading_screen = $Control/loading_screen
+func _process(delta):
+	if starting_game:
+		#if !ResourceLoader.has_cached(scene_to_change_to):
+			#print("well thats a problem")
+		var progress = []
+		var status = ResourceLoader.load_threaded_get_status(scene_to_change_to, progress)
+		#print("game progress : " + str(progress[0]))
+		game_status = lerp(game_status,float(progress[0]),delta*10.0)
+		if game_status > 0.99 and progress[0] == 1:
+			game_status = 1.0
+		#print("game status : " + str(game_status))
+		loading_screen.visible = true
+		loading_screen.update_progress(game_status)
+		if ResourceLoader.THREAD_LOAD_LOADED and game_status == 1.0:#progress[0] >= 1.0:
+			starting_game = false
+			#get_tree().change_scene_to_packed(ResourceLoader.load_threaded_get(scene_to_change_to))
+			get_tree().call_deferred("change_scene_to_packed",ResourceLoader.load_threaded_get(scene_to_change_to))
+			#return #finished loading
 
 func return_to_main_menu():
 	get_tree().call_deferred("change_scene_to_file", "res://menus/main_menu.tscn")
@@ -102,7 +168,8 @@ func create_new_save(save_name := "A brand new adventure!") -> void:
 		"progress_summary" : "you have not played this save yet",
 		"active" : true,
 		"version" : Global.version,
-		"seconds_played" : 0
+		"seconds_played" : 0,
+		"last_played" : Time.get_datetime_dict_from_system(),
 	}
 	data = JSON.stringify(data)
 	
@@ -162,3 +229,8 @@ func confirm_and_delete_selected_save():
 	delete_save(selected_save)
 	close_delete_save_dialogue()
 
+func _on_button_hovered():
+	$button_hovered.play()
+
+func _on_button_pressed():
+	$button_clicked.play()

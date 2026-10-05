@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://xwre6k638wd1"]
+[gd_scene load_steps=76 format=3 uid="uid://xwre6k638wd1"]
 
 [ext_resource type="Script" path="res://scripts/campaign_main.gd" id="1_3biet"]
 [ext_resource type="PackedScene" uid="uid://o5esi8ctymbf" path="res://menus/inventory_menu.tscn" id="2_np8a5"]
@@ -6,14 +6,47 @@
 [ext_resource type="PackedScene" uid="uid://1qwxgkemcxnw" path="res://menus/tooltip_handler.tscn" id="3_xj3p0"]
 [ext_resource type="PackedScene" uid="uid://dacmm1ix3biud" path="res://menus/dialogue_popup_handler.tscn" id="4_5wa0d"]
 [ext_resource type="Script" path="res://scripts/inventory_relations_handler.gd" id="4_6j0cq"]
+[ext_resource type="FontFile" uid="uid://32bvr4xx48cy" path="res://assets/fonts/BKANT.TTF" id="4_gfcst"]
+[ext_resource type="PackedScene" uid="uid://duo1ceml246p7" path="res://menus/player_info_displayer.tscn" id="4_yal5i"]
 [ext_resource type="Script" path="res://scripts/loading_screen.gd" id="5_02oip"]
 [ext_resource type="PackedScene" uid="uid://bdmt3runy3j7k" path="res://menus/radial_menu.tscn" id="6_705ms"]
 [ext_resource type="Script" path="res://scripts/post_effects.gd" id="6_mgka1"]
-[ext_resource type="Texture2D" uid="uid://b12py7g7w260f" path="res://assets/textures/gui/overlays/sun_sickness_overlay_color.png" id="6_pjrpw"]
-[ext_resource type="Texture2D" uid="uid://s5ir8m7v7p2m" path="res://assets/textures/gui/overlays/sun_sickness_overlay_frame.png" id="7_t2br1"]
-[ext_resource type="Texture2D" uid="uid://cvxg3hvn7vq18" path="res://assets/textures/gui/overlays/sun_sickness_overlAY_MASK.PNG" id="8_0aexh"]
+[ext_resource type="Script" path="res://scripts/equipped_items_menu.gd" id="7_8qyyk"]
+[ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="7_os0l1"]
+[ext_resource type="Script" path="res://scripts/crosshair_handler.gd" id="8_a0xeb"]
+[ext_resource type="Texture2D" uid="uid://c48h6pn55udps" path="res://assets/textures/gui/gameplay_always/cursor_default.png" id="8_rfy7i"]
+[ext_resource type="PackedScene" uid="uid://cqbxtb2hqtxng" path="res://menus/item_card.tscn" id="10_crpmm"]
 [ext_resource type="Shader" path="res://assets/shaders/postEffects.gdshader" id="10_muloe"]
 [ext_resource type="Script" path="res://scripts/postEffects.gd" id="11_06tnx"]
+[ext_resource type="Shader" path="res://assets/shaders/canvas_blur.gdshader" id="13_1kv6v"]
+[ext_resource type="Theme" uid="uid://calyvxvtcobp0" path="res://menus/menus_theme.tres" id="13_28qhh"]
+[ext_resource type="Texture2D" uid="uid://etihtd6qpu8i" path="res://assets/textures/movies/mal0/frame0000.png" id="15_q46np"]
+[ext_resource type="Texture2D" uid="uid://d2g4xrpnlpxnr" path="res://assets/textures/movies/mal0/frame0002.png" id="16_54ebc"]
+[ext_resource type="Texture2D" uid="uid://7veg42kqcnjc" path="res://assets/textures/movies/mal0/frame0003.png" id="17_ut84x"]
+[ext_resource type="Texture2D" uid="uid://b02lyt73a80ml" path="res://assets/textures/movies/mal0/frame0004.png" id="18_emvlh"]
+[ext_resource type="Texture2D" uid="uid://cxygtm02rslhv" path="res://assets/textures/movies/mal0/frame0005.png" id="19_srotm"]
+[ext_resource type="Texture2D" uid="uid://cjgk2xpv4j7vw" path="res://assets/textures/gui/suits/gilt_obscure_small.png" id="20_dsffu"]
+[ext_resource type="Texture2D" uid="uid://dpi213srfeh8u" path="res://assets/textures/movies/mal0/frame0006.png" id="20_v61p4"]
+[ext_resource type="Texture2D" uid="uid://cnb2q8tynnu56" path="res://assets/textures/movies/mal0/frame0007.png" id="21_uucs5"]
+[ext_resource type="Texture2D" uid="uid://dyehh1eetmd7b" path="res://assets/textures/movies/mal0/frame0008.png" id="22_0qe7i"]
+[ext_resource type="Texture2D" uid="uid://bdd4nbnfv4fv3" path="res://assets/textures/movies/mal0/frame0009.png" id="23_ymrhr"]
+[ext_resource type="Texture2D" uid="uid://cuo15kr1cefvi" path="res://assets/textures/movies/mal0/frame0010.png" id="24_msf5j"]
+[ext_resource type="Texture2D" uid="uid://bqw6tibkge3o8" path="res://assets/textures/movies/mal0/frame0012.png" id="25_ho66n"]
+[ext_resource type="Texture2D" uid="uid://er7w85qfnebq" path="res://assets/textures/movies/mal0/frame0014.png" id="26_4mrer"]
+[ext_resource type="Texture2D" uid="uid://cxih2emn3ln0p" path="res://assets/textures/movies/mal0/frame0016.png" id="27_yvxxx"]
+[ext_resource type="Texture2D" uid="uid://h1qg234nwalg" path="res://assets/textures/movies/mal0/frame0017.png" id="28_3kjp7"]
+[ext_resource type="Texture2D" uid="uid://b6mbwckb8kjcm" path="res://assets/textures/movies/mal0/frame0018.png" id="29_wjqh8"]
+[ext_resource type="Texture2D" uid="uid://bpdb7l5p2ee7q" path="res://assets/textures/movies/mal0/frame0019.png" id="30_7i5eu"]
+[ext_resource type="Texture2D" uid="uid://cygknikt1v5oh" path="res://assets/textures/movies/mal0/frame0020.png" id="31_gnxcj"]
+[ext_resource type="Texture2D" uid="uid://78q7ust8155n" path="res://assets/textures/movies/mal0/frame0021.png" id="32_sk587"]
+[ext_resource type="Texture2D" uid="uid://saqov6b0f7pn" path="res://assets/textures/movies/mal0/frame0022.png" id="33_vpk4x"]
+[ext_resource type="Texture2D" uid="uid://dc1lawwfofykd" path="res://assets/textures/movies/mal0/frame0023.png" id="34_ud344"]
+[ext_resource type="Texture2D" uid="uid://b3nrmylhibjeh" path="res://assets/textures/movies/mal0/frame0024.png" id="35_c0uob"]
+[ext_resource type="Texture2D" uid="uid://jpux1mnbh5pi" path="res://assets/textures/movies/mal0/frame0026.png" id="36_4sbls"]
+[ext_resource type="FontFile" uid="uid://6bbwelw5v73r" path="res://assets/fonts/ANTQUAB.TTF" id="40_83hwd"]
+
+[sub_resource type="Theme" id="Theme_0fhwx"]
+Label/fonts/font = ExtResource("4_gfcst")
 
 [sub_resource type="Shader" id="Shader_3005b"]
 code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's CanvasItemMaterial.
@@ -22,10 +55,6 @@ shader_type canvas_item;
 render_mode blend_mix;
 uniform sampler2D screen_texture : hint_screen_texture;
 uniform float sun_sickness : hint_range(0.0, 1.0, 0.001);
-uniform sampler2D sun_sickness_mask;
-uniform sampler2D sun_sickness_color;
-uniform sampler2D sun_sickness_frame;
-uniform vec4 sun_color : source_color;
 
 vec4 texture_blurred(sampler2D tex,vec2 uv,float blur){
 	vec4 output = texture(tex,uv+vec2(blur,0.0));
@@ -41,39 +70,30 @@ float gradient(vec2 uv){
 }
 
 void fragment() {
-	vec4 color = texture(screen_texture,SCREEN_UV);
-	vec2 wavy_uv = UV+vec2(sin(TIME*4.0+UV.y*8.0),sin(TIME*4.1+UV.x*8.0))*0.005;
-	//float ss = clamp(round((1.0-texture(sun_sickness_mask,wavy_uv).r) * sun_sickness*3.0+sun_sickness*0.5),0.0,1.0);
-	//
-	
-	//color.rgb = mix(color.rgb,sun_color.rgb,sun_sickness*sun_color.a);
-	float ss = clamp(round((1.0-texture(sun_sickness_mask,wavy_uv).r) * sun_sickness*3.0+sun_sickness*0.5),0.0,1.0);
-	ss= (ss*2.0+sun_sickness*7.0+gradient(UV))*0.1*sun_sickness;
-	color.rgb += (texture_blurred(screen_texture,SCREEN_UV,sun_sickness*0.002).rgb*sun_color.rgb*ss);
-	
-	vec4 ss_col = texture(sun_sickness_color, wavy_uv);
-	color.rgb = mix(color.rgb, ss_col.rgb, ss*ss_col.a);
+	vec3 color = texture(screen_texture,SCREEN_UV).rgb;
+	float grayscale = (color.r+color.g+color.b)*0.3333;
+	//color = color*color*2.0;
+	vec3 inv_col = vec3(1.0) - color;
+	//color = (1.0 - (inv_col * inv_col * 2.0));
+	float overlay_blend = clamp(roundEven(grayscale),0.0,1.0);
+	vec3 inhanced_col = mix(color*color*2.0,(1.0 - (inv_col * inv_col * 2.0)),overlay_blend);
+	color = inhanced_col;
 	
 	
-	float ss_frame_out = (1.0-sun_sickness)*0.25+0.05;
-	vec2 ss_frame_uv = UV*vec2(1.0-ss_frame_out,1.0-ss_frame_out)+vec2(ss_frame_out*0.5,ss_frame_out*0.5);//vec2(1.0+sun_sickness*0.1,1.0+sun_sickness*0.1);
-	vec4 ss_frame_col = texture(sun_sickness_frame,ss_frame_uv);
-	color.rgb = mix(color.rgb,ss_frame_col.rgb,ss_frame_col.a);
-	
-	
-	
-	COLOR = color;
+	COLOR.rgb = color;
+	COLOR.a = texture(screen_texture,SCREEN_UV).a;
 }"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_27pd0"]
 shader = SubResource("Shader_3005b")
 shader_parameter/sun_sickness = 0.0
-shader_parameter/sun_color = Color(0.968627, 0.6, 0.239216, 1)
-shader_parameter/sun_sickness_mask = ExtResource("8_0aexh")
-shader_parameter/sun_sickness_color = ExtResource("6_pjrpw")
-shader_parameter/sun_sickness_frame = ExtResource("7_t2br1")
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_pdc2j"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gbsq5"]
+shader = ExtResource("13_1kv6v")
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bts20"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_mhm5d"]
 frequency = 0.2226
@@ -163,7 +183,7 @@ shader = ExtResource("10_muloe")
 shader_parameter/spiral = 0.0
 shader_parameter/wave = 0.0
 shader_parameter/flash = 0.0
-shader_parameter/flash_color = Color(0.996078, 0.678431, 0.466667, 1)
+shader_parameter/flash_color = Color(0.266667, 0.470588, 0.521569, 1)
 shader_parameter/grading_power = 0.1
 shader_parameter/lightness_map_power = 0.1
 shader_parameter/heart_pounding = 0.0
@@ -181,7 +201,7 @@ shader_parameter/animation_speed = 20.0
 shader_parameter/piss = false
 shader_parameter/shock = 0.0
 shader_parameter/shock_col = Color(0.772549, 0.658824, 0.717647, 1)
-shader_parameter/cinematic = 0.067
+shader_parameter/cinematic = 0.0
 shader_parameter/cinematic_col = Color(0.764706, 0.615686, 0.956863, 1)
 shader_parameter/damaged = 0.0
 shader_parameter/color_pop = 0.0
@@ -206,6 +226,80 @@ shader_parameter/action_lines_noise = SubResource("NoiseTexture2D_ghxi3")
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_aeps4"]
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_fxbho"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_q46np")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_54ebc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_ut84x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_emvlh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_srotm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_v61p4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_uucs5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_0qe7i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_ymrhr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_msf5j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_ho66n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_4mrer")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_yvxxx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_3kjp7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_wjqh8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_7i5eu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_gnxcj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_sk587")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33_vpk4x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34_ud344")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35_c0uob")
+}, {
+"duration": 1.0,
+"texture": ExtResource("36_4sbls")
+}],
+"loop": true,
+"name": &"default",
+"speed": 18.0
+}]
+
 [node name="campaign_main" type="Node"]
 process_mode = 3
 script = ExtResource("1_3biet")
@@ -223,6 +317,10 @@ process_mode = 1
 process_mode = 1
 
 [node name="decalHandler" type="Node3D" parent="."]
+process_mode = 1
+
+[node name="tempHandler" type="Node3D" parent="."]
+process_mode = 1
 
 [node name="cutsceneHandler" type="Node" parent="."]
 
@@ -240,18 +338,22 @@ offset_right = 39.0
 offset_bottom = 60.0
 text = "paused"
 
+[node name="action_menu" parent="." instance=ExtResource("3_km1sh")]
+visible = false
+
 [node name="dialogue_popup_handler" parent="." instance=ExtResource("4_5wa0d")]
 visible = false
 
-[node name="tooltip" parent="." instance=ExtResource("3_xj3p0")]
-
 [node name="debug_menu" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 244.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_0fhwx")
 
 [node name="left" type="VFlowContainer" parent="debug_menu"]
 layout_mode = 1
@@ -277,7 +379,13 @@ text = "day_timer : 0.0"
 
 [node name="held_item" type="Label" parent="debug_menu/left"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 1, 1)
 text = "held_item : []"
+
+[node name="held_item2" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.956863, 0, 0.207843, 1)
+text = "item_count"
 
 [node name="health" type="Label" parent="debug_menu/left"]
 layout_mode = 2
@@ -296,21 +404,83 @@ text = "dash_charges : 3.0/3.0"
 
 [node name="velocity" type="Label" parent="debug_menu/left"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.415686, 0.556863, 1)
 text = "dash_charges : 3.0/3.0"
 
 [node name="speed" type="Label" parent="debug_menu/left"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.752941, 0.141176, 1)
 text = "dash_charges : 3.0/3.0"
+
+[node name="position" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.560784, 0.964706, 1, 1)
+text = "position"
+
+[node name="rotation" type="Label" parent="debug_menu/left"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.560784, 0.964706, 1, 1)
+text = "position"
 
 [node name="right" type="HFlowContainer" parent="debug_menu"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.33
+anchor_left = 0.669
+anchor_top = 0.068
+anchor_right = 0.998
 anchor_bottom = 0.485
-offset_right = -0.160004
+offset_left = 0.311951
+offset_top = -1.064
+offset_right = 1.30396
 offset_bottom = -0.279999
 grow_horizontal = 2
 grow_vertical = 2
+alignment = 2
+
+[node name="version" type="Label" parent="debug_menu/right"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.333333, 0.498039, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+text = "version "
+
+[node name="tooltip" parent="." instance=ExtResource("3_xj3p0")]
+
+[node name="player_info_displayer" parent="." instance=ExtResource("4_yal5i")]
+process_mode = 1
+
+[node name="post_effects" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_27pd0")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("PlaceholderTexture2D_pdc2j")
+script = ExtResource("6_mgka1")
+
+[node name="crosshair_handler" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_a0xeb")
+
+[node name="TextureRect" type="TextureRect" parent="crosshair_handler"]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("8_rfy7i")
 
 [node name="inventory_relations_handler" type="Node" parent="."]
 script = ExtResource("4_6j0cq")
@@ -320,7 +490,7 @@ process_mode = 1
 visible = false
 
 [node name="RadialMenu" parent="inventory_relations_handler/inventory_menu" index="0"]
-display_size = 1.0
+highlighted = null
 
 [node name="grabbed_item_name" type="Label" parent="inventory_relations_handler"]
 visible = false
@@ -348,23 +518,107 @@ offset_top = 0.0500031
 offset_bottom = 0.0499878
 line_width = 3
 number_of_slots = 2
-display_size = 1.0
 
-[node name="action_menu" parent="." instance=ExtResource("3_km1sh")]
-visible = false
+[node name="item_sounds" type="AudioStreamPlayer" parent="inventory_relations_handler"]
 
-[node name="post_effects" type="TextureRect" parent="."]
+[node name="full_inventory_menu" type="Control" parent="inventory_relations_handler"]
 visible = false
-material = SubResource("ShaderMaterial_27pd0")
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("PlaceholderTexture2D_pdc2j")
-script = ExtResource("6_mgka1")
+theme = ExtResource("13_28qhh")
+
+[node name="blur" type="TextureRect" parent="inventory_relations_handler/full_inventory_menu"]
+material = SubResource("ShaderMaterial_gbsq5")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("PlaceholderTexture2D_bts20")
+
+[node name="ColorRect" type="ColorRect" parent="inventory_relations_handler/full_inventory_menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.360784, 0.364706, 0.462745, 0.380392)
+
+[node name="close" type="Button" parent="inventory_relations_handler/full_inventory_menu"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "close"
+
+[node name="equipped_items_menu" type="Control" parent="inventory_relations_handler"]
+visible = false
+layout_mode = 3
+anchor_left = 0.669
+anchor_right = 0.999
+anchor_bottom = 1.0
+offset_left = 0.311951
+offset_right = 0.151855
+script = ExtResource("7_8qyyk")
+metadata/_edit_use_anchors_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="inventory_relations_handler/equipped_items_menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 2
+
+[node name="quiver" type="VBoxContainer" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/quiver"]
+layout_mode = 2
+text = "equipped_quiver"
+
+[node name="quiver_slot" type="Button" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/quiver"]
+layout_mode = 2
+text = "empty"
+icon = ExtResource("7_os0l1")
+
+[node name="quiver_storage_slots" type="VBoxContainer" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/quiver"]
+layout_mode = 2
+
+[node name="backpack" type="VBoxContainer" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/backpack"]
+layout_mode = 2
+text = "equipped_backpack"
+
+[node name="backpack_slot" type="Button" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/backpack"]
+layout_mode = 2
+text = "empty"
+icon = ExtResource("7_os0l1")
+
+[node name="backpack_storage_slots" type="VBoxContainer" parent="inventory_relations_handler/equipped_items_menu/HBoxContainer/backpack"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="inventory_relations_handler/equipped_items_menu"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="grabbed_item_card" parent="inventory_relations_handler" instance=ExtResource("10_crpmm")]
+visible = false
+z_index = 20
+position = Vector2(415, 328)
+scale = Vector2(0.6, 0.6)
 
 [node name="postEffects" type="TextureRect" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_lyans")
 anchors_preset = 15
 anchor_right = 1.0
@@ -409,6 +663,10 @@ grow_vertical = 2
 [node name="resume" type="Button" parent="pause_menu/buttonHandler"]
 layout_mode = 2
 text = "resume"
+
+[node name="settings" type="Button" parent="pause_menu/buttonHandler"]
+layout_mode = 2
+text = "settings"
 
 [node name="save and quit" type="Button" parent="pause_menu/buttonHandler"]
 layout_mode = 2
@@ -560,6 +818,93 @@ layout_mode = 2
 max_value = 1.0
 step = 0.01
 
+[node name="PanelContainer8" type="PanelContainer" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+
+[node name="CheckButton" type="CheckButton" parent="pause_menu/devtools/HFlowContainer/PanelContainer8"]
+layout_mode = 2
+text = "time frozen"
+
+[node name="PanelContainer9" type="PanelContainer" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="pause_menu/devtools/HFlowContainer/PanelContainer9"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer"]
+layout_mode = 2
+text = "current"
+
+[node name="Label" type="Label" parent="pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer"]
+layout_mode = 2
+text = "blood"
+
+[node name="current_blood" type="HBoxContainer" parent="pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer/current_blood"]
+layout_mode = 2
+text = "-"
+
+[node name="Button2" type="Button" parent="pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer/current_blood"]
+layout_mode = 2
+text = "+"
+
+[node name="Label3" type="Label" parent="pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer"]
+layout_mode = 2
+text = "health"
+
+[node name="current_health" type="HBoxContainer" parent="pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer/current_health"]
+layout_mode = 2
+text = "-"
+
+[node name="Button2" type="Button" parent="pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer/current_health"]
+layout_mode = 2
+text = "+"
+
+[node name="PanelContainer10" type="PanelContainer" parent="pause_menu/devtools/HFlowContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="pause_menu/devtools/HFlowContainer/PanelContainer10"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer"]
+layout_mode = 2
+text = "max"
+
+[node name="Label" type="Label" parent="pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer"]
+layout_mode = 2
+text = "blood"
+
+[node name="max_blood" type="HBoxContainer" parent="pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer/max_blood"]
+layout_mode = 2
+text = "-"
+
+[node name="Button2" type="Button" parent="pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer/max_blood"]
+layout_mode = 2
+text = "+"
+
+[node name="Label3" type="Label" parent="pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer"]
+layout_mode = 2
+text = "health"
+
+[node name="max_health" type="HBoxContainer" parent="pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer/max_health"]
+layout_mode = 2
+text = "-"
+
+[node name="Button2" type="Button" parent="pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer/max_health"]
+layout_mode = 2
+text = "+"
+
 [node name="loading_screen" type="Control" parent="."]
 process_mode = 3
 visible = false
@@ -571,6 +916,15 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("5_02oip")
 
+[node name="TextureRect" type="TextureRect" parent="loading_screen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_dsffu")
+
 [node name="ColorRect" type="ColorRect" parent="loading_screen"]
 layout_mode = 1
 anchors_preset = 15
@@ -578,7 +932,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0)
 
 [node name="ProgressBar" type="ProgressBar" parent="loading_screen"]
 layout_mode = 1
@@ -609,6 +963,39 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 text = "loading..."
+
+[node name="Control" type="Control" parent="loading_screen"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="loading_screen/Control"]
+scale = Vector2(0.085, 0.085)
+sprite_frames = SubResource("SpriteFrames_fxbho")
+frame_progress = 0.46404
+
+[node name="Label2" type="Label" parent="loading_screen"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -55.0
+offset_top = -40.0
+offset_right = 56.0
+offset_bottom = -17.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("40_83hwd")
+text = "loading level..."
 
 [node name="playSoundHandler" type="AudioStreamPlayer" parent="."]
 max_polyphony = 32

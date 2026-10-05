@@ -8,7 +8,7 @@ food_type = 2
 food_value = 2
 internal_reference_name = "moldy_bread"
 display_name = "moldy bread"
-item_style = 1
+item_style = 3
 sounds = 0
 animations = 0
 model_path = "res://assets/items/bread/bread.tscn"
@@ -17,3 +17,5 @@ texture_path = "res://assets/textures/material/DebuggTexture.png"
 interactions = {
 "dead_bat": ["hello world!", "interaction 2!", "interaction 3!"]
 }
+equipment_id = 0
+collision_shape = Vector3(1, 1, 1)

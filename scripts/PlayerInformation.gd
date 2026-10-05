@@ -19,10 +19,11 @@ func change_player_scene(key : int) -> void:
 
 const player_scenes = {
 	01 : ["res://campaign/player/player_01.tscn"],
+	02 : ["res://campaign/player/player_default.tscn"],
 	99 : ["res://campaign/player/player_99.tscn"],
 	00 : ["res://campaign/player/player_character_test_model.tscn"],
 	-1 : ["res://campaign/player/player_combat_test.tscn"],
-	-2 : ["res://campaign/player/emerge_from_ground_player.tscn"]
+	-2 : ["res://campaign/player/emerge_from_ground_player.tscn"],
 }
 
 var upgrades = [
@@ -32,22 +33,30 @@ var upgrades = [
 
 
 #gameplay
-var health: float = 1.0
-var max_health: float = 5.0
+var health: int = 25
+var max_health: int = 40
+var blood:int = 40
+var max_blood:int = 40
 var food: int = 1
 var max_food: int = 5
 var min_sleep_food: int = 4
 var sun_sickness: float = 0.0 #builds up when in sunlight goes down in shade
 
-var world_time: float = 0.0 #i know its funny to store here but it fits
-var world_overcast : float = 0.0 #1.0 means no sunlight even during day
-#
 
 var wall_sliding_timer:float = 0.0
 var max_dash:float = 3.0
 var current_dash:float = 3.0
 
 var using_senses : bool = false
+
+signal used_held_item
+func use_held_item(special:bool) -> void:
+	emit_signal("used_held_item",special)
+
+signal released_held_item
+func release_held_item(special:bool) -> void:
+	emit_signal("released_held_item",special)
+
 
 signal changed_using_senses
 func set_using_senses(val :bool) -> void:
@@ -67,16 +76,32 @@ enum { #damage tags
 }
 
 signal took_damage
-func take_damage(amount : float, tag : int) -> void:
+func take_damage(amount : int, tag : int) -> void:
 	health -= amount
 	emit_signal("took_damage")
 	if health < 0.0:
 		die()
 
+signal health_changed
+func set_health(val : int) -> void:
+	if health == val:
+		return
+	health = val
+	emit_signal("health_changed")
+
+signal blood_changed
+func set_blood(val : int) -> void:
+	if blood == val:
+		return
+	blood = val
+	emit_signal("blood_changed")
+
 signal perished
 func die():
 	print("perished")
-	health = max_health
+	set_health(max_health)
+	set_blood(max_blood)
+	sun_sickness = 0.0
 	emit_signal("perished")
 
 signal teleport
@@ -91,13 +116,46 @@ var held_item_index: int = 0 #-1 is an empty hand (problem is picking up items,
 #i made it so you have to have empty hand, so now -1 is not allowed as it is not valid pickup spot)
 signal update_inventory
 signal update_held_item
+const equipment_slot_count = 2 #number of slots at end that are for equipment instead of real item slot
 var inventory: Array = [
 	[],
 	[],
 	[],
-	["moldy_bread"],
-	["moldy_bread"]
+	[],
+	[],
+	[],
+	[], #backpack
+	[], #quiver
 ]
+
+var defaulted_inventory: Array = [ #the items empty slots default too
+	["blood_sword",{}],
+	[],
+	[],
+	[],
+	[],
+	[],
+	[], #backpack
+	[], #quiver
+]
+
+func load_inventory(new_inventory : Array) -> void: #so i can do stuffs :D
+	print("#LOADED INVENTORY#")
+	var to_small = clampi((8- new_inventory.size()),0,1)
+	inventory = new_inventory
+	for i in to_small:
+		inventory.append([])
+	emit_signal("update_inventory")
+	pass
+
+func get_backpack_index() -> int:
+	return inventory.size() - equipment_slot_count
+
+func get_inventory_vacancy(_item) -> int: #data because it should eventually check for stacking
+	for i in range(0,inventory.size() - equipment_slot_count):
+		if inventory[i].is_empty():
+			return i
+	return -1
 
 func change_held_item(index : int) -> void:
 	if index >= inventory.size() or index < 0:
@@ -137,9 +195,22 @@ func get_held_item_data() -> Array:
 		return []
 	var data = inventory[held_item_index]
 	if data.is_empty():
-		return []
+		data = defaulted_inventory[held_item_index]
+		if data.is_empty():
+			return []
 	key = data[0]
 	return Items.list[key]
+
+func get_held_item_attributes() -> Dictionary:
+	var key = ""
+	if held_item_index == -1:
+		return {}
+	var data = inventory[held_item_index]
+	if data.is_empty():
+		data = defaulted_inventory[held_item_index]
+		if data.is_empty():
+			return {}
+	return data[1]
 
 func get_item_data(index : int) -> Array:
 	var key = ""
@@ -154,16 +225,19 @@ func get_item_data(index : int) -> Array:
 	key = data[0]
 	return Items.list[key]
 
-signal dropped_item
+signal dropped_item #item, position
+signal attempt_to_drop_item #index
 
 func drop_held_item() -> void:
 	if held_item_index == -1:
 		return
-	var data = steal_inventory_slot(held_item_index)
+	#var data = steal_inventory_slot(held_item_index)
+	var data = inventory[held_item_index]
 	if data.is_empty():
 		return
-	emit_signal("dropped_item", data, position)
-	emit_signal("update_held_item")
+	#emit_signal("dropped_item", data, position)
+	emit_signal("attempt_to_drop_item",held_item_index)
+	#emit_signal("update_held_item")
 
 func pickup_item(data : Array) -> bool:
 	if inventory[held_item_index].is_empty():
@@ -196,14 +270,38 @@ func get_held_item_sound(sound_key : String) -> String:
 		return ""
 	return sounds[sound_key]
 
+func get_item_sound(index : int, sound_key : String) -> String:
+	var data = []#get_item_data(index)
+	#if equipped:
+		#data = get_equipped_item_data(index)
+	#else:
+	data = get_item_data(index)
+	if data == []:
+		return ""
+	 #["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]
+	var sk = data[Items.INDEX_SOUNDS]
+	if !Items.sounds.has(sk):
+		printerr("use of invalid sound key " + str(sk))
+		return ""
+	
+	var sounds = Items.sounds[sk]
+	if !sounds.has(sound_key):
+		printerr("item does not include sound " + str(sound_key))
+		return ""
+	return sounds[sound_key]
+
 func player_sleep() -> bool: #weather or not you can sleep
 	if !can_sleep():
 		return false
 	Global.play_cutscene("dream_1")
 	#day_timer = day_length*0.501
 	print("player_slept")
-	PlayerInformation.health = clamp(round(PlayerInformation.health-0.49) + 1.0, 0.0, PlayerInformation.max_health)
-	PlayerInformation.food -= 2
+	#PlayerInformation.health = clamp(round(PlayerInformation.health-0.49) + 1.0, 0.0, PlayerInformation.max_health)
+	#PlayerInformation.health
+	#PlayerInformation.food -= 2
+	##why was i writing PlayerInformation here lmao
+	set_health(clamp(health+int(max_health*0.5),0,max_health))
+	food -= 2
 	#in_game_days += 1
 	emit_signal("slept")
 	#_on_checkpoint_reached()
@@ -214,3 +312,18 @@ func can_sleep() -> bool:
 		print("you are too hungry to sleep")
 		return false
 	return true
+
+func get_item_count() -> int:
+	var x:int = 0
+	var s:int = inventory.size()
+	for i in range(0,s):
+		if i >= s - equipment_slot_count:
+			if !inventory[i].is_empty():
+				x+=1
+				if inventory[i][1].has("inventory"):
+					for ii in inventory[i][1]["inventory"]:
+						if !ii.is_empty():
+							x+=1
+		elif !inventory[i].is_empty():
+			x+=1
+	return x

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://y18fq6r38rjd"]
+
+[ext_resource type="PackedScene" uid="uid://ddgwhxapd5ks7" path="res://assets/items/arrows/arrow_ph.glb" id="1_sflid"]
+
+[node name="basic_arrow" type="Node3D"]
+
+[node name="arrow_ph" parent="." instance=ExtResource("1_sflid")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.33, 0)

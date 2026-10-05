@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://b105kl2nrj3bn"]
+
+[ext_resource type="ArrayMesh" uid="uid://dqsep6opdt4cy" path="res://assets/imported_scenes/distant_mountains/distant_mountain_01.obj" id="1_g0a0u"]
+[ext_resource type="Shader" path="res://assets/props/stylized_material_with_transparency.gdshader" id="2_gu74a"]
+[ext_resource type="Texture2D" uid="uid://c4l4jit5hvm7m" path="res://assets/imported_scenes/distant_mountains/distant_mountain_01.png" id="3_rf2x8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i5ujn"]
+render_priority = 0
+shader = ExtResource("2_gu74a")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo_day = Color(1, 1, 1, 1)
+shader_parameter/day_color_power = 0.0
+shader_parameter/point_size = null
+shader_parameter/roughness = 1.0
+shader_parameter/day_roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/normal_scale = null
+shader_parameter/specular = 0.0
+shader_parameter/metallic = null
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = null
+shader_parameter/specular_highlight = 0.01
+shader_parameter/specular_highlight_day = 0.01
+shader_parameter/sh_day_power = 0.0
+shader_parameter/texture_albedo = ExtResource("3_rf2x8")
+shader_parameter/CloudDitherPower = 10.0
+shader_parameter/CloudCutoffAdjust = -0.795
+shader_parameter/CloudDensity = 1.49
+shader_parameter/CloudOpacity = 1.0
+shader_parameter/cloudSoftness = 0.85
+
+[node name="distant_mountain" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_g0a0u")
+surface_material_override/0 = SubResource("ShaderMaterial_i5ujn")

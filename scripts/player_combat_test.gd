@@ -1,4 +1,4 @@
-extends CharacterBody3D
+extends entity_base
 
 #nodepaths
 @onready var cameraHandler = $graphics/cameraHandler
@@ -7,9 +7,11 @@ extends CharacterBody3D
 @onready var camera = $graphics/cameraHandler/senses_camera
 @onready var anim = $graphics/cameraHandler/fp_hands_wip/AnimationPlayer
 @onready var held_item_handler = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/held_item_handler/node3d
+@onready var prop_1_handler = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/BoneAttachment3D/prop_1_handler
 @onready var item_sounds = $graphics/item_sounds
 @onready var skeleton = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D
 @onready var weapon_node = $graphics/cameraHandler/senses_camera/weapon_node
+@onready var special_area_sense = $special_area_sense
 
 #attributes
 @export_group("attributes")
@@ -22,6 +24,8 @@ extends CharacterBody3D
 @export var floor_friction: float = 8.0
 @export var max_floor_slow_per_second: float = 45.0
 @export var max_crouch_slow_per_second: float = 10.0
+@export var swimming_acceleration : float = 3.0
+@export var swimming_speed : float = 5.0
 var sprinting_timer: float = 0.0 #how long you have been sprinting
 
 #misc
@@ -30,8 +34,15 @@ var mouse_sensitivity = 1.5
 
 ##movement
 #state stuff
-var sprinting:bool = false
+var sprinting:bool = true
 var crouching:bool = false
+var aiming_down_sights:bool = false
+var blocking:bool = false
+var blocking_timer:float = 0.0 #counts how long you have been blocking for
+var counter_attack_window:float = 0.0
+var swimming:bool = false
+var swimming_val:float = 1.0
+var air_jumping : bool = false
 #dash
 @export_group("dash")
 @export var max_dash:float = 3.0
@@ -39,10 +50,13 @@ var current_dash:float = 3.0
 @export var dash_regen_speed:float = 0.25
 var dash_vel: Vector3 = Vector3.ZERO
 var dash_timer: float = 0.0 #goes from 1.0 -> 0.0 during dash
-@export var dash_distance:float = 50.0
+@export var dash_distance:float = 50.0 #nice 20.0
 @export var dash_speed:float = 5.0
-@export var dash_end_friction : float = 0.03
+@export var dash_end_friction : float = 0.03 #nice 0.02
 var velocity_at_dash_start : Vector3 = Vector3.ZERO
+var air_dash:bool = false
+var air_jump_time : float = 2.0
+var air_jump_timer : float = 0.0
 
 #lunge
 var min_lunge_speed: float = 15.0
@@ -59,11 +73,24 @@ var wall_run_timer : float = 0.0
 @export var min_wallrun_speed : float = 5.0
 var wall_run_cooldown : float = 0.0
 var last_wall_run_normal = Vector3.ZERO
+var last_wall_groups = []
+@export var wallrun_dash_depletion_speed : float = 0.1
+@export var wallrun_start_speed_threshhold:float = 1.0
 
 ##graphics
 var desired_CH_height: float = 1.5
 var desired_CH_rotation_z: float = 0.0
 var combat_stance = 0.0
+
+
+#stepping
+var _snapped_to_stairs_last_frame: bool = false
+var MAX_STEP_HEIGHT: float = 0.55
+var jumped_last_frame : bool = false
+#
+
+func is_surface_to_steep(normal : Vector3) -> bool:
+	return normal.angle_to(Vector3.UP) > self.floor_max_angle
 
 func _ready():
 	interaction_sightline.connect("interacted", _on_successful_interaction)
@@ -71,24 +98,35 @@ func _ready():
 	anim.connect("animation_finished", _on_anim_finished)
 	PlayerInformation.connect("dropped_item", _on_dropped_item)
 	PlayerInformation.connect("update_held_item", update_held_item_graphics)
+	PlayerInformation.connect("attempt_to_drop_item", _on_item_drop_attempt)
 	update_held_item_graphics()
+	special_area_sense.connect("body_entered", _on_special_area_entered)
+	special_area_sense.connect("body_exited",_on_special_area_exited)
+	PlayerInformation.connect("used_held_item",use_held_item)
+	PlayerInformation.connect("released_held_item",release_held_item)
 
 func _input(event):
 	if event is InputEventMouseMotion and !Global.in_game_mouse:
 		var TempRotation = rotation.x - event.relative.y /1000 * mouse_sensitivity
 		cameraHandler.rotation.x += TempRotation
-		cameraHandler.rotation.x = clamp(cameraHandler.rotation.x, -1.25, 1.5)
+		cameraHandler.rotation.x = clamp(cameraHandler.rotation.x, -1.5, 1.5) #formerly -1.25,1.5
 		graphics.rotation.y -= event.relative.x /1000 * mouse_sensitivity
-	if Input.is_action_just_pressed("sprint") and Input.is_action_pressed("up"):
-		sprinting = true
-	if Input.is_action_just_released("sprint"):
-		if sprinting_timer < 0.25:
-			dash()
-		sprinting = false
-	if Input.is_action_just_released("up"):
-		sprinting = false
-	if Input.is_action_just_pressed("up") and Input.is_action_pressed("sprint"):
-		sprinting = true
+		if graphics.rotation.y > PI*64.0:
+			graphics.rotation.y -= PI*64.0
+		elif graphics.rotation.y < -PI*64.0:
+			graphics.rotation.y += PI*64.0
+	if Input.is_action_just_pressed("sprint"):
+		sprinting = !sprinting
+	#if Input.is_action_just_pressed("sprint") and Input.is_action_pressed("up"):
+		#sprinting = true
+	#if Input.is_action_just_released("sprint"):
+		#if sprinting_timer < 0.25:
+			#dash()
+		#sprinting = false
+	#if Input.is_action_just_released("up"):
+		#sprinting = false
+	#if Input.is_action_just_pressed("up") and Input.is_action_pressed("sprint"):
+		#sprinting = true
 	if Input.is_action_just_pressed("crouch"):
 		crouching = true
 	if Input.is_action_just_released("crouch"):
@@ -97,6 +135,8 @@ func _input(event):
 		dash()
 	if Input.is_action_just_pressed("lunge"):
 		lunge()
+	if Input.is_action_just_pressed("interact"):
+		play_anim("parry_sword",true,0.0)
 
 func lunge() -> void:
 	var lunge_speed = velocity.length()
@@ -106,8 +146,9 @@ func lunge() -> void:
 	var look_dir = get_look_dir()
 	velocity = look_dir*lunge_speed
 
+@onready var look_dir_reference = $graphics/cameraHandler/look_dir_reference
 func get_look_dir() -> Vector3:
-	return ($graphics/cameraHandler/look_dir_reference.global_position - cameraHandler.global_position)
+	return (look_dir_reference.global_position - cameraHandler.global_position)
 
 func dash() -> void:
 	if !current_dash >= 1.0:
@@ -115,9 +156,8 @@ func dash() -> void:
 		return
 	if dash_timer > 0.0:
 		print("dash spam")
+		#velocity -= velocity * 0.5
 		return
-	current_dash -= 1.0
-	dash_timer = 1.0
 	velocity_at_dash_start = velocity
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var input_vertical = 0.0
@@ -126,11 +166,20 @@ func dash() -> void:
 	if Input.is_action_pressed("crouch"):
 		input_vertical -= 1.0
 	var direction = (graphics.global_transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
-	if !is_on_floor():
-		direction = (cameraHandler.global_transform.basis * Vector3(input_dir.x, input_vertical, input_dir.y)).normalized()
-	
-	if !direction:
+	if !is_on_floor() and Input.is_action_pressed("jump"):
+		air_dash = true
 		direction = Vector3(0.0,-1.0,0.0)
+	else:
+		air_jumping = false
+		
+	#if !is_on_floor():
+		#direction = (cameraHandler.global_transform.basis * Vector3(input_dir.x, input_vertical, input_dir.y)).normalized()
+	if !direction:
+		if current_dash >= 2.0:
+			direction = Vector3(0.0,1.0,0.0)
+			current_dash -= 1.0
+	current_dash -= 1.0
+	dash_timer = 1.0
 	dash_vel = direction
 	print(direction)
 	graphics.air_dash(direction)
@@ -146,6 +195,7 @@ func air_jump() -> void:
 	air_jumps -= 1
 	velocity.y = jump_strength
 	graphics.air_dash(Vector3.UP)
+	jumped_last_frame = true
 	#if !current_dash >= 1.0:
 		#print("not enough dash charges")
 		#return
@@ -164,7 +214,8 @@ func update_tooltip() -> void:
 @export var sun_sickness_change_speed:float = 1.0;
 var sun_tick_damage_timer = 0.0
 func update_sun_sickness(delta) -> void:
-	if PlayerInformation.world_time < 0.5:
+	#if PlayerInformation.world_time < 0.5:
+	if Global.world_time < 0.5:
 		graphics.shiver(delta)
 	
 	var sun_p = $sunlight_check.in_sunlight_pecentage()
@@ -180,7 +231,7 @@ func update_sun_sickness(delta) -> void:
 		sun_tick_damage_timer += delta
 		if sun_tick_damage_timer > 0.25:
 			sun_tick_damage_timer -= 0.25
-			PlayerInformation.take_damage(0.5,Global.damage_types.FIRE)
+			PlayerInformation.take_damage(1,Global.damage_types.FIRE)
 		pass
 	
 	#var m = $graphics/cameraHandler/fp_hands_wip/metarig_001/Skeleton3D/bodyMin_005.get_active_material(0)
@@ -199,7 +250,18 @@ func update_sun_sickness(delta) -> void:
 	else:
 		$sunlight_indicator/AudioStreamPlayer.volume_db = lerp($sunlight_indicator/AudioStreamPlayer.volume_db, -80.0 ,delta*8.0)
 
+
 func _process(delta):
+	if counter_attack_window > 0.0:
+		counter_attack_window -= delta
+		if counter_attack_window < 0.0:
+			counter_attack_window = 0.0
+	if blocking:
+		blocking_timer += delta
+	else:
+		blocking_timer = 0.0
+	if drawing_bow:
+		bow_draw_timer += delta
 	update_sun_sickness(delta)
 	update_tooltip()
 	if combat_stance > 0.0:
@@ -210,11 +272,11 @@ func _process(delta):
 		cameraHandler.position.y = lerp(cameraHandler.position.y, 1.12,delta*12.0)
 	else:
 		cameraHandler.position.y = lerp(cameraHandler.position.y, 1.65,delta*12.0)
-	if movement_scaling_anims.keys().has(anim.current_animation):
-		var speed = Vector2(velocity.x,velocity.z).length()
-		anim.speed_scale = (speed/movement_scaling_anims[anim.current_animation])*0.25 + 0.75
-	else:
-		anim.speed_scale = 1.0
+	#if movement_scaling_anims.keys().has(anim.current_animation):
+		#var speed = Vector2(velocity.x,velocity.z).length()
+		#anim.speed_scale = (speed/movement_scaling_anims[anim.current_animation])*0.25 + 0.75
+	#else:
+		#anim.speed_scale = 1.0
 	
 	##timers and such
 	if sprinting:# and Input.get_vector("left", "right", "up", "down"):
@@ -233,8 +295,21 @@ func _process(delta):
 		current_dash += delta*dash_regen_speed
 		if current_dash > max_dash:
 			current_dash = max_dash
+	if air_jumping:
+		air_jump_timer += delta
+		if air_jump_timer > air_jump_time:
+			air_jumping = false
+			air_jump_timer = 0.0
+			graphics.set_air_jump_trail(false)
 	if dash_timer > 0.0:
 		dash_timer -= delta * dash_speed
+		if air_dash and is_on_floor():
+			velocity.y = jump_strength*2.0
+			dash_timer = 0.0
+			air_dash = false
+			airborn = true
+			graphics.set_air_jump_trail(true)
+			air_jumping = true
 		if dash_timer > 0.5:
 			#var mult = -sin(dash_timer*PI+PI*0.75) #1 -> -1
 			#velocity += dash_vel * mult * dash_distance * dash_speed * delta
@@ -250,21 +325,35 @@ func _process(delta):
 
 func get_movement_anim(movement : String) -> String:
 	var held_item_data = PlayerInformation.get_held_item_data()
+	if blocking: #important visual queue
+		return "gaurd_sword"
+	
 	match movement:
 		"idle":
 			if held_item_data == []:
 				if combat_stance > 0.0:
 					return "idle_empty_shown"
 				else:
-					return "idle_empty_shown"
+					return "idle_empty_shown"#"idle_empty"#"idle_empty_shown" ##lol cant decide
 			else:
 				match held_item_data[Items.INDEX_ANIMATIONS]:
 					Items.animation.BREAD_ANIM:
 						return "idle_holding_bread-metarig_001"
 					Items.animation.SWORD_ANIM:
-						return "idle_holding_sword"
+						if !velocity.length() > 1.0:
+							return "idle_holding_sword"
+						else:
+							return "walk_holding_sword"
 					Items.animation.GUN_ANIM:
 						return "idle_holding_gun"
+					Items.animation.HAMMER_ANIM:
+						return "idle_holding_hammer"
+					Items.animation.BOW_ANIM:
+						if drawing_bow:
+							return "idle_holding_bow_drawn"
+						elif bow_loaded:
+							return "idle_holding_bow_loaded"
+						else: return "idle_holding_bow_empty"
 					_:
 						return "idle_holding_bread-metarig_001"
 		"sprinting":
@@ -280,6 +369,14 @@ func get_movement_anim(movement : String) -> String:
 						#return "idle_holding_sword"
 					Items.animation.GUN_ANIM:
 						return "run_holding_gun"
+					Items.animation.HAMMER_ANIM:
+						return "run_holding_hammer"
+					Items.animation.BOW_ANIM:
+						if drawing_bow:
+							return "idle_holding_bow_drawn"
+						elif bow_loaded:
+							return "idle_holding_bow_loaded"
+						else: return "idle_holding_bow_empty"
 					_:
 						return "run_holding_sword"
 		"jump":
@@ -299,6 +396,14 @@ func get_movement_anim(movement : String) -> String:
 						return "idle_holding_sword"
 					Items.animation.GUN_ANIM:
 						return "idle_holding_gun"
+					Items.animation.HAMMER_ANIM:
+						return "idle_holding_hammer"
+					Items.animation.BOW_ANIM:
+						if drawing_bow:
+							return "idle_holding_bow_drawn"
+						elif bow_loaded:
+							return "idle_holding_bow_loaded"
+						else: return "idle_holding_bow_empty"
 					_:
 						return "falling_holding_bread"
 		"vault":
@@ -312,13 +417,13 @@ func get_movement_anim(movement : String) -> String:
 						return "vault_empty"
 		"walk":
 			if held_item_data == []:
-				return "idle_empty"
+				return "walk_empty"
 			else:
 				match held_item_data[Items.INDEX_ANIMATIONS]:
 					Items.animation.BREAD_ANIM:
 						return "idle_holding_bread-metarig_001"
 					Items.animation.SWORD_ANIM:
-						return "idle_holding_sword"
+						return "walk_holding_sword"
 					_:
 						return "idle_holding_bread-metarig_001"
 		_:
@@ -339,7 +444,17 @@ var action_animations = [
 	"punch_empty_2",
 	"drop_bread",
 	"draw_gun",
-	"shoot_gun"
+	"shoot_gun",
+	"draw_hammer",
+	"swing_hammer",
+	"draw_bow",
+	"shoot_bow_end_full",
+	"shoot_bow_start",
+	"load_bow",
+	"parry_sword",
+	"swing_sword_2_revision",
+	"swing_sword_1_revision",
+	"swing_sword_punish",
 ]
 
 var movement_scaling_anims = {
@@ -348,32 +463,53 @@ var movement_scaling_anims = {
 
 func play_anim(key: String, interrupting: bool = false, blend_time: float = 0.2, speed : float = 1.0):
 	if anim.current_animation == key:
+		anim.speed_scale = speed
 		return
 	if action_animations.has(key): #action animations always interrupt action animations
 		anim.play(key,blend_time, speed)
-		print("playing anim " + key)
+		#print("playing anim " + key)
 		return
 	if action_animations.has(anim.current_animation) and !interrupting:
 		return
 	anim.play(key,blend_time,speed)
-	print("playing anim " + key)
+	#print("playing anim " + key)
 	pass
 
+var last_wall_normal = Vector3.ZERO
+@export var wall_jump_max_latency = 0.1
+var wall_jump_latency_timer = 0.0
+
+@export var sprint_animation_speed_mult = 1.0 #for syncing animation to game_feel
+func can_wall_jump() -> bool:
+	if is_on_wall() or wall_jump_latency_timer > 0.0:
+		return true
+	return false
+
 var airborn = false
+var coyote_time:float = 0
+@export var max_coyote_time :float = 0.1
 func _physics_process(delta):
 	# Add the gravity.
-	if not is_on_floor():
+	if swimming:
+		velocity -= velocity*0.5*delta
+		velocity.y += delta*0.5
+		pass
+	elif not is_on_floor():
 		if !airborn:
-			airborn = true
-			#become airborn
+			if coyote_time > max_coyote_time:
+				airborn = true
+				#become airborn
+			else:
+				coyote_time += delta
 		#combat_stance = 3.5
-		if combat_stance == 0.0:
+		if combat_stance == 0.0 and airborn:
 			combat_stance = 1.0
 		if !dash_timer > 0.0:
 			velocity.y -= gravity * delta
 		else:
 			velocity.y -= velocity.y * (1.0 - abs(dash_vel.y)) * delta
 	else:
+		coyote_time = 0.0
 		if airborn:
 			airborn = false
 			#landed
@@ -383,12 +519,14 @@ func _physics_process(delta):
 
 	# Handle jump.
 	if Input.is_action_just_pressed("jump"):
-		if is_on_floor():
+		if !airborn:#is_on_floor():
 			velocity.y = jump_strength
 			graphics.jump()
+			airborn = true
+			jumped_last_frame = true
 			#play_anim(get_movement_anim("jump"))
-		elif is_on_wall():
-			var normal = get_wall_normal()
+		elif can_wall_jump():
+			var normal = last_wall_normal
 			if Input.is_action_pressed("up") and can_vault() and ! vaulting:
 				vaulting = true
 				graphics.vault()
@@ -398,7 +536,8 @@ func _physics_process(delta):
 				velocity.y = jump_strength
 				velocity += get_look_dir()*clamp(velocity.length(), 0.0, jump_strength*0.25)
 				velocity += normal * jump_strength
-				graphics.wall_jump(normal)
+				graphics.wall_jump(normal,last_wall_groups)
+				
 				wall_run_timer *= 0.75
 				wall_run_cooldown = 0.2
 		else:
@@ -427,20 +566,35 @@ func _physics_process(delta):
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (graphics.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	if direction and !dash_timer > 0.0 and !vaulting:
-		if is_on_floor():
-			if crouching:
+	if (direction or swimming) and !dash_timer > 0.0 and !vaulting:
+		var h_speed = Vector2(velocity.x,velocity.z).length()
+		if swimming:
+			if Input.is_action_pressed("jump"):
+				direction.y += 1.0
+			elif Input.is_action_pressed("crouch"):
+				direction.y -= 1.0
+			velocity = lerp(velocity,direction*swimming_speed,delta*swimming_acceleration)
+		elif !airborn:#is_on_floor():
+			if crouching or aiming_down_sights:
 				play_anim(get_movement_anim("idle"))
 				velocity.x += ((crouch_speed * direction.x) - velocity.x) * delta * acceleration
 				velocity.z += ((crouch_speed * direction.z) - velocity.z) * delta * acceleration
-			elif sprinting:
+			elif sprinting: #TEST this may or may not effect performance
 				graphics.running(delta, velocity)
 				var speed = Vector2(velocity.x,velocity.z).length()
-				play_anim(get_movement_anim("sprinting"))
-				if !speed > sprint_speed:
+				var a_speed = clamp((speed/sprint_speed),0.9,10.0)*sprint_animation_speed_mult*graphics.running_speed_mult
+				#play_anim(get_movement_anim("sprinting"),false, 0.5, a_speed)
+				var dsm = 0.9 #small penalty if not running forward
+				if input_dir.y < 0.0:
+					#holding forward
+					dsm = 1.0
+					play_anim(get_movement_anim("sprinting"),false, 0.5, a_speed)
+				else:
+					play_anim(get_movement_anim("idle"))
+				if !speed > sprint_speed*dsm:
 					#play_anim(get_movement_anim("walk"))
-					velocity.x += ((sprint_speed * direction.x) - velocity.x) * delta * acceleration
-					velocity.z += ((sprint_speed * direction.z) - velocity.z) * delta * acceleration
+					velocity.x += ((sprint_speed * direction.x*dsm) - velocity.x) * delta * acceleration
+					velocity.z += ((sprint_speed * direction.z*dsm) - velocity.z) * delta * acceleration
 				else:
 					#play_anim(get_movement_anim("sprinting"))
 					var add_vel = (speed*direction - velocity) * acceleration
@@ -458,11 +612,15 @@ func _physics_process(delta):
 				play_anim(get_movement_anim("idle"))
 				velocity.x += ((walk_speed * direction.x) - velocity.x) * delta * acceleration
 				velocity.z += ((walk_speed * direction.z) - velocity.z) * delta * acceleration
-		elif sprinting and is_on_wall() and !wall_run_cooldown > 0.0:
+		elif sprinting and is_on_wall() and !wall_run_cooldown > 0.0 and h_speed > wallrun_start_speed_threshhold:
 			#wallrunning
 			wall_run_timer += delta
 			var wr_power = clamp((1.0 - (wall_run_timer/max_wall_run_duration)), 0.0 , 1.0)
-			var h_speed = Vector2(velocity.x,velocity.z).length()
+			#dash
+			#wr_power *= (current_dash/max_dash)
+			#if current_dash > 0.0:
+			#	current_dash -= (dash_regen_speed + wallrun_dash_depletion_speed)*delta
+			
 			if h_speed < min_wallrun_speed:
 				wr_power -= (1.0 - (h_speed / min_wallrun_speed))
 			velocity.y += gravity * delta * wr_power
@@ -473,7 +631,7 @@ func _physics_process(delta):
 			graphics.wall_running(w_n, delta, wr_power, get_slide_collision(0).get_collider(0).get_groups())
 			velocity -= w_n * delta * velocity.length() * 25.0 * wr_power * Vector3(1.0,0.0,1.0) #stick to wall
 			velocity = update_velocity_air(direction,velocity,delta)
-			velocity.y += (clamp(get_look_dir().y, -0.5, 0.5) * wr_power) *delta *acceleration
+			#velocity.y += (clamp(get_look_dir().y, -0.5, 0.5) * wr_power) *delta *acceleration
 		else:
 			velocity = update_velocity_air(direction, velocity, delta)
 			play_anim(get_movement_anim("falling"))
@@ -502,8 +660,73 @@ func _physics_process(delta):
 		velocity = velocity.normalized() * clamp(velocity.length(), 0.0, 50.0)
 	
 	
-	move_and_slide()
+	#move_and_slide()
+	if not snap_up_to_stairs_check(delta):
+		move_and_slide()
+		snap_down_to_stairs_check()
 	update_player_information()
+	if is_on_wall():
+		wall_jump_latency_timer = wall_jump_max_latency
+		last_wall_normal = get_wall_normal()
+		last_wall_groups = get_slide_collision(0).get_collider(0).get_groups()
+	else:
+		wall_jump_latency_timer -= delta
+	jumped_last_frame = false #its more like a jumped_this_frame but whatever
+
+
+func run_body_test_motion(from: Transform3D, motion: Vector3, result = null) -> bool:
+	if !result:
+		result = PhysicsTestMotionResult3D.new()
+	var params = PhysicsTestMotionParameters3D.new()
+	params.from = from
+	params.motion = motion
+	return PhysicsServer3D.body_test_motion(self.get_rid(), params, result)
+
+func snap_down_to_stairs_check() -> void:
+	if !is_on_floor() and !airborn and !velocity.y > 0.0:
+		if run_body_test_motion(transform,Vector3(0.0,-MAX_STEP_HEIGHT,0.0)):
+			#print("snapped down to stairs")
+			var ocp = cameraHandler.global_position
+			move_and_collide(Vector3(0.0,-MAX_STEP_HEIGHT,0.0))
+			cameraHandler.global_position.y = ocp.y
+	#var did_snap := false
+	#var floor_below : bool = $stepDownCheckRaycast.is_colliding() and not is_surface_to_steep($stepDownCheckRaycast.get_collision_normal())
+	#var was_on_floor_last_frame = Engine.get_physics_frames() - last_frame_was_on_floor == 1
+	#if not is_on_floor() and velocity.y <= 0 and (was_on_floor_last_frame or _snapped_to_stairs_last_frame) and floor_below:# and !jumped_last_frame:
+		#var body_test_result = PhysicsTestMotionResult3D.new()
+		#if run_body_test_motion(self.global_transform, Vector3(0, -MAX_STEP_HEIGHT, 0), body_test_result):
+			#var translate_y = body_test_result.get_travel().y
+			#self.position.y += translate_y
+			#apply_floor_snap()
+			#did_snap = true
+	#_snapped_to_stairs_last_frame = did_snap
+
+func snap_up_to_stairs_check(delta) -> bool:
+	#if jumped_last_frame: return false
+	if airborn: return false #just for jumping while climbing
+	if not is_on_floor() and not _snapped_to_stairs_last_frame: return false
+	var expected_move_motion = self.velocity * Vector3(1, 0, 1) * delta
+	var step_pos_with_clearance = self.global_transform.translated(expected_move_motion + Vector3(0, MAX_STEP_HEIGHT * 2, 0))
+	###
+	var down_check_result = PhysicsTestMotionResult3D.new()
+	if (run_body_test_motion(step_pos_with_clearance, Vector3(0, -MAX_STEP_HEIGHT * 2, 0), down_check_result)
+	and (down_check_result.get_collider().is_class("StaticBody3D") or down_check_result.get_collider().is_class("CSGShape3D"))):
+		var step_height = ((step_pos_with_clearance.origin + down_check_result.get_travel()) - self.global_position).y
+		###
+		if step_height > MAX_STEP_HEIGHT or step_height <= 0.01 or (down_check_result.get_collision_point() - self.global_position).y > MAX_STEP_HEIGHT: return false
+		$stairsAheadRaycast.global_position = down_check_result.get_collision_point() + Vector3(0, MAX_STEP_HEIGHT, 0) + expected_move_motion.normalized() * 0.1
+		$stairsAheadRaycast.force_raycast_update()
+		if $stairsAheadRaycast.is_colliding() and not is_surface_to_steep($stairsAheadRaycast.get_collision_normal()):
+			var travel = down_check_result.get_travel()
+			var ocp = cameraHandler.global_position
+			self.global_position = step_pos_with_clearance.origin + travel#down_check_result.get_travel()
+			#print("snapped up to stairs")
+			#camera.position -= travel
+			cameraHandler.global_position.y = ocp.y
+			apply_floor_snap()
+			_snapped_to_stairs_last_frame = true
+			return true
+	return false
 
 func update_velocity_air(wishdir : Vector3, vel : Vector3, frame_time : float) -> Vector3:
 	#apply friction
@@ -519,8 +742,8 @@ func update_velocity_air(wishdir : Vector3, vel : Vector3, frame_time : float) -
 	var add_speed = (sprint_speed - current_speed)
 	if add_speed < 0:
 		add_speed = 0
-	elif add_speed > acceleration * frame_time: #should be accaleration/4 but i made it more fun :D
-		add_speed = acceleration * frame_time
+	elif add_speed > air_acceleration * frame_time: #should be accaleration/4 but i made it more fun :D
+		add_speed = air_acceleration * frame_time
 	return vel + add_speed * wishdir
 
 func tp(pos : Vector3, rot : Vector2, vel := velocity) -> void:
@@ -558,13 +781,29 @@ func attempt_loose_item_pickup(path_to : String) -> void:
 	if node == null:
 		return #cannot pickup is null
 	if !PlayerInformation.is_hand_empty():
-		print("cannot pickup, hand is full")
-		return #hand is full cannot pickup
+		var data = node.data #should be item but syntax highlighting :/
+		var vacancy = PlayerInformation.get_inventory_vacancy(data)
+		if vacancy == -1:
+			print("cannot pickup, inventory is full")
+			return #hand is full cannot pickup
+		else:
+			PlayerInformation.set_inventory_slot(vacancy,data)
+			node.call_deferred("queue_free")
+			print("stored " + str(data[0]) + " in nearest free slot")
+			return #finished
 	var data = node.data
 	PlayerInformation.set_inventory_slot(PlayerInformation.held_item_index,data)
 	node.call_deferred("queue_free")
 	print("picked up " + str(data[0]))
 
+#weapon and item based info
+var bow_loaded : bool = false #if your bow has an arrow knocked (for animations mainly)
+var loaded_arrow_key : StringName = "basic_arrow"
+var bow_draw_timer : float = 0.0 #how long your bow has been drawn
+var drawing_bow : bool = false #if your drawing it back
+var held_item_attributes: Dictionary = {}
+
+var side_mixup : bool = false
 func use_held_item(special = false):
 	var data = PlayerInformation.get_held_item_data()
 	if data.is_empty():
@@ -572,6 +811,7 @@ func use_held_item(special = false):
 		combat_stance = 3.5
 		if special:
 			play_anim("punch_empty_2")
+			weapon_node.standard_slash(false)
 		else:
 			play_anim("punch_empty_1")
 		return
@@ -586,23 +826,146 @@ func use_held_item(special = false):
 			else:
 				play_anim("punch_empty_2")
 		Items.type.SWORD:
-			var sword_data = data[Items.INDEX_DATA]
-			var attack_speed = sword_data[0]
-			var damage_amount = sword_data[1]
-			var damage_type = sword_data[2]
-			var vfx_method_name = sword_data[3]
-			print("swung sword")
-			play_held_item_sound("swing", attack_speed)
-			weapon_node.slash_close(damage_amount,damage_type,vfx_method_name,special,attack_speed)
 			if special:
-				play_anim("swing_sword_2", true, 0.0, attack_speed)
+				print("started_blocking")
+				blocking = true
+				aiming_down_sights = true
+				pass
 			else:
-				play_anim("swing_sword_1", true, 0.0, attack_speed)
+				var sword_data = data[Items.INDEX_DATA]
+				var attack_speed = sword_data[0]
+				var damage_amount = sword_data[1]
+				var damage_type = sword_data[2]
+				var vfx_method_name = sword_data[3]
+				print("swung sword")
+				play_held_item_sound("swing", attack_speed)
+				#velocity += get_look_dir()
+				if !dash_timer > 0.0 and is_on_floor():
+					dash_timer = 0.75
+					velocity_at_dash_start = velocity
+					dash_vel = (get_look_dir() * Vector3(1.0,0.0,1.0)).normalized()
+				if blocking:
+					play_anim("swing_sword_punish", true, 0.0, attack_speed)
+				else:
+					if side_mixup:
+						side_mixup = false
+						play_anim("swing_sword_2_revision", true, 0.0, attack_speed)
+						weapon_node.slash_close(damage_amount,damage_type,vfx_method_name,false,attack_speed)
+					else:
+						side_mixup = true
+						play_anim("swing_sword_1_revision", true, 0.0, attack_speed)
+						weapon_node.slash_close(damage_amount,damage_type,vfx_method_name,true,attack_speed)
+				#play_anim("swing_sword_1", true, 0.0, attack_speed)
 		Items.type.GUN:
 			play_held_item_sound("shoot")
 			play_anim("shoot_gun",true,0.0)
 			graphics.shoot()
 			shoot_held_item()
+		Items.type.HAMMER:
+			play_anim("swing_hammer",true,0.0)
+			print("swung hammer")
+		Items.type.BOW:
+			start_using_bow(special)
+
+func release_held_item(special = false):
+	var data = PlayerInformation.get_held_item_data()
+	if data.is_empty():
+		print("punched")
+		combat_stance = 3.5
+		if special:
+			play_anim("punch_empty_2")
+		else:
+			play_anim("punch_empty_1")
+		return
+	var type = data[3]
+	match type:
+		Items.type.SWORD:
+			if special:
+				blocking = false
+				aiming_down_sights = false
+				print("stopped blocking")
+		Items.type.GUN:
+			if special:
+				print("stopped aiming_down_sights")
+		Items.type.BOW:
+			if !special:
+				if drawing_bow:
+					shoot_bow()
+
+func start_using_bow(special : bool) -> void:
+	if !special:
+		if bow_loaded:
+			play_anim("shoot_bow_start",true,0.0)
+			aiming_down_sights = true #disables movement stuff, slows, and zooms slightly
+			drawing_bow = true
+			bow_draw_timer = 0.0
+		else:
+			load_bow()
+
+func load_bow() -> void:
+	var quiver_item = PlayerInformation.inventory[PlayerInformation.get_backpack_index()+1]
+	if !quiver_item.is_empty():
+		var arrow_item = []
+		for i in range(0,quiver_item[1]["inventory"].size()):
+			var a = quiver_item[1]["inventory"][i]
+			if !a.is_empty():
+				arrow_item = Items.list[a[0]]
+				quiver_item[1]["inventory"][i] = []
+				loaded_arrow_key = a[0]
+				break
+		if arrow_item.is_empty():
+			print("quiver empty checking inventory")
+			for i in range(0,PlayerInformation.inventory.size()):
+				var a = PlayerInformation.get_item_data(i)
+				if !a.is_empty():
+					if a[Items.INDEX_EQUIPMENT_ID] == Items.equipment_id.ARROW:
+						arrow_item = a
+						loaded_arrow_key = PlayerInformation.inventory[i][0]
+						PlayerInformation.inventory[i] = []
+						break
+			if arrow_item.is_empty():
+				print("no ammo found in inventory")
+				return
+		var arrow_graphics = load(arrow_item[Items.INDEX_MODEL]).instantiate()#load("res://assets/items/arrows/arrow_ph.glb").instantiate()
+		#^^^ get frow quiver aka held_item_attributes["inventory"]
+		prop_1_handler.add_child(arrow_graphics)
+		arrow_graphics.position.y += 0.33 #to make centered on hand
+		prop_item_models.append(arrow_graphics)
+		play_anim("load_bow", true, 0.0)
+		bow_loaded = true
+	pass
+
+func shoot_bow():
+	if bow_draw_timer < 0.1:
+		print("bow spam, canceling shot")
+		aiming_down_sights = false
+		drawing_bow = false
+		play_anim("idle_holding_bow_loaded", true)
+		return
+	
+	var bow_info = PlayerInformation.get_held_item_data()
+	var bow_data = bow_info[Items.INDEX_DATA]
+	var min_draw_time = bow_data[0]
+	
+	clear_item_props()
+	
+	
+	print("shot bow")
+	aiming_down_sights = false
+	drawing_bow = false
+	bow_loaded = false
+	if bow_draw_timer > min_draw_time:
+		print("perfect draw shooting accurately")
+		play_anim("shoot_bow_end_full")
+		var dir = get_look_dir()
+		var pos = look_dir_reference.global_position
+		Global.spawn_entity("basic_arrow",pos,dir*bow_data[3],[loaded_arrow_key,self])
+	else:
+		print("inadequate draw, misfire")
+		play_anim("shoot_bow_end_full")
+		var dir = get_look_dir()
+		var pos = look_dir_reference.global_position
+		Global.spawn_entity("basic_arrow",pos,dir*bow_data[3]*0.1,[loaded_arrow_key,self])
 
 func shoot_held_item() -> void:
 	var data = PlayerInformation.get_held_item_data()[Items.INDEX_DATA]
@@ -624,8 +987,11 @@ var vaulting: bool = false
 
 func can_vault() -> bool:
 	if $graphics/vault_check/RayCast3D.is_colliding():
-		desired_vault_pos = $graphics/vault_check/RayCast3D.get_collision_point()
-		return true
+		var norm = $graphics/vault_check/RayCast3D.get_collision_normal()
+		if !is_surface_to_steep(norm):
+			desired_vault_pos = $graphics/vault_check/RayCast3D.get_collision_point()
+			return true
+		else : return false
 	return false
 
 func _on_anim_finished(key) -> void:
@@ -636,6 +1002,10 @@ func _on_anim_finished(key) -> void:
 			swing_held_item()
 		"swing_sword_2":
 			swing_held_item()
+		"load_bow":
+			if Input.is_action_pressed("use_item"):
+				print("bow loaded continuing shot")
+				use_held_item()
 	if action_animations.has(key):
 		#anim.play(get_movement_anim("idle"))
 		pass
@@ -665,16 +1035,33 @@ func _on_dropped_item(_data, _pos) -> void:
 	print("dropped_item")
 	pass
 
+func _on_item_drop_attempt(index : int) -> void:
+	var data = PlayerInformation.steal_inventory_slot(index)
+	#PlayerInformation.emit_signal("dropped_item", data, look_dir_reference.global_position)
+	#(data, pos, rotation, stuck, velL , velR) -> void:
+	Global.drop_item(data,held_item_handler.global_position,held_item_handler.global_rotation,false,velocity)
+	PlayerInformation.emit_signal("update_held_item")
+	play_anim("drop_bread", true, 0.0)
+
 var held_item_models = []
+var prop_item_models = []
 func update_held_item_graphics() -> void:
+	aiming_down_sights = false
+	blocking = false
+	bow_loaded = false
 	for old in held_item_models:#.get_children(false):
 		old.queue_free()
+	for old_p in prop_item_models:
+		old_p.queue_free()
 	held_item_models = []
+	prop_item_models = []
 	var item_data = PlayerInformation.get_held_item_data()
 	if item_data == []:
 		play_anim(get_movement_anim("idle"),true)
 		#interupts drop animation :/
 		return
+	held_item_attributes = PlayerInformation.get_held_item_attributes()#PlayerInformation.inventory[PlayerInformation.held_item_index][1]
+	print(held_item_attributes)
 	#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations]
 	var path = item_data[Items.INDEX_MODEL]
 	var g = load(path).instantiate()
@@ -700,8 +1087,17 @@ func update_held_item_graphics() -> void:
 			play_anim("draw_sword_fancifully", true, 0.0)
 		Items.animation.GUN_ANIM:
 			play_anim("draw_gun",true,0.0)
+		Items.animation.HAMMER_ANIM:
+			play_anim("draw_hammer",true,0.0)
+		Items.animation.BOW_ANIM:
+			play_anim("draw_bow",true,0.0)
 		_:
 			play_anim("draw_bread", true, 0.0)
+
+func clear_item_props() -> void:
+	for old_p in prop_item_models:
+		old_p.queue_free()
+	prop_item_models = []
 
 func play_held_item_sound(key : String, speed: float = 1.0) -> void:
 	var s = PlayerInformation.get_held_item_sound(key)
@@ -715,4 +1111,27 @@ func perform_action(key : String) -> void:
 	play_anim(key, true, 0.2, 1.0)
 	pass
 
+func _on_projectile_hit_enemy(p_dam_amount:int,p_dam_type:int,entity_node):
+	print("recieved projectile hit info")
+	entity_node.take_damage(p_dam_amount,p_dam_type)
+	pass
 
+var overlapping_special_areas:Dictionary = {}
+
+func _on_special_area_entered(body) -> void:
+	var groups = body.get_groups()
+	var s_info = Global.get_surface_info(groups)
+	overlapping_special_areas[body] = s_info
+	if s_info.has(Global.SWIMABLE):
+		swimming = true
+		swimming_val = s_info[Global.SWIMABLE]
+
+func _on_special_area_exited(body) -> void:
+	if overlapping_special_areas.has(body):
+		overlapping_special_areas.erase(body)
+	swimming = false
+	for k in overlapping_special_areas.keys():
+		if overlapping_special_areas[k].has(Global.SWIMABLE):
+			swimming = true
+			swimming_val = overlapping_special_areas[k][Global.SWIMABLE]
+			return #got what we needed to know for now

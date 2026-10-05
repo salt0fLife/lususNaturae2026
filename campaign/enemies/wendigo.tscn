@@ -1,8 +1,10 @@
-[gd_scene load_steps=38 format=3 uid="uid://vaiwu5wehwiw"]
+[gd_scene load_steps=43 format=3 uid="uid://vaiwu5wehwiw"]
 
 [ext_resource type="Script" path="res://scripts/wendigo.gd" id="1_ocykx"]
 [ext_resource type="PackedScene" uid="uid://quetnm262m2i" path="res://assets/enemies_wip/wendigo_blockout.glb" id="2_tlsn3"]
+[ext_resource type="Shader" path="res://assets/shaders/heat_signature.gdshader" id="3_omox3"]
 [ext_resource type="PackedScene" uid="uid://cvsdxjehh0m7f" path="res://assets/effects/senses_trail.tscn" id="4_p7jh0"]
+[ext_resource type="Texture2D" uid="uid://drscnbar1xv1j" path="res://assets/textures/vfx/heat_map_gradient.tres" id="4_qtwq0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_efd1q"]
 resource_name = "wendigo_base"
@@ -259,15 +261,13 @@ bind/74/name = &"foot.R"
 bind/74/bone = -1
 bind/74/pose = Transform3D(-0.880901, -0.0914407, -0.464383, -0.458505, -0.0785319, 0.885215, -0.117414, 0.992709, 0.0272529, -0.578084, -0.036154, -0.149248)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7dswu"]
-cull_mode = 2
-shading_mode = 0
-specular_mode = 2
-disable_fog = true
-albedo_color = Color(0.447059, 0.0941176, 0.0823529, 1)
-distance_fade_mode = 2
-distance_fade_min_distance = 20.0
-distance_fade_max_distance = 15.0
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cjnv8"]
+render_priority = 0
+shader = ExtResource("3_omox3")
+shader_parameter/distance_fade_min = 20.0
+shader_parameter/distance_fade_max = 15.0
+shader_parameter/displacement_amplitude = 0.05
+shader_parameter/heat_map_gradient = ExtResource("4_qtwq0")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_46wf1"]
 resource_name = "wendigo_blockout_Cube_026"
@@ -372,6 +372,74 @@ _surfaces = [{
 "vertex_data": PackedByteArray(174, 16, 20, 63, 161, 238, 253, 187, 166, 72, 148, 190, 155, 64, 19, 63, 237, 240, 246, 61, 176, 143, 148, 190, 230, 69, 238, 62, 221, 143, 40, 188, 134, 67, 106, 190, 189, 165, 236, 62, 209, 189, 241, 61, 152, 209, 106, 190, 57, 218, 67, 63, 232, 83, 218, 186, 104, 211, 106, 61, 39, 10, 67, 63, 69, 179, 1, 62, 37, 155, 104, 61, 127, 236, 38, 63, 244, 197, 137, 187, 72, 5, 242, 61, 107, 28, 38, 63, 114, 51, 254, 61, 34, 233, 240, 61, 124, 58, 0, 63, 22, 205, 43, 62, 144, 126, 64, 189, 230, 176, 1, 63, 232, 54, 246, 187, 252, 127, 60, 189, 79, 72, 52, 63, 162, 102, 46, 62, 138, 59, 32, 190, 180, 190, 53, 63, 237, 5, 163, 187, 233, 59, 31, 190, 174, 16, 20, 191, 161, 238, 253, 187, 166, 72, 148, 190, 155, 64, 19, 191, 237, 240, 246, 61, 176, 143, 148, 190, 230, 69, 238, 190, 221, 143, 40, 188, 134, 67, 106, 190, 189, 165, 236, 190, 209, 189, 241, 61, 152, 209, 106, 190, 57, 218, 67, 191, 232, 83, 218, 186, 104, 211, 106, 61, 39, 10, 67, 191, 69, 179, 1, 62, 37, 155, 104, 61, 127, 236, 38, 191, 244, 197, 137, 187, 72, 5, 242, 61, 107, 28, 38, 191, 114, 51, 254, 61, 34, 233, 240, 61, 124, 58, 0, 191, 22, 205, 43, 62, 144, 126, 64, 189, 230, 176, 1, 191, 232, 54, 246, 187, 252, 127, 60, 189, 79, 72, 52, 191, 162, 102, 46, 62, 138, 59, 32, 190, 180, 190, 53, 191, 237, 5, 163, 187, 233, 59, 31, 190, 174, 16, 20, 63, 161, 238, 253, 187, 166, 72, 148, 190, 174, 16, 20, 63, 161, 238, 253, 187, 166, 72, 148, 190, 39, 10, 67, 63, 69, 179, 1, 62, 37, 155, 104, 61, 39, 10, 67, 63, 69, 179, 1, 62, 37, 155, 104, 61, 107, 28, 38, 63, 114, 51, 254, 61, 34, 233, 240, 61, 107, 28, 38, 63, 114, 51, 254, 61, 34, 233, 240, 61, 174, 16, 20, 191, 161, 238, 253, 187, 166, 72, 148, 190, 174, 16, 20, 191, 161, 238, 253, 187, 166, 72, 148, 190, 127, 236, 38, 191, 244, 197, 137, 187, 72, 5, 242, 61, 127, 236, 38, 191, 244, 197, 137, 187, 72, 5, 242, 61, 124, 58, 0, 191, 22, 205, 43, 62, 144, 126, 64, 189, 124, 58, 0, 191, 22, 205, 43, 62, 144, 126, 64, 189, 174, 16, 20, 63, 161, 238, 253, 187, 166, 72, 148, 190, 174, 16, 20, 63, 161, 238, 253, 187, 166, 72, 148, 190, 230, 69, 238, 62, 221, 143, 40, 188, 134, 67, 106, 190, 230, 69, 238, 62, 221, 143, 40, 188, 134, 67, 106, 190, 230, 69, 238, 62, 221, 143, 40, 188, 134, 67, 106, 190, 39, 10, 67, 63, 69, 179, 1, 62, 37, 155, 104, 61, 39, 10, 67, 63, 69, 179, 1, 62, 37, 155, 104, 61, 39, 10, 67, 63, 69, 179, 1, 62, 37, 155, 104, 61, 107, 28, 38, 63, 114, 51, 254, 61, 34, 233, 240, 61, 107, 28, 38, 63, 114, 51, 254, 61, 34, 233, 240, 61, 107, 28, 38, 63, 114, 51, 254, 61, 34, 233, 240, 61, 174, 16, 20, 191, 161, 238, 253, 187, 166, 72, 148, 190, 174, 16, 20, 191, 161, 238, 253, 187, 166, 72, 148, 190, 39, 10, 67, 191, 69, 179, 1, 62, 37, 155, 104, 61, 39, 10, 67, 191, 69, 179, 1, 62, 37, 155, 104, 61, 39, 10, 67, 191, 69, 179, 1, 62, 37, 155, 104, 61, 127, 236, 38, 191, 244, 197, 137, 187, 72, 5, 242, 61, 127, 236, 38, 191, 244, 197, 137, 187, 72, 5, 242, 61, 127, 236, 38, 191, 244, 197, 137, 187, 72, 5, 242, 61, 124, 58, 0, 191, 22, 205, 43, 62, 144, 126, 64, 189, 174, 16, 20, 63, 161, 238, 253, 187, 166, 72, 148, 190, 174, 16, 20, 63, 161, 238, 253, 187, 166, 72, 148, 190, 174, 16, 20, 63, 161, 238, 253, 187, 166, 72, 148, 190, 174, 16, 20, 63, 161, 238, 253, 187, 166, 72, 148, 190, 155, 64, 19, 63, 237, 240, 246, 61, 176, 143, 148, 190, 155, 64, 19, 63, 237, 240, 246, 61, 176, 143, 148, 190, 155, 64, 19, 63, 237, 240, 246, 61, 176, 143, 148, 190, 155, 64, 19, 63, 237, 240, 246, 61, 176, 143, 148, 190, 230, 69, 238, 62, 221, 143, 40, 188, 134, 67, 106, 190, 230, 69, 238, 62, 221, 143, 40, 188, 134, 67, 106, 190, 230, 69, 238, 62, 221, 143, 40, 188, 134, 67, 106, 190, 230, 69, 238, 62, 221, 143, 40, 188, 134, 67, 106, 190, 39, 10, 67, 63, 69, 179, 1, 62, 37, 155, 104, 61, 39, 10, 67, 63, 69, 179, 1, 62, 37, 155, 104, 61, 39, 10, 67, 63, 69, 179, 1, 62, 37, 155, 104, 61, 39, 10, 67, 63, 69, 179, 1, 62, 37, 155, 104, 61, 127, 236, 38, 63, 244, 197, 137, 187, 72, 5, 242, 61, 127, 236, 38, 63, 244, 197, 137, 187, 72, 5, 242, 61, 127, 236, 38, 63, 244, 197, 137, 187, 72, 5, 242, 61, 127, 236, 38, 63, 244, 197, 137, 187, 72, 5, 242, 61, 124, 58, 0, 63, 22, 205, 43, 62, 144, 126, 64, 189, 124, 58, 0, 63, 22, 205, 43, 62, 144, 126, 64, 189, 124, 58, 0, 63, 22, 205, 43, 62, 144, 126, 64, 189, 124, 58, 0, 63, 22, 205, 43, 62, 144, 126, 64, 189, 174, 16, 20, 191, 161, 238, 253, 187, 166, 72, 148, 190, 174, 16, 20, 191, 161, 238, 253, 187, 166, 72, 148, 190, 174, 16, 20, 191, 161, 238, 253, 187, 166, 72, 148, 190, 174, 16, 20, 191, 161, 238, 253, 187, 166, 72, 148, 190, 155, 64, 19, 191, 237, 240, 246, 61, 176, 143, 148, 190, 155, 64, 19, 191, 237, 240, 246, 61, 176, 143, 148, 190, 155, 64, 19, 191, 237, 240, 246, 61, 176, 143, 148, 190, 155, 64, 19, 191, 237, 240, 246, 61, 176, 143, 148, 190, 230, 69, 238, 190, 221, 143, 40, 188, 134, 67, 106, 190, 230, 69, 238, 190, 221, 143, 40, 188, 134, 67, 106, 190, 230, 69, 238, 190, 221, 143, 40, 188, 134, 67, 106, 190, 230, 69, 238, 190, 221, 143, 40, 188, 134, 67, 106, 190, 39, 10, 67, 191, 69, 179, 1, 62, 37, 155, 104, 61, 39, 10, 67, 191, 69, 179, 1, 62, 37, 155, 104, 61, 39, 10, 67, 191, 69, 179, 1, 62, 37, 155, 104, 61, 39, 10, 67, 191, 69, 179, 1, 62, 37, 155, 104, 61, 127, 236, 38, 191, 244, 197, 137, 187, 72, 5, 242, 61, 127, 236, 38, 191, 244, 197, 137, 187, 72, 5, 242, 61, 127, 236, 38, 191, 244, 197, 137, 187, 72, 5, 242, 61, 127, 236, 38, 191, 244, 197, 137, 187, 72, 5, 242, 61, 124, 58, 0, 191, 22, 205, 43, 62, 144, 126, 64, 189, 124, 58, 0, 191, 22, 205, 43, 62, 144, 126, 64, 189, 124, 58, 0, 191, 22, 205, 43, 62, 144, 126, 64, 189, 124, 58, 0, 191, 22, 205, 43, 62, 144, 126, 64, 189, 17, 206, 80, 11, 169, 223, 8, 43, 188, 211, 166, 248, 21, 230, 212, 79, 57, 47, 74, 55, 75, 231, 123, 104, 241, 36, 148, 195, 254, 232, 84, 22, 116, 186, 191, 83, 24, 229, 159, 233, 138, 186, 47, 169, 36, 233, 137, 150, 53, 117, 24, 78, 169, 225, 194, 172, 230, 116, 29, 172, 151, 224, 61, 210, 117, 77, 91, 181, 255, 255, 255, 63, 191, 77, 222, 76, 255, 255, 255, 63, 94, 201, 80, 210, 255, 255, 255, 191, 79, 207, 65, 51, 255, 255, 255, 191, 237, 49, 80, 11, 85, 32, 246, 212, 66, 44, 166, 248, 233, 25, 42, 176, 197, 208, 74, 55, 179, 24, 131, 151, 13, 219, 148, 195, 0, 23, 170, 233, 138, 69, 191, 83, 230, 26, 95, 22, 116, 69, 47, 169, 218, 22, 117, 105, 201, 138, 24, 78, 85, 30, 61, 83, 24, 139, 29, 172, 103, 31, 193, 45, 137, 178, 91, 181, 255, 255, 255, 63, 63, 178, 222, 76, 255, 255, 255, 63, 160, 54, 80, 210, 255, 255, 255, 191, 175, 48, 65, 51, 255, 255, 255, 191, 124, 159, 247, 225, 169, 223, 8, 43, 63, 167, 45, 34, 169, 223, 8, 43, 182, 166, 141, 200, 36, 233, 137, 150, 239, 169, 112, 55, 36, 233, 137, 150, 96, 148, 150, 208, 151, 224, 61, 210, 5, 163, 169, 45, 151, 224, 61, 210, 200, 178, 56, 38, 85, 32, 246, 212, 212, 42, 177, 205, 85, 32, 246, 212, 129, 164, 191, 72, 85, 30, 61, 83, 92, 54, 80, 191, 85, 30, 61, 83, 61, 189, 133, 94, 255, 255, 255, 63, 124, 64, 147, 212, 255, 255, 255, 63, 59, 87, 223, 20, 169, 223, 8, 43, 74, 162, 219, 45, 169, 223, 8, 43, 232, 118, 59, 223, 75, 231, 123, 104, 186, 158, 100, 251, 75, 231, 123, 104, 48, 88, 237, 34, 75, 231, 123, 104, 160, 140, 185, 206, 36, 233, 137, 150, 7, 161, 193, 234, 36, 233, 137, 150, 131, 168, 140, 61, 36, 233, 137, 150, 127, 128, 60, 208, 151, 224, 61, 210, 71, 112, 172, 50, 151, 224, 61, 210, 175, 157, 84, 55, 151, 224, 61, 210, 231, 164, 186, 190, 85, 32, 246, 212, 243, 71, 220, 44, 85, 32, 246, 212, 50, 158, 137, 188, 218, 22, 117, 105, 76, 114, 130, 181, 218, 22, 117, 105, 72, 73, 179, 60, 218, 22, 117, 105, 96, 159, 197, 179, 85, 30, 61, 83, 0, 135, 223, 165, 85, 30, 61, 83, 8, 90, 118, 61, 85, 30, 61, 83, 46, 138, 147, 181, 255, 255, 255, 63, 117, 37, 144, 17, 169, 223, 8, 43, 35, 76, 168, 23, 169, 223, 8, 43, 55, 181, 228, 60, 169, 223, 8, 43, 141, 252, 227, 57, 169, 223, 8, 43, 212, 37, 194, 207, 21, 230, 212, 79, 22, 28, 235, 18, 21, 230, 212, 79, 125, 150, 79, 251, 21, 230, 212, 79, 73, 243, 228, 209, 21, 230, 212, 79, 4, 20, 216, 173, 75, 231, 123, 104, 42, 37, 3, 26, 75, 231, 123, 104, 73, 66, 148, 39, 75, 231, 123, 104, 79, 52, 83, 100, 75, 231, 123, 104, 155, 156, 139, 215, 36, 233, 137, 150, 15, 192, 244, 76, 36, 233, 137, 150, 11, 126, 193, 175, 36, 233, 137, 150, 210, 244, 86, 183, 36, 233, 137, 150, 41, 95, 108, 29, 169, 225, 194, 172, 71, 75, 60, 98, 169, 225, 194, 172, 129, 169, 26, 65, 169, 225, 194, 172, 32, 116, 240, 156, 169, 225, 194, 172, 32, 34, 239, 178, 255, 255, 255, 63, 228, 113, 111, 245, 255, 255, 255, 63, 218, 45, 18, 123, 255, 255, 255, 63, 100, 108, 50, 174, 255, 255, 255, 63, 99, 216, 248, 12, 85, 32, 246, 212, 66, 182, 112, 19, 85, 32, 246, 212, 192, 67, 4, 48, 85, 32, 246, 212, 234, 0, 84, 192, 85, 32, 246, 212, 232, 242, 237, 17, 233, 25, 42, 176, 80, 223, 105, 197, 233, 25, 42, 176, 137, 96, 242, 232, 233, 25, 42, 176, 23, 16, 24, 213, 233, 25, 42, 176, 35, 221, 37, 28, 179, 24, 131, 151, 187, 236, 174, 178, 179, 24, 131, 151, 194, 186, 193, 39, 179, 24, 131, 151, 221, 209, 92, 94, 179, 24, 131, 151, 225, 91, 132, 211, 218, 22, 117, 105, 84, 128, 116, 182, 218, 22, 117, 105, 252, 58, 4, 86, 218, 22, 117, 105, 106, 14, 205, 178, 218, 22, 117, 105, 33, 167, 9, 33, 85, 30, 61, 83, 235, 190, 44, 103, 85, 30, 61, 83, 114, 140, 206, 166, 85, 30, 61, 83, 173, 78, 95, 69, 85, 30, 61, 83, 101, 216, 148, 183, 255, 255, 255, 63, 84, 141, 200, 233, 255, 255, 255, 63, 242, 212, 102, 121, 255, 255, 255, 63, 34, 154, 150, 176, 255, 255, 255, 63)
 }]
 blend_shape_mode = 0
+
+[sub_resource type="Shader" id="Shader_mapep"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.2.1.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_disabled,unshaded,fog_disabled;
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
+uniform float distance_fade_min;
+uniform float distance_fade_max;
+uniform float point_size : hint_range(0,128);
+uniform float roughness : hint_range(0,1);
+uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
+uniform float specular;
+uniform float metallic;
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+
+void vertex() {
+	UV=UV*uv1_scale.xy+uv1_offset.xy;
+}
+
+
+
+
+
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
+	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+	SPECULAR = specular;
+	{
+		float fade_distance = length(VERTEX);
+		const vec3 magic = vec3(0.06711056f, 0.00583715f, 52.9829189f);		float fade = clamp(smoothstep(distance_fade_min, distance_fade_max, fade_distance), 0.0, 1.0);
+		if (fade < 0.001 || fade < fract(magic.z * fract(dot(FRAGCOORD.xy, magic.xy)))) {
+			discard;
+		}
+	}
+
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_47yye"]
+render_priority = 0
+shader = SubResource("Shader_mapep")
+shader_parameter/albedo = Color(0.447059, 0.0941176, 0.0823529, 1)
+shader_parameter/distance_fade_min = 20.0
+shader_parameter/distance_fade_max = 15.0
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_052h2"]
 resource_name = "wendigo_blockout_Cube_031"
@@ -4724,6 +4792,16 @@ _data = {
 radius = 0.780782
 height = 2.84362
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7dswu"]
+cull_mode = 2
+shading_mode = 0
+specular_mode = 2
+disable_fog = true
+albedo_color = Color(0.447059, 0.0941176, 0.0823529, 1)
+distance_fade_mode = 2
+distance_fade_min_distance = 20.0
+distance_fade_max_distance = 15.0
+
 [node name="wendigo" type="CharacterBody3D"]
 collision_layer = 4
 script = ExtResource("1_ocykx")
@@ -4731,6 +4809,7 @@ script = ExtResource("1_ocykx")
 [node name="graphics" type="Node3D" parent="."]
 
 [node name="wendigo_blockout" parent="graphics" groups=["light"] instance=ExtResource("2_tlsn3")]
+visible = false
 
 [node name="Skeleton3D" parent="graphics/wendigo_blockout/Armature" index="0"]
 bones/1/position = Vector3(-1.14747e-14, 1.72942, -0.615211)
@@ -4797,7 +4876,6 @@ bones/73/rotation = Quaternion(0.489223, 0.0336355, 0.0145449, 0.871389)
 bones/74/rotation = Quaternion(0.617848, 0.0352164, 0.118917, 0.776455)
 
 [node name="wendigo_blockout_smell" type="Node3D" parent="graphics"]
-visible = false
 
 [node name="Armature" type="Node3D" parent="graphics/wendigo_blockout_smell"]
 
@@ -5331,98 +5409,98 @@ bones/74/scale = Vector3(1, 1, 1)
 [node name="Cube_016" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_6ehav")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_017" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_46wf1")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_018" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_uyu68")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_019" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_0sfye")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_020" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_ytcld")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_021" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_7eqps")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_47yye")
 
 [node name="Cube_022" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_052h2")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_023" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_ue6ib")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
-surface_material_override/1 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
+surface_material_override/1 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_024" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_6qqdm")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_025" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_eg1pf")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_026" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_nmc4j")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_027" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_fqou5")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_028" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_a7tas")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_029" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_11gwx")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Cube_030" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_bjerr")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Plane_002" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_uv6yy")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Plane_003" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_id6q4")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Vert_002" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_hxdpp")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="Vert_003" type="MeshInstance3D" parent="graphics/wendigo_blockout_smell/Armature/Skeleton3D"]
 mesh = SubResource("ArrayMesh_oeywo")
 skin = SubResource("Skin_v2h7c")
-surface_material_override/0 = SubResource("StandardMaterial3D_7dswu")
+surface_material_override/0 = SubResource("ShaderMaterial_cjnv8")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="graphics/wendigo_blockout_smell"]
 libraries = {
@@ -5438,5 +5516,7 @@ material = SubResource("StandardMaterial3D_7dswu")
 width = 0.345
 max_points = 100
 distance_between_points = 2.0
+natrual_point_decay = null
+gravity = null
 
 [editable path="graphics/wendigo_blockout"]

@@ -6,6 +6,7 @@ extends Node
 @onready var entityHandler = $entityHandler
 @onready var loading_screen = $loading_screen
 @onready var decalHandler = $decalHandler
+@onready var tempHandler = $tempHandler #home of all temporary graphical effects and such
 
 #game variables
 var day_timer: float = 500.1
@@ -15,9 +16,11 @@ var seconds_played = 0
 var level = "debug"
 var player_stage = -2
 var in_game_days = 0
+var time_paused = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	MusicHandler.stop()
 	PlayerInformation.connect("dropped_item", _on_dropped_item)
 	PlayerInformation.connect("perished", _on_player_death)
 	PlayerInformation.connect("changed_using_senses", _on_changed_using_senses)
@@ -26,32 +29,48 @@ func _ready():
 	Global.connect("change_level", change_level)
 	Global.connect("reached_major_point", _on_major_point_reached)
 	Global.connect("spawn_entity_signal", spawn_entity)
+	Global.connect("new_impact_signal", new_impact)
 	Global.connect("create_decal_signal", create_decal)
 	Global.connect("play_cutscene_signal", play_cutscene)
+	Global.connect("drop_item_signal",_on_dropped_item)
+	Global.connect("update_debug_render", _on_update_debug_render)
+	Global.connect("indicate_damage_signal",_on_indicate_damage)
 	PlayerInformation.connect("change_player", change_player)
 	PlayerInformation.connect("slept", _on_player_slept)
 	$pause_menu/buttonHandler/resume.connect("button_down", set_paused.bind(false))
 	$"pause_menu/buttonHandler/save and quit".connect("button_down", save_and_quit)
-	
+	$pause_menu/buttonHandler/settings.connect("button_down",open_settings)
 	setup_dev_controls()
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	load_data_from_save()
 	
 	if Global.progression == 0:
+		$loading_screen.visible = false
 		load_current_level_persistent_data() # a bandaid fix to be sure
 		play_cutscene("new_game_start")
 		Global.progression = 1
 	else:
 		start_game()
 
-func start_game():
+func start_game(was_from_checkpoint:bool = false): #the only reason i need to know if its from a checkpoint is for persistent nodes to load properly
 	#var level_data = Global.levels[level]
 	#var level_scene = load(level_data[0]).instantiate()
 	#worldHandler.add_child(level_scene)
 	change_level(level, false)
 	change_player(player_stage)
-	load_current_level_persistent_data()
+	load_current_level_persistent_data(was_from_checkpoint)
+
+func new_impact(type : int, dir : Vector3, pos : Vector3) -> void:
+	var s_c = surface_impact.new_impact(type,dir)
+	s_c.position = pos
+	tempHandler.add_child(s_c)
+
+func _on_indicate_damage(amount,type,pos) -> void:
+	var di = damage_indicator.new_indicator(amount,type)
+	di.position = pos
+	tempHandler.add_child(di)
+	
 
 const default_save_data = {
 	"velocity" : Vector3.ZERO,
@@ -84,15 +103,25 @@ func change_level(level_key : String, update_persistent_data = true) -> void:
 	if changing_level:
 		printerr("already loading different level")
 		return
+	
+	loading_screen.visible = true
+	level_status = 0.0
 	set_paused(true)
 	if update_persistent_data:
 		update_persistent_levels_data()
+		for p in get_tree().get_nodes_in_group("persistent"):
+			if p.has_method("save_data"):
+				p.save_data(Global.save_filepath)
+	
 	for old in worldHandler.get_children(false):
 		old.queue_free()
 	level = level_key
 	level_to_change_too = Global.levels[level][0]
 	ResourceLoader.load_threaded_request(Global.levels[level][0])
 	changing_level = true
+	
+	var level_texture = load(Global.levels[level][1])
+	loading_screen.set_background(level_texture)
 	
 	#level = level_key
 	#var level_data = Global.levels[level]
@@ -106,7 +135,7 @@ func set_level_to_scene(scene : PackedScene) -> void:
 	worldHandler.add_child(level_scene)
 	load_current_level_persistent_data()
 
-func load_current_level_persistent_data():
+func load_current_level_persistent_data(was_from_checkpoint:bool = false): #the only reason i need to know if its from a checkpoint is for persistent nodes to load properly
 	loading_screen.visible = true
 	loading_screen.update_mode(true, "recreating level data")
 	for old_i in itemHandler.get_children(false):
@@ -126,7 +155,10 @@ func load_current_level_persistent_data():
 				print("default_level_settup")
 	
 	for i in data[0]:
-		_on_dropped_item(i[1],i[0])
+		if !i.size() > 2:
+			_on_dropped_item(i[1],i[0])
+		else:
+			_on_dropped_item(i[1],i[0],i[2],i[3])
 	
 	if data.size() > 1:
 		#for d in data[1]:
@@ -146,18 +178,24 @@ func load_current_level_persistent_data():
 		for e in data[2]:
 			#entities
 			#spawn_entity(e[0],e[1])
-			var scene = spawn_entity(e[0])
-			scene.set_data(e[1])
-	#loading_screen.visible = false
+			if typeof(e[0]) == TYPE_STRING:
+				var scene = spawn_entity(e[0])
+				scene.set_data(e[1])
+				pass
+			else:
+				printerr("value of " + str(e[0]) + " found in place of entity key")
+	
+	if !was_from_checkpoint:
+		for p in get_tree().get_nodes_in_group("persistent"): ##NOTE i dont believe this works with checkpoints and the whole system may need to be tweaked
+			if p.has_method("load_data"):
+				p.load_data(Global.save_filepath)
+	else:
+		for p in get_tree().get_nodes_in_group("persistent"): ##NOTE i dont believe this works with checkpoints and the whole system may need to be tweaked
+			if p.has_method("load_data"):
+				p.load_data(Global.save_filepath+"checkpoint/")
+	
+	loading_screen.visible = false
 	loading_screen.update_mode(false, "recreating level data")
-
-func spawn_entity(key : String, position : Vector3 = Vector3.ZERO):
-	if !Global.entities.has(key):
-		return null
-	var e = load(Global.entities[key][0]).instantiate()
-	entityHandler.add_child(e)
-	e.position = position
-	return e
 
 func create_decal(node) -> void: #just for visuals
 	if decalHandler.get_child_count(false) > 512:
@@ -201,8 +239,9 @@ func load_data_from_save():
 	if inventory_data == null:
 		inventory_data = default_inventory_data.duplicate(true)
 	PlayerInformation.held_item_index = inventory_data["held_item_index"]
-	PlayerInformation.inventory = inventory_data["inventory"]
-	PlayerInformation.emit_signal("update_inventory")
+	#PlayerInformation.inventory = inventory_data["inventory"]
+	#PlayerInformation.emit_signal("update_inventory")
+	PlayerInformation.load_inventory(inventory_data["inventory"])
 	
 	##world
 	#var world_data = SaveHandler.load_file(Global.save_filepath,"world_data.dat")
@@ -239,6 +278,8 @@ func save_game_data():
 	"min_sleep_food" : PlayerInformation.min_sleep_food,
 	"health" : PlayerInformation.health,
 	"max_health" : PlayerInformation.max_health,
+	"blood" : PlayerInformation.blood,
+	"max_blood" : PlayerInformation.max_blood,
 	"in_game_days" : in_game_days,
 	"version" : Global.version
 	}
@@ -249,6 +290,10 @@ func save_game_data():
 	##world
 	update_persistent_levels_data()
 	SaveHandler.save_file(Global.save_filepath,"levels_persistent.dat", Global.levels_persistent_data)
+	for p in get_tree().get_nodes_in_group("persistent"):
+		if p.has_method("save_data"):
+			p.save_data(Global.save_filepath)
+	
 	
 	##preview
 	var summary = "you played the demo version!" + "\nyou also played for about " + Global.get_abreviated_time(seconds_played)
@@ -256,6 +301,7 @@ func save_game_data():
 	preview_data = JSON.parse_string(preview_data)
 	preview_data["progress_summary"] = summary
 	preview_data["seconds_played"] = seconds_played
+	preview_data["last_played"] = Time.get_datetime_dict_from_system()
 	preview_data = JSON.stringify(preview_data)
 	SaveHandler.save_file(Global.save_filepath,"preview.dat",preview_data)
 	
@@ -277,6 +323,7 @@ func save_game_data():
 		"major_points_reached" : Global.major_points_reached,
 	}
 	SaveHandler.save_file(Global.save_filepath,"story_info.dat", story_info)
+	
 
 func update_persistent_levels_data() -> void:
 	if in_cutscene:
@@ -295,7 +342,7 @@ func update_persistent_levels_data() -> void:
 	#print("saved decals : " + str(decals_save))
 	
 	for li in itemHandler.get_children(false):
-		var data = [li.position, li.data]
+		var data = [li.position, li.data, li.rotation, li.stuck]
 		loose_items_save += [data]
 	
 	var entity_save = []
@@ -308,7 +355,7 @@ func update_persistent_levels_data() -> void:
 
 var changing_level:bool = false
 var level_to_change_too:StringName = ""
-
+var level_status:float = 0.0
 
 var sub_second_counter = 0.0
 func _process(delta):
@@ -317,10 +364,14 @@ func _process(delta):
 			print("well thats a problem")
 		var progress = []
 		var status = ResourceLoader.load_threaded_get_status(level_to_change_too, progress)
-		print("level status : " + str(progress[0]))
+		print("level progress : " + str(progress[0]))
+		level_status = lerp(level_status,float(progress[0]),delta*10.0)
+		if level_status > 0.99 and progress[0] == 1:
+			level_status = 1.0
+		print("level status : " + str(level_status))
 		loading_screen.visible = true
-		loading_screen.update_progress(progress[0])
-		if ResourceLoader.THREAD_LOAD_LOADED:#progress[0] >= 1.0:
+		loading_screen.update_progress(level_status)
+		if ResourceLoader.THREAD_LOAD_LOADED and level_status == 1.0:#progress[0] >= 1.0:
 			changing_level = false
 			set_level_to_scene(ResourceLoader.load_threaded_get(level_to_change_too))
 			level_to_change_too = ""
@@ -336,17 +387,23 @@ func _process(delta):
 	else:
 		$Label2.text = "playing"
 	
+	if item_use_frame_buffer > 0:
+		item_use_frame_buffer -= 1
+	
+	
 	if in_cutscene:
 		cutscene_timer -= delta
 		if cutscene_timer < 0.0:
 			end_cutscene()
 		return
 	
-	day_timer += delta
+	if !time_paused:
+		day_timer += delta
 	if day_timer > day_length:
 		day_timer -= day_length
 		in_game_days += 1
-	PlayerInformation.world_time = (day_timer/day_length) #IMPORTANT
+	#PlayerInformation.world_time = (day_timer/day_length) #IMPORTANT
+	Global.world_time = (day_timer/day_length) #IMPORTANT
 	
 	
 	sub_second_counter += delta
@@ -363,14 +420,24 @@ func _input(_event):
 		return
 	if Input.is_action_just_pressed("use_item"):
 		use_held_item()
+	elif Input.is_action_just_released("use_item"):
+		release_held_item()
 	if Input.is_action_just_pressed("use_item_special"):
 		use_held_item(true)
+	elif Input.is_action_just_released("use_item_special"):
+		release_held_item(true)
 	if Input.is_action_just_pressed("drop_item"):
 		PlayerInformation.drop_held_item()
 	if Input.is_action_just_pressed("action_wheel"):
 		set_action_menu_open(true)
 	if Input.is_action_just_released("action_wheel"):
 		set_action_menu_open(false)
+	if Input.is_action_just_pressed("debug_menu"):
+		#$debug_menu.visible = !$debug_menu.visible
+		Global.set_debug_render(!Global.debug_render)
+
+func _on_update_debug_render(val : bool) -> void:
+	$debug_menu.visible = val
 
 var paused = false
 
@@ -379,6 +446,9 @@ var cutscene_timer = 0.0
 
 func play_cutscene(key : String) -> void:
 	update_persistent_levels_data()
+	for p in get_tree().get_nodes_in_group("persistent"):
+		if p.has_method("save_data"):
+			p.save_data(Global.save_filepath)
 	purge_world()
 	var data = Global.cutscenes[key]
 	var scene = load(data[0]).instantiate()
@@ -409,6 +479,12 @@ func save_and_quit() -> void:
 	save_game_data()
 	await get_tree().process_frame
 	get_tree().call_deferred("change_scene_to_file", "res://menus/main_menu.tscn")
+
+func open_settings() -> void:
+	set_paused(true) #just in case
+	print("opened settings menu")
+	var s = load("res://menus/settings_menu.tscn").instantiate()
+	$pause_menu.add_child(s)
 
 ##dev controls
 
@@ -466,6 +542,37 @@ func setup_dev_controls():
 	
 	$pause_menu/devtools/HFlowContainer/PanelContainer7/VBoxContainer/HSlider.connect("value_changed", set_time_of_day)
 	
+	$pause_menu/devtools/HFlowContainer/PanelContainer8/CheckButton.connect("toggled",set_time_frozen)
+	
+	$pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer/current_blood/Button.connect("button_down", debug_change_health.bind(false,true,-1))
+	$pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer/current_blood/Button2.connect("button_down", debug_change_health.bind(false,true,1))
+	
+	$pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer/current_health/Button.connect("button_down", debug_change_health.bind(false,false,-1))
+	$pause_menu/devtools/HFlowContainer/PanelContainer9/VBoxContainer/current_health/Button2.connect("button_down", debug_change_health.bind(false,false,1))
+	
+	$pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer/max_blood/Button.connect("button_down", debug_change_health.bind(true,true,-1))
+	$pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer/max_blood/Button2.connect("button_down", debug_change_health.bind(true,true,1))
+	
+	$pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer/max_health/Button.connect("button_down", debug_change_health.bind(true,false,-1))
+	$pause_menu/devtools/HFlowContainer/PanelContainer10/VBoxContainer/max_health/Button2.connect("button_down", debug_change_health.bind(true,false,1))
+
+func debug_change_health(is_max : bool, is_blood : bool, change : int):
+	if is_max:
+		if is_blood:
+			PlayerInformation.max_blood += change
+			PlayerInformation.emit_signal("blood_changed")
+		else:
+			PlayerInformation.max_health += change
+			PlayerInformation.emit_signal("health_changed")
+	else:
+		if is_blood:
+			PlayerInformation.set_blood(PlayerInformation.blood + change)
+		else:
+			PlayerInformation.set_health(PlayerInformation.health + change)
+
+func set_time_frozen(val) -> void:
+	time_paused = val
+	pass
 
 func set_time_of_day(val : float) -> void: #0.0 -> 1.0
 	day_timer = day_length*val
@@ -478,7 +585,7 @@ func _on_kill_all_entities() -> void:
 			i.call_deferred("queue_free")
 
 func _on_give_item_key_selected(i : int) -> void:
-	PlayerInformation.pickup_item([item_list_keys[i]])
+	PlayerInformation.pickup_item(Items.key_to_item(item_list_keys[i]))
 	pass
 
 func _on_cutscene_key_selected(i : int) -> void:
@@ -536,6 +643,10 @@ func update_debug_graphics() -> void:
 	$debug_menu/left/dash_charges.text = "dash_charges : " + str(PlayerInformation.current_dash) + " / " + str(PlayerInformation.max_dash)
 	$debug_menu/left/velocity.text = "velocity = " + str(PlayerInformation.velocity)
 	$debug_menu/left/speed.text = "speed = " + str(PlayerInformation.velocity.length())
+	$debug_menu/left/position.text = "position " + str(PlayerInformation.position)
+	$debug_menu/left/rotation.text = "rotation " + str(PlayerInformation.rotation)
+	$debug_menu/left/held_item2.text = "item count " + str(PlayerInformation.get_item_count())
+	$debug_menu/right/version.text = str(Global.version)
 	pass
 
 func get_time_of_day() -> String:
@@ -566,17 +677,32 @@ func _on_player_take_damage(amount : float) -> void:
 	PlayerInformation.health -= amount
 	pass
 
+var item_use_frame_buffer : int = 0
 func use_held_item(special = false) -> void:
-	for p in playerHandler.get_children(false):
-		p.use_held_item(special)
+	if item_use_frame_buffer > 0:
+		return
+	item_use_frame_buffer = 4
+	PlayerInformation.use_held_item(special)
+	#for p in playerHandler.get_children(false):
+		#if p.has_method("use_held_item"):
+			#p.use_held_item(special)
+
+func release_held_item(special = false) -> void:
+	PlayerInformation.release_held_item(special)
+	#for p in playerHandler.get_children(false):
+		#if p.has_method("release_held_item"):
+			#p.release_held_item(special)
 
 var item_scene = preload("res://campaign/entities/loose_item.tscn")
-func _on_dropped_item(data : Array, pos : Vector3) -> void:
+func _on_dropped_item(data : Array, pos : Vector3, rotation : Vector3 = Vector3.ZERO, stuck: bool = false, velL :=Vector3.ZERO, velR := Vector3.ZERO) -> void:
 	var i = item_scene.instantiate()
 	i.data = data
 	i.position = pos
+	i.rotation = rotation
+	i.stuck = stuck
+	i.linear_velocity = velL
+	i.angular_velocity = velR
 	itemHandler.add_child(i)
-	
 	pass
 
 func purge_world() -> void:
@@ -589,17 +715,169 @@ func purge_world() -> void:
 	for c in cutsceneHandler.get_children(false):
 		c.call_deferred("queue_free")
 
+func reset_everything_to_last_checkpoint():
+	load_data_from_checkpoint()
+	overwrite_entity_groups_from_checkpoint()
+	start_game()
+
+func overwrite_entity_groups_from_checkpoint(): ##NOTE this does not work quite right yet
+	#need to make the main entity groups folder identical to the checkpoint entity groups folder
+	var subfolder_path = Global.save_filepath + "entity_groups/"
+	var checkpoint_subfolder_path = Global.save_filepath + "checkpoint/entity_groups/"
+	print(SaveHandler.savePath + subfolder_path)
+	print(SaveHandler.savePath + checkpoint_subfolder_path)
+	var remove_list = []
+	
+	for f in DirAccess.get_files_at(SaveHandler.savePath + subfolder_path):
+		var new_data = SaveHandler.load_file(checkpoint_subfolder_path,f)
+		if new_data != null:
+			SaveHandler.save_file(subfolder_path,f,new_data)
+		else:
+			remove_list.append(f)
+	for fn in remove_list:
+		var absolute_path = SaveHandler.savePath + subfolder_path + fn
+		DirAccess.remove_absolute(absolute_path)
+		print("deleted " + str(fn))
+	print("finished syncing entity_group files")
+
 ##checkpoints and dying
 func _on_player_death() -> void:
-	print("player_died")
-	#print("loading last checkpoint")
-	#purge_world()
-	#load_data_from_save()
+	reset_everything_to_last_checkpoint()
+	
+	
+	#print("player_died")
+	#PlayerInformation.tp(Vector3.ZERO)
+	#change_player(-2)
+	#return
+	
+	##print("loading last checkpoint")
+	##purge_world()
+	#load_data_from_checkpoint()
+	#player_stage = -2 #the digging up from the ground
+	##save_game_data()
+	##play_cutscene("respawn")
+	##load_data_from_save()
 	#start_game()
+
+func load_data_from_checkpoint() -> void:
+	var file_path = Global.save_filepath + "checkpoint/"
+	
+	#if !FileAccess.file_exists(file_path+"generic_save.dat"):
+		#printerr("no checkpoint savefile exists, loading from last save instead")
+		#load_data_from_save()
+		#return
+	
+	var saved_data = SaveHandler.load_file(file_path,"generic_save.dat")
+	#saved_data = JSON.parse_string(saved_data)
+	if saved_data == null:
+		saved_data = default_save_data.duplicate(true)
+	PlayerInformation.velocity = saved_data["velocity"]
+	PlayerInformation.position = saved_data["position"]
+	PlayerInformation.rotation = saved_data["rotation"]
+	seconds_played = saved_data["seconds_played"]
+	day_timer = saved_data["day_timer"]
+	player_stage = saved_data["player_stage"]
+	level = saved_data["level"]
+	PlayerInformation.food = saved_data["food"]
+	PlayerInformation.max_food = saved_data["max_food"] 
+	PlayerInformation.min_sleep_food = saved_data["min_sleep_food"]
+	PlayerInformation.health = saved_data["health"]
+	PlayerInformation.max_health = saved_data["max_health"]
+	in_game_days = saved_data["in_game_days"]
+	
+	##inventory
+	
+	var inventory_data = SaveHandler.load_file(file_path,"inventory.dat")
+	if inventory_data == null:
+		inventory_data = default_inventory_data.duplicate(true)
+	PlayerInformation.held_item_index = inventory_data["held_item_index"]
+	#PlayerInformation.inventory = inventory_data["inventory"]
+	#PlayerInformation.emit_signal("update_inventory")
+	PlayerInformation.load_inventory(inventory_data["inventory"])
+	
+	##world
+	#var world_data = SaveHandler.load_file(Global.save_filepath,"world_data.dat")
+	#var lose_item_data = world_data["lose_items"]
+	#for li_data in lose_item_data:
+		#_on_dropped_item(li_data[1],li_data[0])
+	var persistent_data = SaveHandler.load_file(file_path,"levels_persistent.dat")
+	if persistent_data == null:
+		persistent_data = {}
+	Global.levels_persistent_data = persistent_data
+	
+	##story
+	##canot be changed from checkpoint
+	var story_info = SaveHandler.load_file(Global.save_filepath,"story_info.dat")
+	if story_info == null:
+		story_info = default_story_info.duplicate(true)
+	Global.cutscenes_watched = story_info["cutscenes_watched"]
+	
+	Global.progression = story_info["progression"]
+	Global.major_points_reached = story_info["major_points_reached"]
 
 func _on_checkpoint_reached() -> void:
 	print("checkpoint reached")
-	save_game_data()
+	#save_game_data()
+	save_checkpoint_data()
+
+func save_checkpoint_data():
+	var save_path = Global.save_filepath + "checkpoint/"
+	##generic_save
+	var game_data = {
+	"velocity" : PlayerInformation.velocity,
+	"position" : PlayerInformation.position,
+	"rotation" : PlayerInformation.rotation,
+	"player_stage" : player_stage,
+	"level" : level,
+	"day_timer" : day_timer,
+	"seconds_played" : seconds_played,
+	"food" : PlayerInformation.food,
+	"max_food" : PlayerInformation.max_food,
+	"min_sleep_food" : PlayerInformation.min_sleep_food,
+	"health" : PlayerInformation.health,
+	"max_health" : PlayerInformation.max_health,
+	"in_game_days" : in_game_days,
+	"version" : Global.version
+	}
+	
+	#game_data = JSON.stringify(game_data)
+	SaveHandler.save_file(save_path,"generic_save.dat", game_data)
+	
+	##world
+	update_persistent_levels_data()
+	SaveHandler.save_file(save_path,"levels_persistent.dat", Global.levels_persistent_data)
+	for p in get_tree().get_nodes_in_group("persistent"):
+		if p.has_method("save_data"):
+			p.save_data(save_path)
+	
+	##preview
+	##preview cannot be specific to checkpoint
+	var summary = "you played the demo version!" + "\nyou also played for about " + Global.get_abreviated_time(seconds_played)
+	var preview_data = SaveHandler.load_file(Global.save_filepath,"preview.dat")
+	preview_data = JSON.parse_string(preview_data)
+	preview_data["progress_summary"] = summary
+	preview_data["seconds_played"] = seconds_played
+	preview_data = JSON.stringify(preview_data)
+	SaveHandler.save_file(Global.save_filepath,"preview.dat",preview_data)
+	
+	
+	##inventory
+	var inventory_data = {
+		"held_item_index" : PlayerInformation.held_item_index,
+		"inventory" : PlayerInformation.inventory
+	}
+	SaveHandler.save_file(save_path,"inventory.dat", inventory_data)
+	
+	
+	
+	
+	##story
+	var story_info = {
+		"cutscenes_watched" : Global.cutscenes_watched,
+		"progression" : Global.progression,
+		"major_points_reached" : Global.major_points_reached,
+	}
+	SaveHandler.save_file(save_path,"story_info.dat", story_info)
 
 func _on_changed_using_senses() -> void:
 	for light in get_tree().get_nodes_in_group("light"):
@@ -635,3 +913,27 @@ func _on_major_point_reached(key : int) -> void:
 
 func _on_tooltip(text) -> void:
 	$tooltip.set_new_tooltip(text)
+
+
+
+##projectiles and entity management
+
+func spawn_entity(key : String, position:Vector3=Vector3.ZERO, velocity:Vector3=Vector3.ZERO,custom_data:Array=[]):
+	if !Global.entities.has(key):
+		return null
+	var e = load(Global.entities[key][0]).instantiate()
+	e.position = position
+	e.velocity = velocity
+	if !custom_data.is_empty():
+		if e.has_method("set_custom_data"):
+			e.set_custom_data(custom_data)
+	entityHandler.add_child(e)
+	return e
+
+
+
+
+
+
+
+

@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://64j05exhs8o5"]
+
+[ext_resource type="FontFile" uid="uid://bompla3kow1og" path="res://assets/fonts/ANTQUAI.TTF" id="1_87icf"]
+[ext_resource type="Script" path="res://scripts/damage_indicator.gd" id="1_mgn5y"]
+
+[node name="damage_indicator" type="Label3D"]
+pixel_size = 0.0012
+billboard = 1
+no_depth_test = true
+fixed_size = true
+text = "100256"
+font = ExtResource("1_87icf")
+script = ExtResource("1_mgn5y")

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="item_arrow" load_steps=2 format=3 uid="uid://y1qsb7taxnl2"]
+
+[ext_resource type="Script" path="res://scripts/item_arrow.gd" id="1_0dglw"]
+
+[resource]
+script = ExtResource("1_0dglw")
+damage_amount = 12
+damage_type = 1
+drag = 0.01
+gravity = 0.5
+internal_reference_name = "basic_arrow"
+display_name = "arrow"
+item_style = 5
+sounds = 6
+animations = 2
+model_path = "res://assets/items/arrows/basic_arrow.tscn"
+has_deformations = false
+texture_path = "res://assets/textures/misc/Rock.png"
+interactions = {}
+equipment_id = 3
+collision_shape = Vector3(0.15, 0.75, 0.15)

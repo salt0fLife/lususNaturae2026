@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="item_arrow" load_steps=2 format=3 uid="uid://cqdkprbehulnh"]
+
+[ext_resource type="Script" path="res://scripts/item_arrow.gd" id="1_cqa6n"]
+
+[resource]
+script = ExtResource("1_cqa6n")
+damage_amount = 25
+damage_type = 7
+drag = 0.2
+gravity = 0.1
+internal_reference_name = "red_arrow"
+display_name = "red arrow"
+item_style = 6
+sounds = 6
+animations = 0
+model_path = "res://assets/items/arrows/red_arrow.tscn"
+has_deformations = false
+texture_path = "res://assets/textures/gui/suits/scarlet_obscure_small.png"
+interactions = {}
+equipment_id = 3
+collision_shape = Vector3(0.15, 0.75, 0.15)

@@ -1,6 +1,18 @@
 extends Node
 
+#gules (red), azure (blue), vert (green), sable (black), argent (white), 
+#gilt (golden), sanguine (blood), murrey (purple / mulberry), ermine (black and white pattern)
 enum style { #for fonts and effects
+	GULES, #red
+	AZURE, #blue,
+	VERT, #green,
+	SABLE, #black,
+	ARGENT, #white,
+	GILT, #golden,
+	SCARLET, #blood,
+	MURREY, #purple / mulberry,
+	ERMINE, #pattern
+	
 	TAINTED,
 	NORMAL,
 	RARE,
@@ -8,7 +20,63 @@ enum style { #for fonts and effects
 	BLESSED,
 }
 
-const style_colors = [
+enum rarity {
+	NORMAL,
+	UNCOMMON,
+	RARE,
+	OBSCURE,
+	UNIQUE,
+}
+
+const style_icons:Dictionary = {
+	style.GULES : [
+		"res://assets/textures/gui/suits/gules_small.png",
+		"res://assets/textures/gui/suits/gules_obscure_small.png"
+	],
+	style.AZURE : [
+		"res://assets/textures/gui/suits/azure_small.png",
+		"res://assets/textures/gui/suits/azure_obscure_small.png"
+	],
+	style.VERT : [
+		"res://assets/textures/gui/suits/vert_small.png",
+		"res://assets/textures/gui/suits/vert_obscure_small.png"
+	],
+	style.SABLE : [
+		"res://assets/textures/gui/suits/sable_small.png",
+		"res://assets/textures/gui/suits/sable_obscure_small.png"
+	],
+	style.ARGENT : [
+		"res://assets/textures/gui/suits/argent_small.png",
+		"res://assets/textures/gui/suits/argent_obscure_small.png"
+	],
+	style.GILT : [
+		"res://assets/textures/gui/suits/gilt_small.png",
+		"res://assets/textures/gui/suits/gilt_obscure_small.png"
+	],
+	style.SCARLET : [
+		"res://assets/textures/gui/suits/scarlet_small.png",
+		"res://assets/textures/gui/suits/scarlet_obscure_small.png"
+	],
+	style.MURREY : [
+		"res://assets/textures/gui/suits/murrey_small.png",
+		"res://assets/textures/gui/suits/murrey_obscure_small.png"
+	],
+	style.ERMINE : [
+		"res://assets/textures/gui/suits/ermine_small.png",
+		"res://assets/textures/gui/suits/ermine_small.png"
+	],
+}
+
+const style_colors : Array[Color] = [
+	Color.DARK_RED,
+	Color.DARK_BLUE,
+	Color.SEA_GREEN,
+	Color.BLACK,
+	Color.SILVER,
+	Color.GOLDENROD,
+	Color.CRIMSON,
+	Color.WEB_PURPLE,
+	Color.WHITE, #is a texture so white works for now
 	#TAINTED,
 	Color.DIM_GRAY,
 	#NORMAL,
@@ -27,6 +95,11 @@ enum type { #types
 	SWORD,
 	BOOK,
 	GUN,
+	HAMMER,
+	BOW,
+	ARROW,
+	BAG,
+	USELESS,
 }
 
 enum sound { #sounds
@@ -35,6 +108,8 @@ enum sound { #sounds
 	SWORD_SOUNDS,
 	DBAT_SOUNDS,
 	GUN_SOUNDS,
+	BOW_SOUNDS,
+	WOOD_TRINKET_SOUNDS,
 }
 
 enum animation { #animations
@@ -42,6 +117,8 @@ enum animation { #animations
 	SWORD_ANIM,
 	DBAT_ANIM,
 	GUN_ANIM,
+	HAMMER_ANIM,
+	BOW_ANIM,
 }
 
 enum food_type { #food types
@@ -62,22 +139,33 @@ var sounds = {
 	sound.BREAD_SOUNDS : {
 		"pickup" : "res://assets/sounds/item_sounds/draw_bread.ogg",
 		"eat" : "ate bread specifically",
-		"dropped" : "dropped bread"
+		"dropped" : "dropped bread",
+		"grab_end" : "set down bread"
 	},
 	sound.ROCK_SOUNDS : {
 		
 	},
 	sound.SWORD_SOUNDS : {
-		"pickup" : "res://assets/sounds/item_sounds/draw_short_sword.ogg",
-		"swing" : "res://assets/sounds/item_sounds/swing_short_sword.ogg"
+		"pickup" : "res://assets/sounds/item_sounds/swordsfx01.wav",#"res://assets/sounds/item_sounds/draw_short_sword.ogg",
+		"swing" : "res://assets/sounds/item_sounds/swing_short_sword.ogg",
+		"grab_start" : "res://assets/sounds/item_sounds/swordInventoryPickUp01.wav",#"res://assets/sounds/item_sounds/sword_grab_start.ogg",
+		"grab_end" : "res://assets/sounds/item_sounds/swordInventoryDrop01.wav",#"res://assets/sounds/item_sounds/sword_grab_end.ogg",
 	},
 	sound.DBAT_SOUNDS : {
 		"pickup" : "res://assets/sounds/item_sounds/draw_dbat.ogg",
-		"eat" : "ate a dead bat specifically"
+		"eat" : "ate a dead bat specifically",
+		"grab_end" : "set down dead bat"
 	},
 	sound.GUN_SOUNDS : {
 		"pickup" : "res://assets/sounds/item_sounds/draw_gun.ogg",
-		"shoot" : "res://assets/sounds/item_sounds/fire_gun.ogg"
+		"shoot" : "res://assets/sounds/item_sounds/fire_gun.ogg",
+		"grab_end" : "set down gun"
+	},
+	sound.BOW_SOUNDS : {
+		
+	},
+	sound.WOOD_TRINKET_SOUNDS : {
+		
 	}
 }
 
@@ -100,6 +188,17 @@ func populate_list(): ##NOTE MAY NOT WORK ON EXPORT
 	print(list)
 	print(interactions)
 
+func key_to_item(key : StringName):
+	var custom_data = {}
+	var info = list[key]
+	match info[INDEX_TYPE]: #can do some small stuff for convienience
+		type.BAG:
+			var inv = []
+			for i in info[INDEX_DATA][0]:
+				inv.append([])
+			custom_data["inventory"] = inv
+	return [key,custom_data]; #[internal_reference_name, attributes/custom_data]
+
 enum {#["display_name", item_style, sounds, item_type, data, texture_path, model_path, animations, has_deformations]
 	INDEX_NAME,
 	INDEX_STYLE,
@@ -110,6 +209,8 @@ enum {#["display_name", item_style, sounds, item_type, data, texture_path, model
 	INDEX_MODEL,
 	INDEX_ANIMATIONS,
 	INDEX_HAS_DEFORMATIONS,
+	INDEX_EQUIPMENT_ID,
+	INDEX_COLLISION_SHAPE,
 }
 
 
@@ -118,9 +219,11 @@ var interactions = {
 		#key = item_key_that_triggers_this_interaction : [inter_id : int, inter_data : Array]
 		#etc... for all interactions
 	#}
-	
-	
-	
 }
 
-
+enum equipment_id { #for items with slots they can or cannot be put in
+	NORMAL,
+	BACKPACK,
+	QUIVER,
+	ARROW
+}

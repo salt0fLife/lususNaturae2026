@@ -1,0 +1,156 @@
+[gd_scene load_steps=18 format=3 uid="uid://bqxu8p7xdbflo"]
+
+[ext_resource type="Script" path="res://scripts/young_skyfish.gd" id="1_vp6j3"]
+[ext_resource type="Texture2D" uid="uid://5dvbuqqegcj3" path="res://assets/textures/vfx/skyfish_shine.png" id="2_wda4p"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jlm61"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ejfnw"]
+albedo_color = Color(0.901961, 0.537255, 0.121569, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cccwl"]
+material = SubResource("StandardMaterial3D_ejfnw")
+size = Vector3(0.39, 0.36, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qd6mm"]
+albedo_color = Color(0.901961, 0.537255, 0.121569, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_nty1q"]
+material = SubResource("StandardMaterial3D_qd6mm")
+size = Vector3(0.045, 0.065, 1.315)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_djngk"]
+albedo_color = Color(0.901961, 0.537255, 0.121569, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ynn5r"]
+material = SubResource("StandardMaterial3D_djngk")
+size = Vector3(0.28, 0.465, 0.66)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_xbs1f"]
+size = Vector2(0.625, 0.615)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i7fwj"]
+shading_mode = 0
+albedo_color = Color(0.796078, 0.490196, 0.192157, 1)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_1clj8"]
+material = SubResource("StandardMaterial3D_i7fwj")
+size = Vector2(0.1, 0.1)
+orientation = 2
+
+[sub_resource type="BoxMesh" id="BoxMesh_hibcb"]
+size = Vector3(0.2, 50, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7l4nc"]
+material = SubResource("StandardMaterial3D_qd6mm")
+size = Vector3(0.35, 0.495, 2.65)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tdwrr"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+albedo_texture = ExtResource("2_wda4p")
+
+[sub_resource type="QuadMesh" id="QuadMesh_5nslb"]
+material = SubResource("StandardMaterial3D_tdwrr")
+size = Vector2(2, 2)
+
+[sub_resource type="QuadMesh" id="QuadMesh_k0wgw"]
+material = SubResource("StandardMaterial3D_tdwrr")
+size = Vector2(2.025, 1.305)
+
+[node name="young_skyfish" type="CharacterBody3D" groups=["entity"]]
+collision_layer = 4
+script = ExtResource("1_vp6j3")
+lazy_render_distance = 50.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_jlm61")
+
+[node name="graphics" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="graphics"]
+mesh = SubResource("BoxMesh_cccwl")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.13242)
+mesh = SubResource("BoxMesh_nty1q")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.648005)
+mesh = SubResource("BoxMesh_ynn5r")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(-4.37114e-08, 1, 0, -0.707107, -3.09086e-08, -0.707107, -0.707107, -3.09086e-08, 0.707107, 0.0127472, 0, -0.934007)
+mesh = SubResource("PlaneMesh_xbs1f")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(0.911744, 0.390123, 0.128555, -0.331302, 0.883447, -0.331302, -0.24282, 0.259472, 0.934726, 0.390324, 0, -0.0266932)
+mesh = SubResource("PlaneMesh_xbs1f")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(0.911508, -0.390996, -0.127572, -0.332189, -0.882791, 0.332161, -0.242493, -0.26039, -0.934555, 0.390324, 0, -0.0266932)
+mesh = SubResource("PlaneMesh_xbs1f")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(-0.934112, -0.257638, 0.247098, -0.240996, 0.965774, 0.0959215, -0.263354, 0.0300518, -0.964231, -0.375612, -2.38419e-07, -0.0525718)
+mesh = SubResource("PlaneMesh_xbs1f")
+
+[node name="MeshInstance3D9" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(-0.934112, 0.257637, -0.247098, -0.240996, -0.965774, -0.0959214, -0.263354, -0.0300518, 0.964231, -0.375612, -2.38419e-07, -0.0525718)
+mesh = SubResource("PlaneMesh_xbs1f")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(-1.81058e-08, -1, 6.18172e-08, -0.707107, -3.09086e-08, -0.707107, 0.707107, -5.65142e-08, -0.707107, -0.00828481, 0, -0.934007)
+mesh = SubResource("PlaneMesh_xbs1f")
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="graphics"]
+mesh = SubResource("PlaneMesh_1clj8")
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector3(0, 0, 0)
+gravity = Vector3(0, 1, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="graphics"]
+light_color = Color(0.854902, 0.662745, 0.364706, 1)
+light_energy = 5.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("BoxMesh_hibcb")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+visible = false
+billboard = 1
+double_sided = false
+texture = ExtResource("2_wda4p")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+
+[node name="RayCast3D2" type="RayCast3D" parent="."]
+target_position = Vector3(0, -10, 0)
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("BoxMesh_7l4nc")
+
+[node name="lazy_graphics" type="Node3D" parent="."]
+visible = false
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="lazy_graphics"]
+mesh = SubResource("QuadMesh_5nslb")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="lazy_graphics"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_k0wgw")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="lazy_graphics"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_5nslb")
+skeleton = NodePath("../..")

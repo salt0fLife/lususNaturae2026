@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://ef2pn5s1almt"
+path="res://.godot/imported/spiders_domain_waterfall.obj-710a9e7833e871e87ddf3448fccbdc96.mesh"
+
+[deps]
+
+files=["res://.godot/imported/spiders_domain_waterfall.obj-710a9e7833e871e87ddf3448fccbdc96.mesh"]
+
+source_file="res://assets/meshes/spiders_domain_waterfall.obj"
+dest_files=["res://.godot/imported/spiders_domain_waterfall.obj-710a9e7833e871e87ddf3448fccbdc96.mesh", "res://.godot/imported/spiders_domain_waterfall.obj-710a9e7833e871e87ddf3448fccbdc96.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

@@ -9,7 +9,7 @@ func _ready():
 	pass # Replace with function body.
 
 @onready var camera_start =  $graphics/cameraHandler
-@onready var camera = $graphics/fp_hands_wip/metarig_001/Skeleton3D/BoneAttachment3D/animated_camera/senses_camera
+@onready var camera = $graphics/fp_hands_wip/metarig_001/Skeleton3D/BoneAttachment3D/animated_camera/cam
 @onready var camera_animated = $graphics/fp_hands_wip/metarig_001/Skeleton3D/BoneAttachment3D/animated_camera
 @onready var camera_distant = $graphics/camera_distant_start
 var timer = 0.0
@@ -48,7 +48,7 @@ func _process(delta):
 
 func anim_finished():
 	PlayerInformation.position = position
-	PlayerInformation.rotation = Vector2(0.0,rotation.y)
+	PlayerInformation.rotation = Vector2(0.0+true_cam.rotation.x,rotation.y+true_cam.rotation.y)
 	PlayerInformation.velocity = Vector3.ZERO
 	PlayerInformation.change_player_scene(-1)
 	pass
@@ -56,3 +56,13 @@ func anim_finished():
 func tp(pos : Vector3, rot : Vector2, _vel := Vector3.ZERO) -> void:
 	position = pos
 	rotation.y = rot.y
+
+@onready var true_cam = $graphics/fp_hands_wip/metarig_001/Skeleton3D/BoneAttachment3D/animated_camera/cam/senses_camera
+var mouse_sensitivity = 1.5
+func _input(event):
+	if event is InputEventMouseMotion and !Global.in_game_mouse:
+		var TempRotation = rotation.x - event.relative.y /1000 * mouse_sensitivity
+		true_cam.rotation.x += TempRotation
+		true_cam.rotation.y -= event.relative.x /1000 * mouse_sensitivity
+		true_cam.rotation.x = clamp(true_cam.rotation.x, -PI*0.1,PI*0.1)
+		true_cam.rotation.y = clamp(true_cam.rotation.y, -PI*0.1,PI*0.1)
