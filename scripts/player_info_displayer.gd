@@ -5,7 +5,7 @@ extends Control
 	preload("res://assets/textures/portraits/vidica_portrait_bb_f2.png")
 ]
 
-var current_portraits = ""
+var current_portraits = "test"
 var portrait_presets = {
 	"test" : [
 		load("res://assets/textures/portraits/vidica_portrait_test_f1.png"),
@@ -38,10 +38,6 @@ func set_portrait(key : StringName) -> void:
 		portraits = []
 	$portrait/bb_particles.visible = key=="blaze_blood"
 func portrait_stuff(delta) -> void:
-	if Global.world_time > 0.25:
-		set_portrait("blaze_blood")
-	else:
-		set_portrait("test")
 	if portraits.size() < 1:
 		#no portrait to switch too
 		return
@@ -109,9 +105,24 @@ func update_hearts() -> void:
 func update_blood() -> void:
 	$blood_bar.value = PlayerInformation.blood
 	$blood_bar.max_value = PlayerInformation.max_blood
-	
+	$overcharged.max_value = PlayerInformation.max_blood
+	$overcharged.value = PlayerInformation.blood-PlayerInformation.max_blood
+	if PlayerInformation.blood > PlayerInformation.max_blood:
+		set_portrait("blaze_blood")
+		$bb_particles.visible = true
+		var val = $overcharged.value/PlayerInformation.max_blood
+		var pos:Vector2i = lerp(Vector2(351,65),Vector2(560,65),val)
+		var extent:float = lerp(220,450,val)
+		$bb_particles.position = pos
+		$bb_particles.set("emission_rect_extents",Vector2(extent,1))
+	else:
+		set_portrait("test")
+		$bb_particles.visible = false
 	pass
 
-
+func update_food() -> void:
+	
+	
+	pass
 
 

@@ -43,6 +43,16 @@ func default(delta):
 			lunge_timer = randf_range(0.0,7.0)
 			play_anim("attack_lunge")
 
+signal alerted
+
+func idle(delta):
+	velocity -= velocity*delta
+	var dif = (PlayerInformation.position - global_position)
+	var dis = dif.length()
+	if dis < alerted_distance:
+		state = "default"
+		emit_signal("alerted")
+
 func play_anim(key:StringName) -> void:
 	anim.play(key)
 
@@ -66,6 +76,20 @@ func get_data():
 func set_data(val : Array):
 	position = val[0]
 
-func die():
+@onready var hh = $health_handler
+func _ready():
+	hh.connect("death",die)
+	hh.connect("health_changed",update_health_graphics)
 
+func update_health_graphics() -> void:
+	var percentage = hh.health/hh.max_health
+	if percentage > 0.5:
+		$Label3D.modulate = Color.GREEN
+	else:
+		$Label3D.modulate = Color.RED
+	
+	$Label3D.text = str(hh.health) + " / " + str(hh.max_health)
+	
+
+func die(limb:StringName,Type:int) -> void:
 	queue_free()

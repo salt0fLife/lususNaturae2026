@@ -13,7 +13,7 @@ func _ready():
 func update_resistances() -> void:
 	pass
 
-func take_damage(amount : int,type : int) :
+func take_damage(amount : int,type : int) -> int:
 	var dealt = get_real_amount(amount,type)
 	emit_signal("took_damage",dealt,type,limb_key)
 	Global.indicate_damage(dealt,type,global_position)

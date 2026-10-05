@@ -5,11 +5,10 @@ class_name health_handler
 signal death #(limb, type)
 signal limb_death #(limb, type)
 signal took_damage #(amount)
+signal health_changed
 
 signal changed_resistances
-const resistances = { #0.0 == no resistance, 1.0 == 100% damage negation
-	Global.damage_types.BLEED : 1.0,
-	Global.damage_types.SLICE : -0.1, #takes 10% more damage from slice
+@export var resistances = { #0.0 == no resistance, 1.0 == 100% damage negation
 }
 
 func _on_took_damage(amount,type:int,limb:StringName) -> void:
@@ -27,6 +26,7 @@ func _on_took_damage(amount,type:int,limb:StringName) -> void:
 				if limbs_health[limb] < 0.0:
 					emit_signal("limb_death",limb,type)
 		health -= amount
+	emit_signal("health_changed")
 
 func _on_limb_death(limb : StringName, type : int):
 	emit_signal("limb_death",limb,type)
@@ -34,6 +34,7 @@ func _on_limb_death(limb : StringName, type : int):
 func heal_limb(limb : StringName) -> void:
 	if limbs_health.has(limb):
 		limbs_health[limb] = limbs_max_health[limb]
+	emit_signal("health_changed")
 
 var limbs_health = {}
 var limbs_max_health = {}

@@ -102,6 +102,8 @@ func _ready():
 	update_held_item_graphics()
 	special_area_sense.connect("body_entered", _on_special_area_entered)
 	special_area_sense.connect("body_exited",_on_special_area_exited)
+	PlayerInformation.connect("used_held_item",use_held_item)
+	PlayerInformation.connect("released_held_item",release_held_item)
 
 func _input(event):
 	if event is InputEventMouseMotion and !Global.in_game_mouse:

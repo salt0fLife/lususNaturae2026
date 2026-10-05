@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://duo1ceml246p7"]
+[gd_scene load_steps=13 format=3 uid="uid://duo1ceml246p7"]
 
 [ext_resource type="Script" path="res://scripts/player_info_displayer.gd" id="1_s3xek"]
 [ext_resource type="Texture2D" uid="uid://v1rwtuqu2kn7" path="res://assets/textures/vfx/blood_aura_particles.png" id="2_7x80q"]
@@ -7,11 +7,10 @@
 [ext_resource type="Texture2D" uid="uid://c0h3tyhsix2ag" path="res://assets/textures/portraits/vidica_portrait_test_f1.png" id="3_8ls5o"]
 [ext_resource type="Texture2D" uid="uid://cs6cqqxxx54iv" path="res://assets/textures/gui/gameplay_always/world_clock.png" id="3_aybwn"]
 [ext_resource type="Texture2D" uid="uid://bmpviv6ebxyl4" path="res://assets/textures/gui/gameplay_always/health_bar_progress.png" id="4_3wvis"]
-[ext_resource type="Texture2D" uid="uid://r51445ew7pv2" path="res://assets/textures/gui/gameplay_always/food_incomplete.png" id="5_mj46n"]
-[ext_resource type="Texture2D" uid="uid://ck3l5ifjkbe0" path="res://assets/textures/gui/gameplay_always/food_complete.png" id="5_myrse"]
 [ext_resource type="Texture2D" uid="uid://br8o6nmfqmylk" path="res://assets/textures/gui/gameplay_always/heart_broken.png" id="6_20kpb"]
 [ext_resource type="Texture2D" uid="uid://cnv7xxx1ef5kq" path="res://assets/textures/gui/gameplay_always/heart_full.png" id="10_4mc1j"]
 [ext_resource type="Texture2D" uid="uid://nbctukkkd1ym" path="res://assets/textures/gui/gameplay_always/world_clock_cursor.png" id="10_mctrr"]
+[ext_resource type="Texture2D" uid="uid://b07ki1cmbpcks" path="res://assets/textures/gui/gameplay_always/health_bar_overcharged.png" id="13_okj6d"]
 
 [sub_resource type="Curve" id="Curve_8s025"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.228261, 1), 0.0, 0.0, 0, 0, Vector2(0.82971, 0.720326), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -98,6 +97,20 @@ offset_bottom = 27.0
 value = 66.0
 show_percentage = false
 
+[node name="bb_particles" type="CPUParticles2D" parent="."]
+visible = false
+position = Vector2(566, 65)
+amount = 128
+texture = ExtResource("2_7x80q")
+emission_shape = 3
+emission_rect_extents = Vector2(450, 1)
+gravity = Vector2(0, -108)
+angular_velocity_min = -252.97
+angular_velocity_max = 165.41
+scale_amount_min = 0.4
+scale_amount_max = 0.5
+scale_amount_curve = SubResource("Curve_8s025")
+
 [node name="portrait" type="Control" parent="."]
 anchors_preset = 0
 offset_left = 22.0
@@ -148,9 +161,18 @@ offset_left = 109.0
 offset_top = 25.0
 offset_right = 573.0
 offset_bottom = 69.0
-value = 72.0
+value = 100.0
 texture_under = ExtResource("3_8c5e7")
 texture_progress = ExtResource("4_3wvis")
+
+[node name="overcharged" type="TextureProgressBar" parent="."]
+layout_mode = 0
+offset_left = 567.0
+offset_top = 26.0
+offset_right = 1031.0
+offset_bottom = 70.0
+value = 100.0
+texture_progress = ExtResource("13_okj6d")
 
 [node name="health_info" type="Control" parent="."]
 anchors_preset = 0
@@ -166,26 +188,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="TextureRect" type="TextureRect" parent="health_info/food"]
-layout_mode = 2
-texture = ExtResource("5_myrse")
-
-[node name="TextureRect4" type="TextureRect" parent="health_info/food"]
-layout_mode = 2
-texture = ExtResource("5_myrse")
-
-[node name="TextureRect2" type="TextureRect" parent="health_info/food"]
-layout_mode = 2
-texture = ExtResource("5_myrse")
-
-[node name="TextureRect3" type="TextureRect" parent="health_info/food"]
-layout_mode = 2
-texture = ExtResource("5_myrse")
-
-[node name="TextureRect7" type="TextureRect" parent="health_info/food"]
-layout_mode = 2
-texture = ExtResource("5_mj46n")
 
 [node name="hearts" type="HFlowContainer" parent="health_info"]
 layout_mode = 1

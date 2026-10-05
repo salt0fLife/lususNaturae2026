@@ -47,7 +47,8 @@ const levels: Dictionary = {
 	"canyon_cave_entrance" : ["res://campaign/levels/canyon_cave_entrance.tscn","res://assets/textures/material/DebuggTexture.png"],
 	"abandoned_laboratory" : ["res://campaign/levels/abandoned_laboratory.tscn","res://assets/textures/material/DebuggTexture.png"],
 	"laboratory_courtyard" : ["res://campaign/levels/laboratory_courtyard.tscn","res://assets/textures/gui/suits/gilt_obscure_small.png"],
-	"spiders_domain" : ["res://campaign/levels/spiders_domain/spiders_domain.tscn","res://assets/textures/material/DebuggTexture.png"]
+	"spiders_domain" : ["res://campaign/levels/spiders_domain/spiders_domain.tscn","res://assets/textures/material/DebuggTexture.png"],
+	"gameplay_test" : ["res://campaign/levels/gameplay_test_level.tscn","res://assets/textures/material/DebuggTexture.png"],
 }
 
 var levels_persistent_data: Dictionary = {

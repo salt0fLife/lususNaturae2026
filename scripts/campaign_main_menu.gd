@@ -141,15 +141,15 @@ var scene_to_change_to = ""
 @onready var loading_screen = $Control/loading_screen
 func _process(delta):
 	if starting_game:
-		if !ResourceLoader.has_cached(scene_to_change_to):
-			print("well thats a problem")
+		#if !ResourceLoader.has_cached(scene_to_change_to):
+			#print("well thats a problem")
 		var progress = []
 		var status = ResourceLoader.load_threaded_get_status(scene_to_change_to, progress)
-		print("game progress : " + str(progress[0]))
+		#print("game progress : " + str(progress[0]))
 		game_status = lerp(game_status,float(progress[0]),delta*10.0)
 		if game_status > 0.99 and progress[0] == 1:
 			game_status = 1.0
-		print("game status : " + str(game_status))
+		#print("game status : " + str(game_status))
 		loading_screen.visible = true
 		loading_screen.update_progress(game_status)
 		if ResourceLoader.THREAD_LOAD_LOADED and game_status == 1.0:#progress[0] >= 1.0:
@@ -168,7 +168,8 @@ func create_new_save(save_name := "A brand new adventure!") -> void:
 		"progress_summary" : "you have not played this save yet",
 		"active" : true,
 		"version" : Global.version,
-		"seconds_played" : 0
+		"seconds_played" : 0,
+		"last_played" : Time.get_datetime_dict_from_system(),
 	}
 	data = JSON.stringify(data)
 	

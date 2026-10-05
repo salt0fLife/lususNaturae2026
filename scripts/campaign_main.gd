@@ -53,13 +53,13 @@ func _ready():
 	else:
 		start_game()
 
-func start_game():
+func start_game(was_from_checkpoint:bool = false): #the only reason i need to know if its from a checkpoint is for persistent nodes to load properly
 	#var level_data = Global.levels[level]
 	#var level_scene = load(level_data[0]).instantiate()
 	#worldHandler.add_child(level_scene)
 	change_level(level, false)
 	change_player(player_stage)
-	load_current_level_persistent_data()
+	load_current_level_persistent_data(was_from_checkpoint)
 
 func new_impact(type : int, dir : Vector3, pos : Vector3) -> void:
 	var s_c = surface_impact.new_impact(type,dir)
@@ -109,6 +109,10 @@ func change_level(level_key : String, update_persistent_data = true) -> void:
 	set_paused(true)
 	if update_persistent_data:
 		update_persistent_levels_data()
+		for p in get_tree().get_nodes_in_group("persistent"):
+			if p.has_method("save_data"):
+				p.save_data(Global.save_filepath)
+	
 	for old in worldHandler.get_children(false):
 		old.queue_free()
 	level = level_key
@@ -131,7 +135,7 @@ func set_level_to_scene(scene : PackedScene) -> void:
 	worldHandler.add_child(level_scene)
 	load_current_level_persistent_data()
 
-func load_current_level_persistent_data():
+func load_current_level_persistent_data(was_from_checkpoint:bool = false): #the only reason i need to know if its from a checkpoint is for persistent nodes to load properly
 	loading_screen.visible = true
 	loading_screen.update_mode(true, "recreating level data")
 	for old_i in itemHandler.get_children(false):
@@ -180,6 +184,16 @@ func load_current_level_persistent_data():
 				pass
 			else:
 				printerr("value of " + str(e[0]) + " found in place of entity key")
+	
+	if !was_from_checkpoint:
+		for p in get_tree().get_nodes_in_group("persistent"): ##NOTE i dont believe this works with checkpoints and the whole system may need to be tweaked
+			if p.has_method("load_data"):
+				p.load_data(Global.save_filepath)
+	else:
+		for p in get_tree().get_nodes_in_group("persistent"): ##NOTE i dont believe this works with checkpoints and the whole system may need to be tweaked
+			if p.has_method("load_data"):
+				p.load_data(Global.save_filepath+"checkpoint/")
+	
 	loading_screen.visible = false
 	loading_screen.update_mode(false, "recreating level data")
 
@@ -276,6 +290,10 @@ func save_game_data():
 	##world
 	update_persistent_levels_data()
 	SaveHandler.save_file(Global.save_filepath,"levels_persistent.dat", Global.levels_persistent_data)
+	for p in get_tree().get_nodes_in_group("persistent"):
+		if p.has_method("save_data"):
+			p.save_data(Global.save_filepath)
+	
 	
 	##preview
 	var summary = "you played the demo version!" + "\nyou also played for about " + Global.get_abreviated_time(seconds_played)
@@ -305,6 +323,7 @@ func save_game_data():
 		"major_points_reached" : Global.major_points_reached,
 	}
 	SaveHandler.save_file(Global.save_filepath,"story_info.dat", story_info)
+	
 
 func update_persistent_levels_data() -> void:
 	if in_cutscene:
@@ -427,6 +446,9 @@ var cutscene_timer = 0.0
 
 func play_cutscene(key : String) -> void:
 	update_persistent_levels_data()
+	for p in get_tree().get_nodes_in_group("persistent"):
+		if p.has_method("save_data"):
+			p.save_data(Global.save_filepath)
 	purge_world()
 	var data = Global.cutscenes[key]
 	var scene = load(data[0]).instantiate()
@@ -660,14 +682,16 @@ func use_held_item(special = false) -> void:
 	if item_use_frame_buffer > 0:
 		return
 	item_use_frame_buffer = 4
-	for p in playerHandler.get_children(false):
-		if p.has_method("use_held_item"):
-			p.use_held_item(special)
+	PlayerInformation.use_held_item(special)
+	#for p in playerHandler.get_children(false):
+		#if p.has_method("use_held_item"):
+			#p.use_held_item(special)
 
 func release_held_item(special = false) -> void:
-	for p in playerHandler.get_children(false):
-		if p.has_method("release_held_item"):
-			p.release_held_item(special)
+	PlayerInformation.release_held_item(special)
+	#for p in playerHandler.get_children(false):
+		#if p.has_method("release_held_item"):
+			#p.release_held_item(special)
 
 var item_scene = preload("res://campaign/entities/loose_item.tscn")
 func _on_dropped_item(data : Array, pos : Vector3, rotation : Vector3 = Vector3.ZERO, stuck: bool = false, velL :=Vector3.ZERO, velR := Vector3.ZERO) -> void:
@@ -691,13 +715,41 @@ func purge_world() -> void:
 	for c in cutsceneHandler.get_children(false):
 		c.call_deferred("queue_free")
 
+func reset_everything_to_last_checkpoint():
+	load_data_from_checkpoint()
+	overwrite_entity_groups_from_checkpoint()
+	start_game()
+
+func overwrite_entity_groups_from_checkpoint(): ##NOTE this does not work quite right yet
+	#need to make the main entity groups folder identical to the checkpoint entity groups folder
+	var subfolder_path = Global.save_filepath + "entity_groups/"
+	var checkpoint_subfolder_path = Global.save_filepath + "checkpoint/entity_groups/"
+	print(SaveHandler.savePath + subfolder_path)
+	print(SaveHandler.savePath + checkpoint_subfolder_path)
+	var remove_list = []
+	
+	for f in DirAccess.get_files_at(SaveHandler.savePath + subfolder_path):
+		var new_data = SaveHandler.load_file(checkpoint_subfolder_path,f)
+		if new_data != null:
+			SaveHandler.save_file(subfolder_path,f,new_data)
+		else:
+			remove_list.append(f)
+	for fn in remove_list:
+		var absolute_path = SaveHandler.savePath + subfolder_path + fn
+		DirAccess.remove_absolute(absolute_path)
+		print("deleted " + str(fn))
+	print("finished syncing entity_group files")
+
 ##checkpoints and dying
 func _on_player_death() -> void:
-	print("player_died")
-	PlayerInformation.tp(Vector3.ZERO)
-	#change_player(-2)
+	reset_everything_to_last_checkpoint()
 	
-	return
+	
+	#print("player_died")
+	#PlayerInformation.tp(Vector3.ZERO)
+	#change_player(-2)
+	#return
+	
 	##print("loading last checkpoint")
 	##purge_world()
 	#load_data_from_checkpoint()
@@ -794,6 +846,9 @@ func save_checkpoint_data():
 	##world
 	update_persistent_levels_data()
 	SaveHandler.save_file(save_path,"levels_persistent.dat", Global.levels_persistent_data)
+	for p in get_tree().get_nodes_in_group("persistent"):
+		if p.has_method("save_data"):
+			p.save_data(save_path)
 	
 	##preview
 	##preview cannot be specific to checkpoint

@@ -10,7 +10,7 @@ size = Vector3(2, 3, 2)
 
 [node name="damage_trigger" type="Area3D"]
 collision_layer = 0
-collision_mask = 32
+collision_mask = 34
 script = ExtResource("1_huhk8")
 damage_type = 10
 

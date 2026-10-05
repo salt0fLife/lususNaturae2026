@@ -1,9 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://bgv1d2cui7wdb"]
+[gd_scene load_steps=13 format=3 uid="uid://bgv1d2cui7wdb"]
 
 [ext_resource type="Script" path="res://scripts/player_default.gd" id="1_7rf31"]
 [ext_resource type="PackedScene" uid="uid://dyl2fckihvk6a" path="res://campaign/player/components/interaction_sightline.tscn" id="2_iiild"]
 [ext_resource type="Script" path="res://scripts/default_player_graphics.gd" id="2_mavfc"]
 [ext_resource type="PackedScene" uid="uid://c4woxbpboh1ky" path="res://campaign/player/components/senses_camera.tscn" id="2_ofvxp"]
+[ext_resource type="PackedScene" uid="uid://bdka3ph2llevq" path="res://assets/items/blood_weapons/blood_sword.tscn" id="5_a6ukn"]
+[ext_resource type="Script" path="res://scripts/default_weapon_handler.gd" id="5_ehiv5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_obro3"]
 radius = 0.371076
@@ -11,11 +13,87 @@ radius = 0.371076
 [sub_resource type="BoxMesh" id="BoxMesh_jhflw"]
 size = Vector3(0.165, 0.18, 1)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_uqcq3"]
+size = Vector3(2, 1.30969, 2.5)
+
+[sub_resource type="Animation" id="Animation_xgb2u"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("graphics/cameraHandler/hands/held_item_handler:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.41995, -0.228279, -0.530267)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("graphics/cameraHandler/hands/held_item_handler:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.233821, 1.26912e-07, -0.223611)]
+}
+
+[sub_resource type="Animation" id="Animation_np1if"]
+resource_name = "swing_sword_L"
+length = 0.9
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("graphics/cameraHandler/hands/held_item_handler:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.4, 0.6, 0.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0.41995, -0.228279, -0.530267), Vector3(-0.056503, -0.261397, -0.789511), Vector3(-0.419039, -0.318492, -0.630585), Vector3(-0.470292, -0.267025, -0.621712), Vector3(-0.400878, -0.320492, -0.621712), Vector3(0.41995, -0.228279, -0.530267)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("graphics/cameraHandler/hands/held_item_handler:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.4, 0.6, 0.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0.233821, 1.26912e-07, -0.223611), Vector3(-0.182408, 1.56241, -1.34608), Vector3(-0.32117, 2.14457, -1.43628), Vector3(-0.355043, 2.81814, -1.5561), Vector3(-0.350322, 1.46346, 0.226979), Vector3(0.233821, 1.26912e-07, -0.223611)]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("graphics/cameraHandler/weapon_handler")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"sword_slash"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_g3yxb"]
+_data = {
+"RESET": SubResource("Animation_xgb2u"),
+"swing_sword_L": SubResource("Animation_np1if")
+}
+
 [node name="player_campaign" type="CharacterBody3D"]
-collision_layer = 38
-collision_mask = 5
+collision_layer = 2
 script = ExtResource("1_7rf31")
-gravity = Vector3(2, -14.7, 0)
 air_acceleration = 2.0
 tilt_jump_speed = 12.0
 jump_strength = 7.5
@@ -52,9 +130,29 @@ transform = Transform3D(0.975103, 0.221753, -3.72529e-09, -0.215718, 0.948568, -
 mesh = SubResource("BoxMesh_jhflw")
 
 [node name="held_item_handler" type="Node3D" parent="graphics/cameraHandler/hands"]
-transform = Transform3D(0.975103, 0.221753, -3.72529e-09, -0.215718, 0.948568, -0.231697, -0.0513794, 0.225928, 0.972788, 0.41995, -0.228279, -0.530267)
+transform = Transform3D(0.975103, 0.221752, 1.23458e-07, -0.215718, 0.948568, -0.231696, -0.0513793, 0.225928, 0.972788, 0.41995, -0.228279, -0.530267)
+
+[node name="blood_sword" parent="graphics/cameraHandler/hands/held_item_handler" instance=ExtResource("5_a6ukn")]
+
+[node name="weapon_handler" type="Node3D" parent="graphics/cameraHandler"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.653, 0)
+script = ExtResource("5_ehiv5")
+
+[node name="sword_slash" type="Area3D" parent="graphics/cameraHandler/weapon_handler"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+collision_layer = 0
+collision_mask = 32
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="graphics/cameraHandler/weapon_handler/sword_slash"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65485, -0.75)
+shape = SubResource("BoxShape3D_uqcq3")
 
 [node name="step_sounds" type="AudioStreamPlayer3D" parent="graphics"]
 
 [node name="floor_check" type="RayCast3D" parent="graphics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.10806, 0)
+
+[node name="actionPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_g3yxb")
+}

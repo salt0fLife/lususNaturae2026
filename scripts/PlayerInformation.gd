@@ -49,6 +49,15 @@ var current_dash:float = 3.0
 
 var using_senses : bool = false
 
+signal used_held_item
+func use_held_item(special:bool) -> void:
+	emit_signal("used_held_item",special)
+
+signal released_held_item
+func release_held_item(special:bool) -> void:
+	emit_signal("released_held_item",special)
+
+
 signal changed_using_senses
 func set_using_senses(val :bool) -> void:
 	var change = (using_senses != val)
@@ -287,8 +296,12 @@ func player_sleep() -> bool: #weather or not you can sleep
 	Global.play_cutscene("dream_1")
 	#day_timer = day_length*0.501
 	print("player_slept")
-	PlayerInformation.health = clamp(round(PlayerInformation.health-0.49) + 1.0, 0.0, PlayerInformation.max_health)
-	PlayerInformation.food -= 2
+	#PlayerInformation.health = clamp(round(PlayerInformation.health-0.49) + 1.0, 0.0, PlayerInformation.max_health)
+	#PlayerInformation.health
+	#PlayerInformation.food -= 2
+	##why was i writing PlayerInformation here lmao
+	set_health(clamp(health+int(max_health*0.5),0,max_health))
+	food -= 2
 	#in_game_days += 1
 	emit_signal("slept")
 	#_on_checkpoint_reached()

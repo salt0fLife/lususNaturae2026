@@ -2,10 +2,13 @@ extends CharacterBody3D
 @onready var graphics = $graphics
 @onready var cameraHandler = $graphics/cameraHandler
 @onready var interaction_sightline = $graphics/cameraHandler/interaction_sightline
+@onready var weapon_handler = $graphics/cameraHandler/weapon_handler
+@onready var held_item_handler = $graphics/cameraHandler/hands/held_item_handler
+@onready var action_player = $actionPlayer
 
 @export var mouse_sensitivity:float = 2.5
 
-@export var gravity:Vector3 = Vector3(0.0,-9.8,0.0)
+@export var gravity:Vector3 = Vector3(0.0,-14.7,0.0)
 
 #movement
 @export var ground_acceleration:float = 10.0
@@ -27,18 +30,15 @@ var air_jumped:bool = false
 
 
 func _ready():
-	#interaction_sightline.connect("interacted", _on_successful_interaction)
 	PlayerInformation.connect("teleport", tp)
-	#anim.connect("animation_finished", _on_anim_finished)
 	#PlayerInformation.connect("dropped_item", _on_dropped_item)
 	PlayerInformation.connect("update_held_item", update_held_item_graphics)
-	#PlayerInformation.connect("attempt_to_drop_item", _on_item_drop_attempt)
-	#update_held_item_graphics()
-	#special_area_sense.connect("body_entered", _on_special_area_entered)
-	#special_area_sense.connect("body_exited",_on_special_area_exited)
-	pass
+	update_held_item_graphics()
+	weapon_handler.connect("dealt_damage",_on_deal_damage)
+	PlayerInformation.connect("used_held_item",use_held_item)
+	PlayerInformation.connect("released_held_item",release_held_item)
+	interaction_sightline.connect("interacted",_on_successful_interaction)
 
-@onready var held_item_handler = $graphics/cameraHandler/hands/held_item_handler
 func update_held_item_graphics() -> void:
 	for old in held_item_handler.get_children(false):
 		old.queue_free()
@@ -48,7 +48,31 @@ func update_held_item_graphics() -> void:
 	var m = load(id[Items.INDEX_MODEL]).instantiate()
 	held_item_handler.add_child(m)
 
+func use_held_item(special:bool = false) -> void:
+	print("used item")
+	var item_data = PlayerInformation.get_held_item_data()
+	if item_data.is_empty():
+		return
+	var type = item_data[Items.INDEX_TYPE]
+	match type:
+		Items.type.SWORD:
+			play_anim("swing_sword_L")
+		Items.type.FOOD:
+			PlayerInformation.eat_food(item_data[Items.INDEX_DATA])
+			PlayerInformation.set_inventory_slot(PlayerInformation.held_item_index,[])
 
+func release_held_item(special:bool = false) -> void:
+	
+	pass
+
+func play_anim(key:StringName) -> void:
+	if action_player.has_animation(key):
+		if action_player.current_animation != key:
+			action_player.play(key)
+	else:
+		action_player.play("RESET")
+	
+	pass
 
 #end connections
 
@@ -67,8 +91,14 @@ func _input(event):
 	if Input.is_action_just_released("sprint"):
 		sprinting = false
 
+var blood_loss_timer = 0.0
 func _process(delta):
 	update_tooltip()
+	if PlayerInformation.blood > PlayerInformation.max_blood:
+		blood_loss_timer += delta
+		if blood_loss_timer > 1.0:
+			blood_loss_timer -= 1.0
+			PlayerInformation.set_blood(PlayerInformation.blood-1)
 
 var airborn = false
 func _physics_process(delta):
@@ -164,13 +194,14 @@ func _on_successful_interaction(info : Array) -> void:
 	match tag:
 		Global.interact_returns.PICKUP_ITEM:
 			#attempt_loose_item_pickup(data)
+			print("pickup item")
 			pass
 		Global.interact_returns.ENTER_DOOR:
 			#enter_door(data)
+			print("enter door")
 			pass
 		Global.interact_returns.SLEEP_IN_BED:
-			#sleep_in_bed(data)
-			pass
+			sleep_in_bed(data)
 
 func tp(pos : Vector3, rot : Vector2, vel := velocity) -> void:
 	position = pos
@@ -222,13 +253,13 @@ func get_look_dir() -> Vector3:
 
 #health and such
 
-func take_damage(amount : int,type : int)  -> void:
+func take_damage(amount : int,type : int)  -> int:
 	#Global.indicate_damage(amount,type,global_position)
 	var dealt = amount #calc resists and such here
 	var blood = PlayerInformation.blood
 	if blood - dealt > 0:
 		PlayerInformation.set_blood(PlayerInformation.blood - amount)
-		return
+		return 0
 	elif blood > 0:
 		PlayerInformation.set_blood(0)
 	elif PlayerInformation.health - dealt > 0:
@@ -236,6 +267,7 @@ func take_damage(amount : int,type : int)  -> void:
 	else:
 		PlayerInformation.set_health(0)
 		PlayerInformation.die()
+	return 0
 
 var blood_heal_multiplier:float = 0.25
 func _on_deal_damage(amount: int, type:int) -> void:
