@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://dddjtmqsonjvn"]
+[gd_scene load_steps=45 format=3 uid="uid://dddjtmqsonjvn"]
 
 [ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_wp5ay"]
 [ext_resource type="Script" path="res://assets/debug/debug_level.gd" id="1_x8cdl"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://b2x2phyjo8bb" path="res://tools/grass_populator.tscn" id="12_prcwh"]
 [ext_resource type="ArrayMesh" uid="uid://crmu3jbhnbe1" path="res://assets/meshes/foliage_01_mesh.tres" id="13_myt3o"]
 [ext_resource type="PackedScene" uid="uid://b3c4o86rlwubj" path="res://assets/debug/damage_trigger.tscn" id="14_xlvcu"]
+[ext_resource type="PackedScene" uid="uid://dshwkiexhw5ij" path="res://assets/props/limbo_entrance.tscn" id="15_wd54b"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_e6kvw"]
 
@@ -225,6 +226,14 @@ buffer = PackedFloat32Array(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0.541015, 0.039,
 
 [sub_resource type="BoxMesh" id="BoxMesh_gqcak"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_bkxpa"]
+size = Vector3(2, 3, 2)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_280gp"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_t6le5"]
+radius = 3.99124
+
 [node name="debug_level" type="Node3D"]
 script = ExtResource("1_x8cdl")
 
@@ -345,6 +354,26 @@ mesh = SubResource("BoxMesh_gqcak")
 
 [node name="damage_trigger" parent="." instance=ExtResource("14_xlvcu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.41867, 0, 6.34785)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="damage_trigger"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.5, 0)
+shape = SubResource("BoxShape3D_bkxpa")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="damage_trigger"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("BoxShape3D_bkxpa")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="damage_trigger"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25469, 3.77952, 0)
+shape = SubResource("SphereShape3D_280gp")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="damage_trigger"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.01266, -4.41248)
+shape = SubResource("SphereShape3D_t6le5")
+
+[node name="limbo_entrance" parent="." instance=ExtResource("15_wd54b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 11)
+exit_pos = Vector3(5.5, 0, 4.5)
 
 [editable path="gcb_feminine_test_01"]
 [editable path="grass_populator"]

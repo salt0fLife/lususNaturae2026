@@ -5,7 +5,7 @@ extends Control
 	preload("res://assets/textures/portraits/vidica_portrait_bb_f2.png")
 ]
 
-var current_portraits = "test"
+var current_portraits = ""
 var portrait_presets = {
 	"test" : [
 		load("res://assets/textures/portraits/vidica_portrait_test_f1.png"),
@@ -69,6 +69,7 @@ func update_clock():
 	clock_hand.rotation = angle
 
 func _ready():
+	set_portrait("test")
 	PlayerInformation.connect("health_changed",update_hearts)
 	PlayerInformation.connect("blood_changed",update_blood)
 	update_hearts()

@@ -3,8 +3,9 @@ extends AudioStreamPlayer
 const songs = {
 	#"main_menu" : "res://assets/sounds/music/north_of_eden_menu.wav",
 	#"main_menu" : "res://assets/sounds/music/main_menu_music.wav",
-	"main_menu" : "res://assets/sounds/music/northofedenmenumusic.wav",
-	"menu_midi" : "res://assets/sounds/music/menu_midi_test.wav"
+	#"main_menu" : "res://assets/sounds/music/northofedenmenumusic.wav",
+	"main_menu" : "res://assets/sounds/music/cant ship with very sad/sleepwalk-Deftones.wav",
+	#"menu_midi" : "res://assets/sounds/music/menu_midi_test.wav"
 }
 
 var current_song = ""

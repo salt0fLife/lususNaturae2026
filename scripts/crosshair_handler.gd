@@ -15,4 +15,5 @@ func update_crosshair_type() -> void:
 		return
 	match item_data[Items.INDEX_TYPE]:
 		Items.type.SWORD:
-			display.visible = true
+			pass
+			#display.visible = true

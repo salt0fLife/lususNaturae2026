@@ -1,15 +1,191 @@
-[gd_scene load_steps=5 format=3 uid="uid://dssr5rmva8ai8"]
+[gd_scene load_steps=21 format=3 uid="uid://dssr5rmva8ai8"]
 
 [ext_resource type="Script" path="res://scripts/gameplay_test_level.gd" id="1_pakm2"]
+[ext_resource type="Texture2D" uid="uid://dshhwvx4ekhaa" path="res://assets/textures/material/debug_grid_texture.png" id="2_5fuxp"]
 [ext_resource type="Script" path="res://scripts/entity_group.gd" id="2_rskqo"]
 [ext_resource type="PackedScene" uid="uid://drhchp75kxqee" path="res://assets/props/sleeping_bed.tscn" id="3_4mfbm"]
+[ext_resource type="Script" path="res://scripts/entity_spawn_point.gd" id="3_lixva"]
+[ext_resource type="PackedScene" uid="uid://b3c4o86rlwubj" path="res://assets/debug/damage_trigger.tscn" id="6_h8pfj"]
+[ext_resource type="FontFile" uid="uid://fj5rtfwees2k" path="res://assets/fonts/ANTQUABI.TTF" id="7_igxdh"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7q6d6"]
+albedo_texture = ExtResource("2_5fuxp")
+uv1_triplanar = true
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_fq75e"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_qesbb"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yd6d0"]
+size = Vector3(5.5, 4.48534, 2.47516)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jw0t7"]
+bg_color = Color(0.0941176, 0.0392157, 0.0470588, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u0cdp"]
+bg_color = Color(0.278431, 0.333333, 0.45098, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7oo5d"]
+size = Vector3(16.5, 24, 26)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qkpv6"]
+size = Vector3(20, 20, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_r2qb0"]
+size = Vector3(20, 20, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_fqve3"]
+size = Vector3(0.2, 0.2, 0.2)
+
+[sub_resource type="Animation" id="Animation_pn6ya"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("collapsing_wall:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-29.9812, -106.297, 76.222)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CPUParticles3D3:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("collapsing_wall/CPUParticles3D2:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("collapsing_wall/CPUParticles3D:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("CPUParticles3D4:emitting")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_i0wvk"]
+resource_name = "wall_collapse"
+length = 8.0
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("collapsing_wall:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 1.16, 1.31865, 1.62453, 8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(-29.9812, -106.297, 76.222), Vector3(-29.9812, -106.297, 76.222), Vector3(-29.9812, -106.558, 76.222), Vector3(-29.9812, -107.077, 76.222), Vector3(-29.9812, -107.077, 76.222), Vector3(-29.9812, -124.499, 76.222)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CPUParticles3D3:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.31, 7.58156),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("collapsing_wall/CPUParticles3D2:emitting")
+tracks/2/interp = 0
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.59405, 8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("collapsing_wall/CPUParticles3D:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1.59405, 8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("CPUParticles3D4:emitting")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.816951),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_c57j3"]
+_data = {
+"RESET": SubResource("Animation_pn6ya"),
+"wall_collapse": SubResource("Animation_i0wvk")
+}
 
 [node name="gameplay_test_level" type="Node3D"]
 script = ExtResource("1_pakm2")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+material_override = SubResource("StandardMaterial3D_7q6d6")
 use_collision = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
@@ -88,9 +264,9 @@ flip_faces = true
 size = Vector3(54, 31, 49.5)
 
 [node name="CSGBox3D19" type="CSGBox3D" parent="CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.5, -99, 53.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, -99, 53.25)
 flip_faces = true
-size = Vector3(54, 31, 38.5)
+size = Vector3(4, 31, 38.5)
 
 [node name="CSGBox3D18" type="CSGBox3D" parent="CSGCombiner3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.25, -105.5, 90)
@@ -119,5 +295,507 @@ mesh = SubResource("CapsuleMesh_fq75e")
 script = ExtResource("2_rskqo")
 group_name = &"entity_test_group"
 
+[node name="entity_spawn_point" type="Node3D" parent="entity_group"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.1141, 0, 0.831957)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group/entity_spawn_point"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point2" type="Node3D" parent="entity_group"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.547, 0, -5.32903)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group/entity_spawn_point2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_group2" type="Node" parent="." node_paths=PackedStringArray("entity_handler") groups=["persistent"]]
+script = ExtResource("2_rskqo")
+group_name = &"entity_test_group_2"
+entity_handler = NodePath("../entity_handler_2")
+group_alert = true
+
+[node name="entity_spawn_point" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36.1141, -114.5, 61.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point2" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.6141, -114.5, 61.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point3" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.6141, -114.5, 52.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point4" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.6141, -114.5, 44.332)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point5" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.1141, -114.5, 44.332)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point6" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.1141, -114.5, 52.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point7" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45.6141, -114.5, 52.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point8" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45.6141, -114.5, 43.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point9" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45.6141, -114.5, 61.332)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point10" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.1141, -114.5, 61.332)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point10"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point11" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.1141, -114.5, 52.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point11"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point12" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.1141, -114.5, 44.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point12"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point13" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.1141, -114.5, 32.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point13"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point14" type="Node3D" parent="entity_group2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36.1141, -114.5, 36.332)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group2/entity_spawn_point14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_group3" type="Node" parent="." node_paths=PackedStringArray("entity_handler") groups=["persistent"]]
+script = ExtResource("2_rskqo")
+group_name = &"entity_test_group_3"
+entity_handler = NodePath("../entity_handler_3")
+auto_spawn = false
+group_alert = true
+start_alerted = true
+spawn_animation = true
+
+[node name="entity_spawn_point" type="Node3D" parent="entity_group3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36.1141, -114.5, 70.3017)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group3/entity_spawn_point"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point2" type="Node3D" parent="entity_group3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.6141, -114.5, 71.7988)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group3/entity_spawn_point2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point7" type="Node3D" parent="entity_group3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.4648, -114.5, 52.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group3/entity_spawn_point7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point8" type="Node3D" parent="entity_group3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.8839, -114.5, 43.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group3/entity_spawn_point8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point9" type="Node3D" parent="entity_group3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.9163, -114.5, 66.3595)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group3/entity_spawn_point9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point10" type="Node3D" parent="entity_group3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.1487, -114.5, 67.7789)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group3/entity_spawn_point10"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point11" type="Node3D" parent="entity_group3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.0679, -114.5, 52.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group3/entity_spawn_point11"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_spawn_point12" type="Node3D" parent="entity_group3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.0615, -114.5, 44.832)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group3/entity_spawn_point12"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
+[node name="entity_group4" type="Node" parent="." node_paths=PackedStringArray("entity_handler") groups=["persistent"]]
+script = ExtResource("2_rskqo")
+group_name = &"entity_test_group_4"
+entity_handler = NodePath("../entity_handler_4")
+auto_spawn = false
+group_alert = true
+start_alerted = true
+spawn_animation = true
+monitor_health_pool = true
+
+[node name="entity_spawn_point" type="Node3D" parent="entity_group4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.6141, -114.5, 74.3017)
+script = ExtResource("3_lixva")
+entity_key = &"enemy_01"
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="entity_group4/entity_spawn_point"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")
+
 [node name="sleeping_bed" parent="." instance=ExtResource("3_4mfbm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -1.5)
+
+[node name="lights" type="Node3D" parent="." groups=["light"]]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 2.98023e-08, 1, 0, -1, 2.98023e-08, 0, 4.5, 0)
+spot_range = 8.59505
+spot_angle = 64.0432
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 2.98023e-08, 1, 0, -1, 2.98023e-08, -7.70873, 4.5, 0)
+spot_range = 8.59505
+spot_angle = 64.0432
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 2.98023e-08, 1, 0, -1, 2.98023e-08, -15.8726, 6.73045, 0)
+spot_range = 11.0215
+spot_angle = 35.0786
+
+[node name="SpotLight3D4" type="SpotLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 2.98023e-08, 1, 0, -1, 2.98023e-08, -15.8726, 6.73045, -4.6383)
+spot_range = 11.0215
+spot_angle = 35.0786
+
+[node name="SpotLight3D5" type="SpotLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 2.98023e-08, 1, 0, -1, 2.98023e-08, -27.0544, 4.67365, -4.6383)
+spot_range = 7.83593
+spot_angle = 48.2416
+
+[node name="SpotLight3D6" type="SpotLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 2.98023e-08, 1, 0, -1, 2.98023e-08, -28.417, 5.86785, 5.63123)
+spot_range = 5.4687
+spot_angle = 26.0289
+
+[node name="SpotLight3D8" type="SpotLight3D" parent="lights"]
+transform = Transform3D(-1, -2.6054e-15, -8.74228e-08, 8.74228e-08, -2.98023e-08, -1, 0, -1, 2.98023e-08, -36.1605, -6.13215, -0.168646)
+spot_range = 20.0
+spot_angle = 38.8783
+
+[node name="SpotLight3D7" type="SpotLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 2.98023e-08, 1, 0, -1, 2.98023e-08, -23.6315, 4.78205, 2.46505)
+spot_range = 5.4687
+spot_angle = 26.0289
+
+[node name="OmniLight3D" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36.3204, -6.06195, -0.166538)
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36.3204, -30.1582, -0.166538)
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36.3204, -54.4825, -0.166538)
+
+[node name="OmniLight3D4" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36.3204, -78.4742, -0.166538)
+
+[node name="OmniLight3D5" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.4228, -105.49, 1.29917)
+omni_range = 19.6106
+
+[node name="OmniLight3D6" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.8249, -105.49, 53.063)
+omni_range = 52.237
+
+[node name="OmniLight3D7" type="OmniLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.2937, -107.077, 104.246)
+light_color = Color(0, 0.905882, 0.388235, 1)
+omni_range = 13.9875
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+light_energy = 0.289
+
+[node name="damage_trigger" parent="." instance=ExtResource("6_h8pfj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.5996, -6, -1.99043)
+damage_amount = 1000000
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="damage_trigger"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 1.74267, 0.016449)
+shape = SubResource("BoxShape3D_yd6d0")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.8781, -4.92597, -1.99806)
+light_energy = 5.0
+light_negative = true
+omni_range = 3.83061
+
+[node name="entity_handler_2" type="Node3D" parent="."]
+
+[node name="entity_handler_3" type="Node3D" parent="."]
+
+[node name="entity_handler_4" type="Node3D" parent="."]
+
+[node name="boss_bar" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="boss_bar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -488.0
+offset_top = -73.0
+offset_right = 491.0
+offset_bottom = -46.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_jw0t7")
+theme_override_styles/fill = SubResource("StyleBoxFlat_u0cdp")
+step = 1.0
+value = 100.0
+show_percentage = false
+
+[node name="Label" type="Label" parent="boss_bar"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -104.0
+offset_right = 20.0
+offset_bottom = -81.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.27451, 0.356863, 0.403922, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("7_igxdh")
+theme_override_font_sizes/font_size = 32
+text = "Scary Larry"
+
+[node name="exit_area" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.9812, -114.499, 104.222)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="exit_area"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 11.5, -12.5)
+shape = SubResource("BoxShape3D_7oo5d")
+
+[node name="collapsing_wall" type="AnimatableBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.9812, -106.297, 76.222)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="collapsing_wall"]
+shape = SubResource("BoxShape3D_qkpv6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="collapsing_wall"]
+mesh = SubResource("BoxMesh_r2qb0")
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="collapsing_wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.44641, 1.16693, -0.489136)
+emitting = false
+amount = 64
+lifetime = 0.5
+mesh = SubResource("BoxMesh_fqve3")
+emission_shape = 3
+emission_box_extents = Vector3(0.25, 8.565, 0.25)
+direction = Vector3(0, 0, -1)
+initial_velocity_min = 0.93
+initial_velocity_max = 0.93
+scale_amount_min = 0.67
+scale_amount_max = 1.52
+
+[node name="CPUParticles3D2" type="CPUParticles3D" parent="collapsing_wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.01709, 1.16693, -0.489136)
+emitting = false
+amount = 64
+lifetime = 0.5
+mesh = SubResource("BoxMesh_fqve3")
+emission_shape = 3
+emission_box_extents = Vector3(0.25, 8.565, 0.25)
+direction = Vector3(0, 0, -1)
+initial_velocity_min = 0.93
+initial_velocity_max = 0.93
+scale_amount_min = 0.67
+scale_amount_max = 1.52
+
+[node name="CPUParticles3D3" type="CPUParticles3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -30.4657, -114.143, 75.7328)
+emitting = false
+amount = 64
+lifetime = 0.5
+mesh = SubResource("BoxMesh_fqve3")
+emission_shape = 3
+emission_box_extents = Vector3(0.25, 5.32, 0.25)
+direction = Vector3(0, 0, -1)
+initial_velocity_min = 0.93
+initial_velocity_max = 0.93
+scale_amount_min = 1.24
+scale_amount_max = 3.23
+
+[node name="CPUParticles3D4" type="CPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.4657, -105.643, 75.7328)
+emitting = false
+amount = 64
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.56
+lifetime_randomness = 1.0
+mesh = SubResource("BoxMesh_fqve3")
+emission_shape = 3
+emission_box_extents = Vector3(4.89, 9.475, 0.25)
+direction = Vector3(0, 0, -1)
+initial_velocity_min = 0.93
+initial_velocity_max = 0.93
+scale_amount_min = 1.24
+scale_amount_max = 3.23
+
+[node name="world_animations" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_c57j3")
+}
+
+[connection signal="body_entered" from="exit_area" to="." method="_on_exit_area_body_entered"]

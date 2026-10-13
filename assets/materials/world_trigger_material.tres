@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://cakfajc8y6b34"]
+
+[ext_resource type="Texture2D" uid="uid://crokrmp1m4lxo" path="res://assets/textures/material/world_trigger_texture.png" id="1_ay2sy"]
+
+[resource]
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(0.682353, 0.384314, 0.0352941, 1)
+albedo_texture = ExtResource("1_ay2sy")
+uv1_scale = Vector3(0.2, 0.2, 0.2)
+uv1_triplanar = true

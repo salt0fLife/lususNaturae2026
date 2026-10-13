@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://cw3m1a1l8mo64"]
+
+[node name="gameplay_test_ending_cutscene" type="Node"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.137255, 0.137255, 0.137255, 1)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 181.0
+offset_top = 78.0
+offset_right = -157.0
+offset_bottom = -91.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 40
+text = "this is the end of the gameplay test thingy (didnt feel like making a full cutscene lol), there is a lot more that has been done but this is the end of the polished stuff. feel free to stay and mess around with the other systems, though you will definitely find some bugs. "

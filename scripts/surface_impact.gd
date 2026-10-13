@@ -78,7 +78,7 @@ func _process(delta):
 	move_particles(delta)
 	life_time -= delta
 	if life_time < 0.0:
-		print("freed from queue")
+		#print("freed from queue")
 		queue_free()
 
 func move_particles(delta:float) -> void:

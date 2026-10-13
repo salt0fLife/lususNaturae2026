@@ -322,8 +322,6 @@ process_mode = 1
 [node name="tempHandler" type="Node3D" parent="."]
 process_mode = 1
 
-[node name="cutsceneHandler" type="Node" parent="."]
-
 [node name="Label" type="Label" parent="."]
 visible = false
 offset_right = 40.0
@@ -448,17 +446,6 @@ text = "version "
 [node name="player_info_displayer" parent="." instance=ExtResource("4_yal5i")]
 process_mode = 1
 
-[node name="post_effects" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_27pd0")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("PlaceholderTexture2D_pdc2j")
-script = ExtResource("6_mgka1")
-
 [node name="crosshair_handler" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 8
@@ -481,6 +468,19 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("8_rfy7i")
+
+[node name="post_effects" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_27pd0")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("PlaceholderTexture2D_pdc2j")
+script = ExtResource("6_mgka1")
+
+[node name="cutsceneHandler" type="Node" parent="."]
 
 [node name="inventory_relations_handler" type="Node" parent="."]
 script = ExtResource("4_6j0cq")

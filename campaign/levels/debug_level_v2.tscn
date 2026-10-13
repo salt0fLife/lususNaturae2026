@@ -1,4 +1,4 @@
-[gd_scene load_steps=103 format=3 uid="uid://cr72kg6xrvq30"]
+[gd_scene load_steps=104 format=3 uid="uid://cr72kg6xrvq30"]
 
 [ext_resource type="Shader" path="res://assets/shaders/parallax_grass.gdshader" id="1_3p6yo"]
 [ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="1_konvq"]
@@ -32,6 +32,7 @@
 [ext_resource type="PackedScene" uid="uid://wnbpwo413g3n" path="res://assets/glb_temp/gcb_feminine_test_01.glb" id="35_7gw2q"]
 [ext_resource type="Texture2D" uid="uid://eqp2s041qnd2" path="res://assets/glb_temp/gcb_feminine_test_01_generic_feminine_face.png" id="36_1vvpn"]
 [ext_resource type="PackedScene" uid="uid://5v7kljlis4wr" path="res://assets/glb_temp/vidica_test_model_export.glb" id="36_vb3g0"]
+[ext_resource type="PackedScene" uid="uid://dshwkiexhw5ij" path="res://assets/props/limbo_entrance.tscn" id="37_hlust"]
 [ext_resource type="Texture2D" uid="uid://e00cva6kixyt" path="res://assets/glb_temp/gcb_feminine_test_01_pupil.png" id="37_jmmmx"]
 [ext_resource type="Shader" path="res://assets/shaders/stylized_character_material.gdshader" id="38_s14pm"]
 [ext_resource type="Texture2D" uid="uid://5dvbuqqegcj3" path="res://assets/textures/vfx/skyfish_shine.png" id="39_slay7"]
@@ -56,6 +57,7 @@ shader_parameter/specular_highlight = 0.01
 shader_parameter/specular_highlight_day = 0.01
 shader_parameter/sh_day_power = 0.0
 shader_parameter/heightmap = ExtResource("2_5ipwy")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
@@ -97,6 +99,7 @@ shader_parameter/specular_highlight = 0.01
 shader_parameter/specular_highlight_day = 0.01
 shader_parameter/sh_day_power = 0.0
 shader_parameter/texture_albedo = SubResource("NoiseTexture2D_3dhxt")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
@@ -138,12 +141,13 @@ shader_parameter/specular_highlight_day = 0.01
 shader_parameter/sh_day_power = 0.0
 shader_parameter/texture_albedo = ExtResource("1_konvq")
 shader_parameter/texture_albedo_day = ExtResource("1_konvq")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_pgw35")
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
 shader_parameter/CloudOpacity = 1.0
 shader_parameter/cloudSoftness = 0.85
-shader_parameter/luminance_gradient = SubResource("GradientTexture1D_pgw35")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4cnlg"]
 
@@ -180,6 +184,7 @@ shader_parameter/specular_highlight = 0.01
 shader_parameter/specular_highlight_day = 0.01
 shader_parameter/sh_day_power = 0.0
 shader_parameter/heightmap = ExtResource("1_konvq")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
@@ -216,12 +221,13 @@ shader_parameter/uv2_offset = null
 shader_parameter/specular_highlight = 0.01
 shader_parameter/specular_highlight_day = 0.01
 shader_parameter/sh_day_power = 0.0
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_vblda")
 shader_parameter/CloudDitherPower = 200.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
 shader_parameter/CloudOpacity = 1.0
 shader_parameter/cloudSoftness = 0.85
-shader_parameter/luminance_gradient = SubResource("GradientTexture1D_vblda")
 
 [sub_resource type="SphereMesh" id="SphereMesh_mhg1a"]
 material = SubResource("ShaderMaterial_vyboe")
@@ -253,12 +259,13 @@ shader_parameter/uv2_offset = null
 shader_parameter/specular_highlight = 0.01
 shader_parameter/specular_highlight_day = 0.01
 shader_parameter/sh_day_power = 0.0
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_x75iw")
 shader_parameter/CloudDitherPower = 200.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
 shader_parameter/CloudOpacity = 1.0
 shader_parameter/cloudSoftness = 0.85
-shader_parameter/luminance_gradient = SubResource("GradientTexture1D_x75iw")
 
 [sub_resource type="SphereMesh" id="SphereMesh_v2b8e"]
 material = SubResource("ShaderMaterial_wnpme")
@@ -300,6 +307,7 @@ shader_parameter/specular_highlight_day = 0.01
 shader_parameter/sh_day_power = 0.0
 shader_parameter/texture_albedo = ExtResource("15_jb3g4")
 shader_parameter/texture_normal = ExtResource("16_2hutq")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
@@ -361,12 +369,13 @@ shader_parameter/specular_highlight = 1.92
 shader_parameter/specular_highlight_day = 1.025
 shader_parameter/sh_day_power = 0.0
 shader_parameter/texture_albedo = ExtResource("36_1vvpn")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
+shader_parameter/luminance_gradient = SubResource("GradientTexture1D_8hwvm")
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
 shader_parameter/CloudOpacity = 1.0
 shader_parameter/cloudSoftness = 0.85
-shader_parameter/luminance_gradient = SubResource("GradientTexture1D_8hwvm")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6rts7"]
 render_priority = 0
@@ -389,6 +398,7 @@ shader_parameter/specular_highlight = 0.01
 shader_parameter/specular_highlight_day = 0.01
 shader_parameter/sh_day_power = 0.0
 shader_parameter/texture_albedo = ExtResource("37_jmmmx")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
@@ -1444,6 +1454,11 @@ surface_material_override/0 = SubResource("ShaderMaterial_7dq2a")
 
 [node name="pointed_ears_002" parent="vidica_test_model_export" index="13"]
 surface_material_override/0 = SubResource("ShaderMaterial_ispye")
+
+[node name="limbo_entrance" parent="." instance=ExtResource("37_hlust")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 0, 13)
+entrance_id = 1
+exit_pos = Vector3(5.5, 0, 8)
 
 [connection signal="body_entered" from="launcher" to="launcher" method="_on_body_entered"]
 

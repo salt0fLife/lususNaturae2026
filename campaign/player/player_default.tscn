@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bgv1d2cui7wdb"]
+[gd_scene load_steps=18 format=3 uid="uid://bgv1d2cui7wdb"]
 
 [ext_resource type="Script" path="res://scripts/player_default.gd" id="1_7rf31"]
 [ext_resource type="PackedScene" uid="uid://dyl2fckihvk6a" path="res://campaign/player/components/interaction_sightline.tscn" id="2_iiild"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c4woxbpboh1ky" path="res://campaign/player/components/senses_camera.tscn" id="2_ofvxp"]
 [ext_resource type="PackedScene" uid="uid://bdka3ph2llevq" path="res://assets/items/blood_weapons/blood_sword.tscn" id="5_a6ukn"]
 [ext_resource type="Script" path="res://scripts/default_weapon_handler.gd" id="5_ehiv5"]
+[ext_resource type="Texture2D" uid="uid://b816umjj6lem7" path="res://assets/textures/material/DebuggTexture.png" id="7_ne8q0"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_obro3"]
 radius = 0.371076
@@ -15,6 +16,20 @@ size = Vector3(0.165, 0.18, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uqcq3"]
 size = Vector3(2, 1.30969, 2.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g35u8"]
+albedo_texture = ExtResource("7_ne8q0")
+
+[sub_resource type="BoxMesh" id="BoxMesh_wqb1b"]
+material = SubResource("StandardMaterial3D_g35u8")
+size = Vector3(0.75, 1, 0.7)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ky5bc"]
+albedo_texture = ExtResource("7_ne8q0")
+
+[sub_resource type="PrismMesh" id="PrismMesh_7yjvt"]
+material = SubResource("StandardMaterial3D_ky5bc")
+size = Vector3(0.75, 1, 0.7)
 
 [sub_resource type="Animation" id="Animation_xgb2u"]
 length = 0.001
@@ -41,6 +56,18 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector3(0.233821, 1.26912e-07, -0.223611)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Control:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_np1if"]
@@ -84,6 +111,18 @@ tracks/2/keys = {
 "method": &"sword_slash"
 }]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Control:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_g3yxb"]
 _data = {
@@ -115,7 +154,22 @@ running_camera_drop = 0.75
 [node name="cameraHandler" type="Node3D" parent="graphics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.653, 0)
 
-[node name="senses_camera" parent="graphics/cameraHandler" instance=ExtResource("2_ofvxp")]
+[node name="camerasOffset" type="Node3D" parent="graphics/cameraHandler"]
+transform = Transform3D(0.999949, 0.00936672, -0.00374161, -0.00857547, 0.984793, 0.17352, 0.00531003, -0.173479, 0.984823, 0, 0, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="graphics/cameraHandler/camerasOffset"]
+transform = Transform3D(0.866035, -0.0878915, 0.492197, 0.0856287, 0.995957, 0.0271815, -0.492596, 0.018606, 0.870059, 0, 0, 0)
+spring_length = 2.0
+
+[node name="SpringArm3D2" type="SpringArm3D" parent="graphics/cameraHandler/camerasOffset/SpringArm3D"]
+transform = Transform3D(0.500037, 0.14605, -0.8536, -0.154495, 0.984909, 0.0780141, 0.852112, 0.0928672, 0.515055, 0, 0, 0)
+spring_length = 2.0
+
+[node name="Node3D" type="Node3D" parent="graphics/cameraHandler/camerasOffset/SpringArm3D/SpringArm3D2"]
+transform = Transform3D(0.86525, -0.000405902, 0.501341, 0.0850773, 0.985614, -0.146035, -0.494069, 0.169009, 0.852837, 0, 0, 0)
+
+[node name="senses_camera" parent="graphics/cameraHandler/camerasOffset/SpringArm3D/SpringArm3D2/Node3D" instance=ExtResource("2_ofvxp")]
+transform = Transform3D(1, 1.16415e-10, 0, 2.32831e-10, 1, -2.98023e-08, 4.65661e-10, -1.49012e-08, 1, 0, 0, 0)
 
 [node name="interaction_sightline" parent="graphics/cameraHandler" instance=ExtResource("2_iiild")]
 visible = false
@@ -134,12 +188,17 @@ transform = Transform3D(0.975103, 0.221752, 1.23458e-07, -0.215718, 0.948568, -0
 
 [node name="blood_sword" parent="graphics/cameraHandler/hands/held_item_handler" instance=ExtResource("5_a6ukn")]
 
-[node name="weapon_handler" type="Node3D" parent="graphics/cameraHandler"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.653, 0)
+[node name="weapon_handler" type="Node3D" parent="graphics/cameraHandler" node_paths=PackedStringArray("player_main")]
 script = ExtResource("5_ehiv5")
+player_main = NodePath("../../..")
+pogo_strength = 8.0
+
+[node name="wall_check" type="RayCast3D" parent="graphics/cameraHandler/weapon_handler"]
+visible = false
+target_position = Vector3(0, 0, -3)
 
 [node name="sword_slash" type="Area3D" parent="graphics/cameraHandler/weapon_handler"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.653, -0.5)
 collision_layer = 0
 collision_mask = 32
 
@@ -147,12 +206,102 @@ collision_mask = 32
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65485, -0.75)
 shape = SubResource("BoxShape3D_uqcq3")
 
+[node name="sword_impacts_check" type="Node3D" parent="graphics/cameraHandler/weapon_handler"]
+visible = false
+
+[node name="wall_check2" type="RayCast3D" parent="graphics/cameraHandler/weapon_handler/sword_impacts_check"]
+target_position = Vector3(0, 0, -2.475)
+collision_mask = 33
+
+[node name="wall_check3" type="RayCast3D" parent="graphics/cameraHandler/weapon_handler/sword_impacts_check"]
+transform = Transform3D(0.983079, 0, -0.183179, 0, 1, 0, 0.183179, 0, 0.983079, 0, 0, 0)
+target_position = Vector3(0, 0, -2.475)
+collision_mask = 33
+
+[node name="wall_check4" type="RayCast3D" parent="graphics/cameraHandler/weapon_handler/sword_impacts_check"]
+transform = Transform3D(0.92434, 0, -0.381571, 0, 1, 0, 0.381571, 0, 0.92434, 0, 0, 0)
+target_position = Vector3(0, 0, -2.475)
+collision_mask = 33
+
+[node name="wall_check5" type="RayCast3D" parent="graphics/cameraHandler/weapon_handler/sword_impacts_check"]
+transform = Transform3D(0.920941, 0, 0.389703, 0, 1, 0, -0.389703, 0, 0.920941, 0, 0, 0)
+target_position = Vector3(0, 0, -2.475)
+collision_mask = 33
+
+[node name="wall_check6" type="RayCast3D" parent="graphics/cameraHandler/weapon_handler/sword_impacts_check"]
+transform = Transform3D(0.981427, 0, 0.191837, 0, 1, 0, -0.191837, 0, 0.981427, 0, 0, 0)
+target_position = Vector3(0, 0, -2.475)
+collision_mask = 33
+
 [node name="step_sounds" type="AudioStreamPlayer3D" parent="graphics"]
 
 [node name="floor_check" type="RayCast3D" parent="graphics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.10806, 0)
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("BoxMesh_wqb1b")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("PrismMesh_7yjvt")
+
 [node name="actionPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_g3yxb")
 }
+speed_scale = 2.0
+
+[node name="Control" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.018
+anchor_top = 0.625
+anchor_right = 0.995
+anchor_bottom = 0.625
+offset_left = 0.263998
+offset_right = -2.24011
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.0866145
+
+[node name="ColorRect2" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.023
+anchor_top = 0.637
+anchor_right = 1.0
+anchor_bottom = 0.639
+offset_left = 512.504
+offset_top = -66.776
+offset_right = -14.0
+offset_bottom = -56.0721
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.0625749
+
+[node name="ColorRect3" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.022
+anchor_top = 0.646
+anchor_right = 1.0
+anchor_bottom = 0.646
+offset_left = -1.344
+offset_top = -11.608
+offset_right = -529.0
+offset_bottom = 0.391968
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.110009

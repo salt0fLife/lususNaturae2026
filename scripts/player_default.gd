@@ -38,6 +38,11 @@ func _ready():
 	PlayerInformation.connect("used_held_item",use_held_item)
 	PlayerInformation.connect("released_held_item",release_held_item)
 	interaction_sightline.connect("interacted",_on_successful_interaction)
+	
+	
+	#to update it
+	PlayerInformation.set_blood(PlayerInformation.blood)
+	PlayerInformation.set_health(PlayerInformation.health)
 
 func update_held_item_graphics() -> void:
 	for old in held_item_handler.get_children(false):
@@ -49,7 +54,7 @@ func update_held_item_graphics() -> void:
 	held_item_handler.add_child(m)
 
 func use_held_item(special:bool = false) -> void:
-	print("used item")
+	#print("used item")
 	var item_data = PlayerInformation.get_held_item_data()
 	if item_data.is_empty():
 		return
@@ -95,7 +100,7 @@ var blood_loss_timer = 0.0
 func _process(delta):
 	update_tooltip()
 	if PlayerInformation.blood > PlayerInformation.max_blood:
-		blood_loss_timer += delta
+		blood_loss_timer += delta * 2.5
 		if blood_loss_timer > 1.0:
 			blood_loss_timer -= 1.0
 			PlayerInformation.set_blood(PlayerInformation.blood-1)
@@ -195,11 +200,8 @@ func _on_successful_interaction(info : Array) -> void:
 		Global.interact_returns.PICKUP_ITEM:
 			#attempt_loose_item_pickup(data)
 			print("pickup item")
-			pass
 		Global.interact_returns.ENTER_DOOR:
-			#enter_door(data)
-			print("enter door")
-			pass
+			enter_door(data)
 		Global.interact_returns.SLEEP_IN_BED:
 			sleep_in_bed(data)
 
@@ -261,7 +263,15 @@ func take_damage(amount : int,type : int)  -> int:
 		PlayerInformation.set_blood(PlayerInformation.blood - amount)
 		return 0
 	elif blood > 0:
-		PlayerInformation.set_blood(0)
+		if PlayerInformation.health + blood - amount > 0:
+			amount -= blood
+			PlayerInformation.set_blood(0)
+			PlayerInformation.set_health(PlayerInformation.health - dealt)
+		else:
+			PlayerInformation.set_blood(0)
+			PlayerInformation.set_health(0)
+			PlayerInformation.die()
+		#PlayerInformation.set_blood(0)
 	elif PlayerInformation.health - dealt > 0:
 		PlayerInformation.set_health(PlayerInformation.health - dealt)
 	else:

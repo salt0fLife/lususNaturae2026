@@ -28,12 +28,15 @@ func major_point_reached(key : int) -> void:
 
 enum major_points {
 	SKY_FALL, #discontinued :/
-	WAKEUP,
-	EXITED_LABORATORY,
+	WAKEUP, #most of these are discontinued lol
+	EXITED_LABORATORY, #i will proably just delete the ones im not using before final export
 	GATE_WARDEN_DEFEATED,
+	GAMEPLAY_TEST_COMPLETED,
 }
 
-var major_points_reached = []
+var major_points_reached:Array = []
+
+var limbo_entrances_unlocked:Array = []
 
 const levels: Dictionary = {
 	"debug" : ["res://campaign/levels/debug_level.tscn","res://assets/textures/gui/suits/murrey_small.png"],
@@ -49,6 +52,7 @@ const levels: Dictionary = {
 	"laboratory_courtyard" : ["res://campaign/levels/laboratory_courtyard.tscn","res://assets/textures/gui/suits/gilt_obscure_small.png"],
 	"spiders_domain" : ["res://campaign/levels/spiders_domain/spiders_domain.tscn","res://assets/textures/material/DebuggTexture.png"],
 	"gameplay_test" : ["res://campaign/levels/gameplay_test_level.tscn","res://assets/textures/material/DebuggTexture.png"],
+	"limbo" : ["res://campaign/levels/limbo.tscn","res://assets/textures/sky/moon_phases/new.png"]
 }
 
 var levels_persistent_data: Dictionary = {
@@ -60,7 +64,8 @@ const cutscenes: Dictionary = {
 	"dream_1" : ["res://campaign/cutscenes/dream_cutscene.tscn",3.5],
 	"fall_into_world" : ["res://campaign/cutscenes/falling_into_world_cutscene.tscn", 4.0],
 	"gate_warden_introduction" : ["res://campaign/cutscenes/falling_into_world_cutscene.tscn", 1.0],
-	"respawn" : ["res://campaign/cutscenes/death_cutscene.tscn",3.8]
+	"respawn" : ["res://campaign/cutscenes/death_cutscene.tscn",3.8],
+	"gameplay_test_ending" : ["res://campaign/cutscenes/gameplay_test_ending_cutscene.tscn", 11.5],
 }
 
 signal play_cutscene_signal
@@ -206,7 +211,7 @@ const surface_lookup = { #this way i can bundle more info in if i need
 		STEP_SOUNDS : STONE_KEY,
 		BULLET_HIT_EFFECT : DIRT_KEY,
 		SURFACE_HARDNESS : 20, #i have no real reasoning behind this
-		WEAPON_HIT_EFFECT : surface_impact.NONE
+		WEAPON_HIT_EFFECT : surface_impact.STONE
 	},
 	"water" : {
 		STEP_SOUNDS : STONE_KEY,
@@ -298,7 +303,6 @@ func set_post_pact(key:StringName,val:float) -> void:
 	pass
 
 
-
 var debug_render = false
 signal update_debug_render
 func set_debug_render(val : bool) -> void:
@@ -306,3 +310,7 @@ func set_debug_render(val : bool) -> void:
 		return
 	debug_render = val
 	emit_signal("update_debug_render",debug_render)
+
+signal _on_set_checkpoint
+func set_checkpoint():
+	emit_signal("_on_set_checkpoint")

@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://drepj0qdejg2x"]
+
+[ext_resource type="Texture2D" uid="uid://bq3plyxn32vu5" path="res://assets/textures/sky/stars/star_glow.png" id="1_4ixhp"]
+[ext_resource type="Script" path="res://scripts/particles_death_timer.gd" id="1_b80bu"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_leys8"]
+transparency = 1
+blend_mode = 1
+albedo_color = Color(0.176471, 0.694118, 0.890196, 1)
+albedo_texture = ExtResource("1_4ixhp")
+backlight_enabled = true
+backlight = Color(1, 1, 1, 1)
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_ncecg"]
+material = SubResource("StandardMaterial3D_leys8")
+
+[sub_resource type="Curve" id="Curve_n5fk1"]
+_data = [Vector2(0.0239234, 0.556818), 0.0, 0.0, 0, 0, Vector2(0.26555, 0.923182), 0.0, 0.0, 0, 0, Vector2(0.57177, 0.905455), -1.64667, -1.64667, 0, 0, Vector2(1, 0), -3.99528, 0.0, 0, 0]
+point_count = 4
+
+[node name="generic_spawn_explosion" type="CPUParticles3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+emitting = false
+amount = 32
+one_shot = true
+explosiveness = 1.0
+lifetime_randomness = 0.62
+mesh = SubResource("QuadMesh_ncecg")
+emission_shape = 3
+emission_box_extents = Vector3(0, 1, 0)
+direction = Vector3(0, 1, 0)
+spread = 180.0
+gravity = Vector3(0, -2.45, 0)
+initial_velocity_min = 6.39
+initial_velocity_max = 6.39
+damping_min = 5.763
+damping_max = 6.656
+scale_amount_min = 0.41
+scale_amount_max = 0.41
+scale_amount_curve = SubResource("Curve_n5fk1")
+script = ExtResource("1_b80bu")
+life_time = 2.0
+auto_emitting = true

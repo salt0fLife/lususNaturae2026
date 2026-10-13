@@ -1,0 +1,57 @@
+[gd_scene load_steps=9 format=3 uid="uid://da5l0f8k3nl0t"]
+
+[ext_resource type="Script" path="res://scripts/death_timer.gd" id="1_7bn8s"]
+[ext_resource type="Texture2D" uid="uid://bq3plyxn32vu5" path="res://assets/textures/sky/stars/star_glow.png" id="2_0pom8"]
+[ext_resource type="Texture2D" uid="uid://qb4vvyvputm7" path="res://assets/textures/sky/moon_phases/sunShape.png" id="3_2t0bf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7kq5e"]
+transparency = 1
+blend_mode = 1
+albedo_color = Color(0.176471, 0.694118, 0.890196, 1)
+albedo_texture = ExtResource("2_0pom8")
+backlight_enabled = true
+backlight = Color(1, 1, 1, 1)
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_car7y"]
+material = SubResource("StandardMaterial3D_7kq5e")
+
+[sub_resource type="Curve" id="Curve_gsjdl"]
+_data = [Vector2(0, 0.00136364), 0.0, 0.0, 0, 0, Vector2(0.160287, 0.663182), 2.40825, 2.40825, 0, 0, Vector2(0.535885, 0.970455), 0.0, 0.0, 0, 0, Vector2(0.822967, 0.539091), -2.665, -2.665, 0, 0, Vector2(1, 0.0190909), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_pewsf"]
+orientation = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ai1hb"]
+transparency = 1
+blend_mode = 1
+albedo_color = Color(0.262745, 0.47451, 0.6, 1)
+albedo_texture = ExtResource("3_2t0bf")
+backlight_enabled = true
+backlight = Color(1, 1, 1, 1)
+billboard_mode = 1
+
+[node name="generic_spawn_particles" type="Node3D"]
+script = ExtResource("1_7bn8s")
+life_time = 0.6
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+amount = 16
+mesh = SubResource("QuadMesh_car7y")
+emission_shape = 3
+emission_box_extents = Vector3(0.5, 1, 0.5)
+gravity = Vector3(0, 0, 0)
+scale_amount_min = 0.48
+scale_amount_max = 0.48
+scale_amount_curve = SubResource("Curve_gsjdl")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("PlaneMesh_pewsf")
+surface_material_override/0 = SubResource("StandardMaterial3D_ai1hb")

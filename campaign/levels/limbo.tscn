@@ -1,0 +1,122 @@
+[gd_scene load_steps=7 format=3 uid="uid://d73l21pjpoog"]
+
+[ext_resource type="Texture2D" uid="uid://dshhwvx4ekhaa" path="res://assets/textures/material/debug_grid_texture.png" id="1_86ojb"]
+[ext_resource type="Script" path="res://scripts/limbo_level.gd" id="1_cuisv"]
+[ext_resource type="PackedScene" uid="uid://dshwkiexhw5ij" path="res://assets/props/limbo_entrance.tscn" id="3_lwrc6"]
+[ext_resource type="PackedScene" uid="uid://drhchp75kxqee" path="res://assets/props/sleeping_bed.tscn" id="4_fru77"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nsiha"]
+albedo_texture = ExtResource("1_86ojb")
+uv1_triplanar = true
+
+[sub_resource type="Environment" id="Environment_34ige"]
+ambient_light_source = 2
+ambient_light_color = Color(0.486275, 0.486275, 0.486275, 1)
+
+[node name="limbo" type="Node3D"]
+script = ExtResource("1_cuisv")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+material_override = SubResource("StandardMaterial3D_nsiha")
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
+flip_faces = true
+size = Vector3(6, 3.5, 6)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 1.5, 6.75)
+flip_faces = true
+size = Vector3(3.5, 3, 11.5)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, 1.25, 4.5)
+visible = false
+flip_faces = true
+size = Vector3(3.5, 2.5, 1)
+
+[node name="CSGBox3D10" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, 1.25, 8)
+visible = false
+flip_faces = true
+size = Vector3(3.5, 2.5, 1)
+
+[node name="CSGBox3D11" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, 1.25, 11.5)
+visible = false
+flip_faces = true
+size = Vector3(3.5, 2.5, 1)
+
+[node name="CSGBox3D12" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.75, 1.25, 11.5)
+visible = false
+flip_faces = true
+size = Vector3(3.5, 2.5, 1)
+
+[node name="CSGBox3D13" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.75, 1.25, 8)
+visible = false
+flip_faces = true
+size = Vector3(3.5, 2.5, 1)
+
+[node name="CSGBox3D14" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.75, 1.25, 4.5)
+visible = false
+flip_faces = true
+size = Vector3(3.5, 2.5, 1)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 1.5, 4.5)
+flip_faces = true
+size = Vector3(3, 3, 3)
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.5, 4.5)
+flip_faces = true
+size = Vector3(3, 3, 3)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 1.5, 8)
+flip_faces = true
+size = Vector3(3, 3, 3)
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.5, 8)
+flip_faces = true
+size = Vector3(3, 3, 3)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 1.5, 11.5)
+flip_faces = true
+size = Vector3(3, 3, 3)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.5, 11.5)
+flip_faces = true
+size = Vector3(3, 3, 3)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_34ige")
+
+[node name="lights" type="Node3D" parent="." groups=["light"]]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+light_energy = 0.573
+
+[node name="limbo_entrance" parent="." instance=ExtResource("3_lwrc6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, 4.5)
+level_to_enter = &"debug"
+exit_pos = Vector3(-14, 0, 11)
+toolTip = "exit limbo"
+
+[node name="limbo_entrance2" parent="." instance=ExtResource("3_lwrc6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, 8)
+entrance_id = 1
+level_to_enter = &"debug_v2"
+exit_pos = Vector3(-29, 0, 13)
+toolTip = "exit limbo"
+
+[node name="sleeping_bed" parent="." instance=ExtResource("4_fru77")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, -2)

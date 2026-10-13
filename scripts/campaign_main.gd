@@ -7,14 +7,16 @@ extends Node
 @onready var loading_screen = $loading_screen
 @onready var decalHandler = $decalHandler
 @onready var tempHandler = $tempHandler #home of all temporary graphical effects and such
+@onready var player_info_display = $player_info_displayer
+@onready var crosshair = $crosshair_handler
 
 #game variables
 var day_timer: float = 500.1
 var day_length: float = 1000.0
 var seconds_played = 0
 
-var level = "debug"
-var player_stage = -2
+var level = "gameplay_test"
+var player_stage = 2
 var in_game_days = 0
 var time_paused = false
 
@@ -35,6 +37,7 @@ func _ready():
 	Global.connect("drop_item_signal",_on_dropped_item)
 	Global.connect("update_debug_render", _on_update_debug_render)
 	Global.connect("indicate_damage_signal",_on_indicate_damage)
+	Global.connect("_on_set_checkpoint",_on_checkpoint_reached)
 	PlayerInformation.connect("change_player", change_player)
 	PlayerInformation.connect("slept", _on_player_slept)
 	$pause_menu/buttonHandler/resume.connect("button_down", set_paused.bind(false))
@@ -57,6 +60,8 @@ func start_game(was_from_checkpoint:bool = false): #the only reason i need to kn
 	#var level_data = Global.levels[level]
 	#var level_scene = load(level_data[0]).instantiate()
 	#worldHandler.add_child(level_scene)
+	#player_info_display.show()
+	#crosshair.show()
 	change_level(level, false)
 	change_player(player_stage)
 	load_current_level_persistent_data(was_from_checkpoint)
@@ -76,20 +81,21 @@ const default_save_data = {
 	"velocity" : Vector3.ZERO,
 	"position" : Vector3.ZERO,
 	"rotation" : Vector2.ZERO,
-	"player_stage" : -2,
-	"level" : "debug",
+	"player_stage" : 2,
+	"level" : "gameplay_test",
 	"day_timer" : 500.1,
 	"seconds_played" : 0,
 	"food" : 2,
 	"min_sleep_food" : 4,
-	"max_food" : 5,
-	"health" : 1.0,
-	"max_health" : 5.0,
+	"max_food" : 10,
+	"health" : 10,
+	"max_health" : 40,
 	"in_game_days" : 0,
+	"limbo_entrances" : [],
 }
 
 const default_inventory_data = {
-	"inventory" :[[],[],[],[],[]],
+	"inventory" :[[],[],[],[],[],[],[],[]],
 	"held_item_index" : 0
 	}
 
@@ -232,7 +238,7 @@ func load_data_from_save():
 	PlayerInformation.health = saved_data["health"]
 	PlayerInformation.max_health = saved_data["max_health"]
 	in_game_days = saved_data["in_game_days"]
-	
+	Global.limbo_entrances_unlocked = saved_data["limbo_entrances"]
 	##inventory
 	
 	var inventory_data = SaveHandler.load_file(Global.save_filepath,"inventory.dat")
@@ -281,7 +287,8 @@ func save_game_data():
 	"blood" : PlayerInformation.blood,
 	"max_blood" : PlayerInformation.max_blood,
 	"in_game_days" : in_game_days,
-	"version" : Global.version
+	"version" : Global.version,
+	"limbo_entrances" : Global.limbo_entrances_unlocked,
 	}
 	
 	#game_data = JSON.stringify(game_data)
@@ -450,6 +457,8 @@ func play_cutscene(key : String) -> void:
 		if p.has_method("save_data"):
 			p.save_data(Global.save_filepath)
 	purge_world()
+	#player_info_display.hide()
+	#crosshair.hide()
 	var data = Global.cutscenes[key]
 	var scene = load(data[0]).instantiate()
 	cutsceneHandler.add_child(scene)
@@ -627,7 +636,10 @@ func select_action_index(i : int) -> void:
 func make_player_perform_action(key : String) -> void:
 	print("making player perform action " + key)
 	for p in playerHandler.get_children(false):
-		p.perform_action(key)
+		if p.has_method("perform_action"):
+			p.perform_action(key)
+		else:
+			printerr("player script missing 'perform_action' function")
 
 func update_debug_graphics() -> void:
 	$debug_menu/left/paused.text = "paused = " + str(paused)
@@ -784,6 +796,8 @@ func load_data_from_checkpoint() -> void:
 	PlayerInformation.health = saved_data["health"]
 	PlayerInformation.max_health = saved_data["max_health"]
 	in_game_days = saved_data["in_game_days"]
+	Global.limbo_entrances_unlocked = saved_data["limbo_entrances"]
+	##^^^limbo entrances should remain unchanged by death so this is is not necessary, but ill leave it in
 	
 	##inventory
 	
@@ -908,12 +922,14 @@ func _on_major_point_reached(key : int) -> void:
 			play_cutscene("fall_into_world")
 			PlayerInformation.tp(Vector3.ZERO)
 			level = "stone_forest"
-			pass
-	pass
+		Global.major_points.GAMEPLAY_TEST_COMPLETED:
+			play_cutscene("gameplay_test_ending")
+			Global.new_dialogue_box("open pause menu for debug controls!")
+			PlayerInformation.tp(Vector3.ZERO)
+			level = "debug"
 
 func _on_tooltip(text) -> void:
 	$tooltip.set_new_tooltip(text)
-
 
 
 ##projectiles and entity management
