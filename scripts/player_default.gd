@@ -1,10 +1,13 @@
 extends CharacterBody3D
 @onready var graphics = $graphics
-@onready var cameraHandler = $graphics/cameraHandler
+@onready var camera_base = $camera_base
+@onready var cameraHandler = $camera_base/camera_handler
+@onready var view_handler = $graphics/cameraHandler #decides which direction your character is looking
 @onready var interaction_sightline = $graphics/cameraHandler/interaction_sightline
 @onready var weapon_handler = $graphics/cameraHandler/weapon_handler
 @onready var held_item_handler = $graphics/cameraHandler/hands/held_item_handler
 @onready var action_player = $actionPlayer
+@onready var anim = $graphics/character/Vidica_basic/AnimationPlayer
 
 @export var mouse_sensitivity:float = 2.5
 
@@ -70,14 +73,18 @@ func release_held_item(special:bool = false) -> void:
 	
 	pass
 
-func play_anim(key:StringName) -> void:
+func play_anim(key:StringName, interrupting:bool = false) -> void:
+	if action_player.is_playing() and !interrupting:
+		return #cant play a new animation until old action has finished
 	if action_player.has_animation(key):
 		if action_player.current_animation != key:
 			action_player.play(key)
 	else:
 		action_player.play("RESET")
 	
-	pass
+	if anim.has_animation(key):
+		if !anim.current_animation == key:
+			anim.play(key,0.1)
 
 #end connections
 
@@ -86,11 +93,16 @@ func _input(event):
 		var TempRotation = rotation.x - event.relative.y /1000 * mouse_sensitivity
 		cameraHandler.rotation.x += TempRotation
 		cameraHandler.rotation.x = clamp(cameraHandler.rotation.x, -1.5, 1.5) #formerly -1.25,1.5
-		graphics.rotation.y -= event.relative.x /1000 * mouse_sensitivity
-		if graphics.rotation.y > PI*64.0:
-			graphics.rotation.y -= PI*64.0
-		elif graphics.rotation.y < -PI*64.0:
-			graphics.rotation.y += PI*64.0
+		#graphics.rotation.y -= event.relative.x /1000 * mouse_sensitivity
+		#if graphics.rotation.y > PI*64.0:
+			#graphics.rotation.y -= PI*64.0
+		#elif graphics.rotation.y < -PI*64.0:
+			#graphics.rotation.y += PI*64.0
+		camera_base.rotation.y -= event.relative.x /1000 * mouse_sensitivity
+		if camera_base.rotation.y > PI*64.0:
+			camera_base.rotation.y -= PI*64.0
+		elif camera_base.rotation.y < -PI*64.0:
+			camera_base.rotation.y += PI*64.0
 	if Input.is_action_just_pressed("sprint"):
 		sprinting = true
 	if Input.is_action_just_released("sprint"):
@@ -105,10 +117,22 @@ func _process(delta):
 			blood_loss_timer -= 1.0
 			PlayerInformation.set_blood(PlayerInformation.blood-1)
 
+func get_movement_anim(key:StringName) -> StringName:
+	match key:
+		"walk":
+			return "walk_forward_empty"
+		"idle":
+			return "idle_empty"
+		_:
+			return "idle_empty"
+
 var airborn = false
 func _physics_process(delta):
 	var input_dir = Input.get_vector("left", "right", "up", "down")
-	var direction = (graphics.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	var direction = (camera_base.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	
+	view_handler.rotation.x = lerp_angle(view_handler.rotation.x,cameraHandler.rotation.x,delta*16.0)
+	
 	
 	if !is_on_floor():
 		velocity += gravity*delta
@@ -130,8 +154,17 @@ func _physics_process(delta):
 			velocity.y = jump_strength
 			airborn = true
 	
+	#if sprinting: #this is by design
+		#if direction:
+			#var g_rot = Global.dir_to_rot(direction).y + PI
+			#graphics.rotation.y = lerp_angle(graphics.rotation.y, g_rot,delta*8.0)
+	#else:
+		#graphics.rotation.y = lerp_angle(graphics.rotation.y, camera_base.rotation.y,delta*8.0)
 	
 	if direction:
+		var g_rot = Global.dir_to_rot(direction).y + PI
+		graphics.rotation.y = lerp_angle(graphics.rotation.y, g_rot,delta*8.0)
+		
 		var desired_speed:float = walking_speed
 		if sprinting:
 			desired_speed = sprinting_speed
@@ -139,8 +172,10 @@ func _physics_process(delta):
 		if is_on_floor():
 			velocity = update_velocity_floor(delta, desired_speed, ground_acceleration,direction)
 			if sprinting:
+				play_anim(get_movement_anim("sprint"))
 				graphics.running(delta,velocity)
 			else:
+				play_anim(get_movement_anim("walk"))
 				graphics.walking(delta,velocity)
 		else:
 			if !tilt_jumped:
@@ -150,10 +185,12 @@ func _physics_process(delta):
 	elif tilt_jumped:
 		velocity = update_velocity_tilt_jump(delta,tilt_jump_speed,air_acceleration_tilt_jump,direction)
 	else:
+		play_anim(get_movement_anim("idle"))
 		if is_on_floor():
 			var s_v = velocity*ground_acceleration*ground_friction
 			s_v = s_v.normalized() * clamp(s_v.length(),0.0,max_friction_decceleration)
 			velocity -= s_v * delta
+	
 	
 	move_and_slide()
 	update_player_information()

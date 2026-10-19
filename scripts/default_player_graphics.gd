@@ -1,6 +1,6 @@
 extends Node3D
-@onready var camera = $cameraHandler/camerasOffset/SpringArm3D/SpringArm3D2/Node3D/senses_camera#$cameraHandler/senses_camera
-@onready var cameraHandler = $cameraHandler
+@onready var camera = $"../camera_base/camera_handler/camerasOffset/SpringArm3D/Node3D/senses_camera"#$"../camera_base/camera_handler/camerasOffset/SpringArm3D/SpringArm3D2/Node3D/senses_camera"#$cameraHandler/camerasOffset/SpringArm3D/SpringArm3D2/Node3D/senses_camera#$cameraHandler/senses_camera
+@onready var cameraHandler = $"../camera_base/camera_handler"#$cameraHandler
 @onready var hands = $cameraHandler/hands
 @onready var floor_check = $floor_check
 
