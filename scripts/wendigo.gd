@@ -11,17 +11,18 @@ var speed = 15.0
 var state = "sleeping"
 
 func _physics_process(delta):
-	if player != null:
+	if true: #hehe coding #player != null:
 		match state:
 			"sleeping":
-				var dif = (player.global_position - global_position)
+				var dif = (PlayerInformation.position - global_position)
 				velocity.x = 0.0
 				velocity.z = 0.0
 				if dif.length() < 3.0:
 					state = "walking"
 					anim.play("walk_forward_4L",0.5)
 			"walking":
-				var target_pos = player.global_position# + (player.velocity * 0.5)
+				#var target_pos = player.global_position# + (player.velocity * 0.5)
+				var target_pos = PlayerInformation.position
 				var dif = ( target_pos - global_position)
 				var dir = Vector3(dif.x,0.0,dif.z).normalized()
 				var desired_vel = 5.0*dir
@@ -34,7 +35,8 @@ func _physics_process(delta):
 					anim.play("lay_down",0.75)
 				
 			"running":
-				var target_pos = player.global_position# + (player.velocity * 0.5)
+				#var target_pos = player.global_position# + (player.velocity * 0.5)
+				var target_pos = PlayerInformation.position
 				var dif = ( target_pos - global_position)
 				var dir = Vector3(dif.x,0.0,dif.z).normalized()
 				var desired_vel = speed*dir
@@ -49,7 +51,8 @@ func _physics_process(delta):
 					state = "fighting"
 					anim.play("walk_forward_2L", 0.5)
 			"fighting":
-				var target_pos = player.global_position + (player.velocity * 0.5)
+				#var target_pos = player.global_position + (player.velocity * 0.5)
+				var target_pos = PlayerInformation.position
 				var dif = ( target_pos - global_position)
 				var dir = Vector3(dif.x,0.0,dif.z).normalized()
 				var desired_vel = speed*dir*0.5

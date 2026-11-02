@@ -1,5 +1,7 @@
 shader_type canvas_item;
 uniform sampler2D ScreenTexture : hint_screen_texture;
+uniform float amount = 1.0;
+uniform vec4 modulation : source_color = vec4(1.0,1.0,1.0,1.0);
 
 vec4 get_blurred_col(sampler2D tex, vec2 uv, float dis) {
 	vec4 up = texture(tex, uv+vec2(0.0,dis));
@@ -17,8 +19,8 @@ vec4 get_blurred_col(sampler2D tex, vec2 uv, float dis) {
 }
 
 void fragment() {
-	vec4 col = get_blurred_col(ScreenTexture,SCREEN_UV,0.0035);
-	COLOR = col;
+	vec4 col = get_blurred_col(ScreenTexture,SCREEN_UV,0.0035*amount);
+	COLOR = col * modulation;
 	// Called for every pixel the material is visible on.
 }
 

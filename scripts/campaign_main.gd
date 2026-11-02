@@ -796,7 +796,7 @@ func load_data_from_checkpoint() -> void:
 	PlayerInformation.health = saved_data["health"]
 	PlayerInformation.max_health = saved_data["max_health"]
 	in_game_days = saved_data["in_game_days"]
-	Global.limbo_entrances_unlocked = saved_data["limbo_entrances"]
+	#Global.limbo_entrances_unlocked = saved_data["limbo_entrances"]
 	##^^^limbo entrances should remain unchanged by death so this is is not necessary, but ill leave it in
 	
 	##inventory

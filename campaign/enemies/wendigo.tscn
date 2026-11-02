@@ -5516,7 +5516,5 @@ material = SubResource("StandardMaterial3D_7dswu")
 width = 0.345
 max_points = 100
 distance_between_points = 2.0
-natrual_point_decay = null
-gravity = null
 
 [editable path="graphics/wendigo_blockout"]

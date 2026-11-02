@@ -5,9 +5,11 @@ extends CharacterBody3D
 @onready var view_handler = $graphics/cameraHandler #decides which direction your character is looking
 @onready var interaction_sightline = $graphics/cameraHandler/interaction_sightline
 @onready var weapon_handler = $graphics/cameraHandler/weapon_handler
-@onready var held_item_handler = $graphics/cameraHandler/hands/held_item_handler
+@onready var held_item_handler = $graphics/character/Vidica_basic/metarig/Skeleton3D/BoneAttachment3D7/held_item_handler#$graphics/cameraHandler/hands/held_item_handler
 @onready var action_player = $actionPlayer
 @onready var anim = $graphics/character/Vidica_basic/AnimationPlayer
+@onready var dir_anim = $graphics/character/Vidica_basic/AnimationTree
+@onready var dir_anim_mw = $graphics/character/Vidica_basic/mw
 
 @export var mouse_sensitivity:float = 2.5
 
@@ -19,18 +21,27 @@ extends CharacterBody3D
 @export var air_acceleration_tilt_jump:float = 5.0
 @export var ground_friction:float = 4.0
 
-@export var walking_speed:float = 4.5
+@export var crouching_speed:float = 1.0
+@export var walking_speed:float = 1.125
+@export var jogging_speed:float = 3.0
 @export var sprinting_speed:float = 9.5
+@export var dashing_speed:float = 9.5
 @export var tilt_jump_speed:float = 9.5
 @export var jump_strength:float = 5.0
 @export var max_friction_decceleration = 20.0
 
 var sprinting:bool = false
+var crouching:bool = false
+var walking:bool = false
 
 var tilt_jumped:bool = false
 var air_jumped:bool = false
-#
 
+#stepping
+var _snapped_to_stairs_last_frame: bool = false
+var MAX_STEP_HEIGHT: float = 0.55
+var jumped_last_frame : bool = false
+#
 
 func _ready():
 	PlayerInformation.connect("teleport", tp)
@@ -56,6 +67,7 @@ func update_held_item_graphics() -> void:
 	var m = load(id[Items.INDEX_MODEL]).instantiate()
 	held_item_handler.add_child(m)
 
+var combo_counter: int = 0
 func use_held_item(special:bool = false) -> void:
 	#print("used item")
 	var item_data = PlayerInformation.get_held_item_data()
@@ -64,7 +76,27 @@ func use_held_item(special:bool = false) -> void:
 	var type = item_data[Items.INDEX_TYPE]
 	match type:
 		Items.type.SWORD:
-			play_anim("swing_sword_L")
+			var input_dir = Input.get_vector("left", "right", "up", "down")
+			if !airborn:
+				var key = "atk_swr_f_g_01"
+				if -input_dir.y >= abs(input_dir.x) or input_dir.length() < 0.1: #is forward
+					match combo_counter:
+						1:
+							key = "atk_swr_f_g_02"
+						2:
+							key = "atk_swr_f_g_03"
+						_:
+							key = "atk_swr_f_g_01"
+							combo_counter = 0
+				else: #is to the side or back
+					if abs(input_dir.y) > abs(input_dir.x): #backwards
+						key = "atk_swr_b_g_01"
+					elif input_dir.x > 0.0: #to the right
+						key = "atk_swr_r_g_01"
+					else: #to the left
+						key = "atk_swr_l_g_01"
+				if play_anim(key):
+					combo_counter += 1
 		Items.type.FOOD:
 			PlayerInformation.eat_food(item_data[Items.INDEX_DATA])
 			PlayerInformation.set_inventory_slot(PlayerInformation.held_item_index,[])
@@ -73,21 +105,28 @@ func release_held_item(special:bool = false) -> void:
 	
 	pass
 
-func play_anim(key:StringName, interrupting:bool = false) -> void:
+@onready var jog_tree = $graphics/character/Vidica_basic/AnimationTree
+func play_anim(key:StringName, interrupting:bool = false) -> bool:
 	if action_player.is_playing() and !interrupting:
-		return #cant play a new animation until old action has finished
+		return false#cant play a new animation until old action has finished
+	if anim.current_animation == key:
+		return false #already playing
+	
 	if action_player.has_animation(key):
 		if action_player.current_animation != key:
 			action_player.play(key)
-	else:
+	elif action_player.is_playing():
+		print("reset action_player")
 		action_player.play("RESET")
 	
 	if anim.has_animation(key):
 		if !anim.current_animation == key:
 			anim.play(key,0.1)
-
+	return true #can play the anim
+	
 #end connections
 
+var sprint_held_timer = 0.0
 func _input(event):
 	if event is InputEventMouseMotion and !Global.in_game_mouse:
 		var TempRotation = rotation.x - event.relative.y /1000 * mouse_sensitivity
@@ -104,12 +143,29 @@ func _input(event):
 		elif camera_base.rotation.y < -PI*64.0:
 			camera_base.rotation.y += PI*64.0
 	if Input.is_action_just_pressed("sprint"):
+		sprint_held_timer = 0.0
 		sprinting = true
 	if Input.is_action_just_released("sprint"):
+		if sprint_held_timer < 0.1:
+			initiate_dash()
 		sprinting = false
+	if Input.is_action_just_pressed("dash"):
+		initiate_dash()
+	if Input.is_action_just_pressed("crouch"):
+		crouching = true
+	if Input.is_action_just_released("crouch"):
+		crouching = false
+	if Input.is_action_just_pressed("walk"):
+		walking = !walking #toggle
+	
+
+func initiate_dash():
+	dashing_timer = 0.25
 
 var blood_loss_timer = 0.0
 func _process(delta):
+	if sprinting:
+		sprint_held_timer += delta
 	update_tooltip()
 	if PlayerInformation.blood > PlayerInformation.max_blood:
 		blood_loss_timer += delta * 2.5
@@ -118,18 +174,89 @@ func _process(delta):
 			PlayerInformation.set_blood(PlayerInformation.blood-1)
 
 func get_movement_anim(key:StringName) -> StringName:
+	var d = PlayerInformation.get_held_item_data()
+	var t = -1
+	if !d.is_empty():
+		t = d[Items.INDEX_ANIMATIONS]
 	match key:
 		"walk":
-			return "walk_forward_empty"
+			match t:
+				Items.animation.SWORD_ANIM:return "walk_forward_mw"
+				_:return "walk_forward_empty"
+		"jog":
+			return "jog_forward_empty"
 		"idle":
-			return "idle_empty"
+			match t:
+				Items.animation.SWORD_ANIM:return"idle_mw"
+				_:return "idle_empty"
+		"sprint":
+			return "sprint_forward_empty"
 		_:
-			return "idle_empty"
+			return "RESET"
+
+const walking_actions:Array = [
+	"attack_sword_01",
+	"attack_sword_02",
+	"attack_sword_03"
+]
+
+func set_dir_anim(val : bool) -> void:
+	var d = PlayerInformation.get_held_item_data()
+	var key = -1
+	if !d.is_empty():
+		key = d[Items.INDEX_ANIMATIONS]
+	if !val: #disable all
+		dir_anim_mw.active = false
+		dir_anim.active = false
+		return
+	match key:
+		Items.animation.SWORD_ANIM:
+			dir_anim_mw.active = val
+			dir_anim.active = !val
+		_:
+			dir_anim_mw.active = !val
+			dir_anim.active = val
+	pass
+
+func set_dir_anim_target(val:Vector2) -> void:
+	dir_anim.set("parameters/blend_position",val)
+	dir_anim_mw.set("parameters/blend_position",val)
 
 var airborn = false
+var dashing_timer:float = 0.0
+var dashing = false
 func _physics_process(delta):
+	if action_player.is_playing():
+		#dir_anim.active = false
+		set_dir_anim(false)
+		if walking_actions.has(action_player.current_animation):
+			var direction = (graphics.transform.basis * Vector3(0.0, 0, -1.0)).normalized()
+			move_and_collide(direction*jogging_speed*delta,false)
+			update_player_information()
+			return
+	
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (camera_base.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	
+	if dashing_timer > 0.0:
+		##do the dashing stuff
+		velocity = direction * dashing_speed
+		var g_rot = Global.dir_to_rot(direction).y + PI
+		graphics.rotation.y = lerp_angle(graphics.rotation.y, g_rot,delta*16.0)
+		##
+		if !dashing:
+			dashing = true
+			set_dashing(true)
+			#start dash
+		dashing_timer -= delta
+		if dashing_timer < 0.0:
+			dashing = false
+			set_dashing(false)
+			#end dash
+			dashing_timer = 0.0
+		end_physics_process(delta)
+		return
+	
 	
 	view_handler.rotation.x = lerp_angle(view_handler.rotation.x,cameraHandler.rotation.x,delta*16.0)
 	
@@ -148,10 +275,17 @@ func _physics_process(delta):
 		air_jumped = false
 		airborn = false
 		if Input.is_action_just_pressed("jump"):
+			velocity.y = jump_strength
+			graphics.camera_handler_vel.y -= jump_strength
+			if randf_range(0.0,1.0) > 0.2:
+				play_anim("jog_jump_empty_02")
+			else:
+				play_anim("jog_jump_empty_01")
 			if sprinting:
 				#tilt_jumped = true
 				velocity = direction*tilt_jump_speed
-			velocity.y = jump_strength
+				velocity.y = jump_strength * 1.1
+				play_anim("sprint_jump_empty")
 			airborn = true
 	
 	#if sprinting: #this is by design
@@ -161,22 +295,49 @@ func _physics_process(delta):
 	#else:
 		#graphics.rotation.y = lerp_angle(graphics.rotation.y, camera_base.rotation.y,delta*8.0)
 	
-	if direction:
+	if anim.current_animation == "jog_forward_empty":
+		var g_rot = camera_base.rotation.y
+		graphics.rotation.y = lerp_angle(graphics.rotation.y, g_rot,delta*16.0)
+		if direction:
+			#dir_anim.active = true
+			set_dir_anim(true)
+			var prev = dir_anim["parameters/blend_position"]
+			var nv = lerp(prev,Vector2(input_dir.x,-input_dir.y),delta*16.0);
+			#dir_anim.set("parameters/blend_position",nv)
+			set_dir_anim_target(nv)
+		else:
+			#dir_anim.active = false
+			set_dir_anim(false)
+	elif direction:
 		var g_rot = Global.dir_to_rot(direction).y + PI
-		graphics.rotation.y = lerp_angle(graphics.rotation.y, g_rot,delta*8.0)
+		graphics.rotation.y = lerp_angle(graphics.rotation.y, g_rot,delta*16.0)
+		#dir_anim.active = false
+		set_dir_anim(false)
+	
+	
+	if direction:
+		#graphics.rotation.y = lerp_angle(graphics.rotation.y,camera_base.rotation.y,delta*16.0)
 		
-		var desired_speed:float = walking_speed
+		var desired_speed:float = jogging_speed
 		if sprinting:
 			desired_speed = sprinting_speed
+		elif crouching:
+			desired_speed = crouching_speed
+		elif walking:
+			desired_speed = walking_speed
 		
-		if is_on_floor():
+		if !airborn:
 			velocity = update_velocity_floor(delta, desired_speed, ground_acceleration,direction)
 			if sprinting:
 				play_anim(get_movement_anim("sprint"))
 				graphics.running(delta,velocity)
-			else:
+			elif crouching:
+				play_anim(get_movement_anim("crouch"))
+			elif walking:
 				play_anim(get_movement_anim("walk"))
 				graphics.walking(delta,velocity)
+			else:
+				play_anim(get_movement_anim("jog"))
 		else:
 			if !tilt_jumped:
 				velocity = update_velocity_air(delta, desired_speed, air_acceleration,direction)
@@ -190,10 +351,81 @@ func _physics_process(delta):
 			var s_v = velocity*ground_acceleration*ground_friction
 			s_v = s_v.normalized() * clamp(s_v.length(),0.0,max_friction_decceleration)
 			velocity -= s_v * delta
-	
-	
-	move_and_slide()
+	#move_and_slide()
+	end_physics_process(delta)
+
+func end_physics_process(delta):
+	if not snap_up_to_stairs_check(delta):
+		move_and_slide()
+		snap_down_to_stairs_check()
 	update_player_information()
+
+func set_dashing(val:bool) -> void:
+	$graphics/character.visible = !val
+	$graphics/dashing_wraith.visible = val
+	if val:
+		#started dash
+		pass
+	else:
+		#dash ended
+		pass
+
+func run_body_test_motion(from: Transform3D, motion: Vector3, result = null) -> bool:
+	if !result:
+		result = PhysicsTestMotionResult3D.new()
+	var params = PhysicsTestMotionParameters3D.new()
+	params.from = from
+	params.motion = motion
+	return PhysicsServer3D.body_test_motion(self.get_rid(), params, result)
+
+func is_surface_to_steep(normal : Vector3) -> bool:
+	return normal.angle_to(Vector3.UP) > self.floor_max_angle
+
+func snap_down_to_stairs_check() -> void:
+	if !is_on_floor() and !velocity.y > 0.0:
+		if run_body_test_motion(transform,Vector3(0.0,-MAX_STEP_HEIGHT,0.0)):
+			#print("snapped down to stairs")
+			var ocp = cameraHandler.global_position
+			move_and_collide(Vector3(0.0,-MAX_STEP_HEIGHT,0.0))
+			cameraHandler.global_position.y = ocp.y
+	#var did_snap := false
+	#var floor_below : bool = $stepDownCheckRaycast.is_colliding() and not is_surface_to_steep($stepDownCheckRaycast.get_collision_normal())
+	#var was_on_floor_last_frame = Engine.get_physics_frames() - last_frame_was_on_floor == 1
+	#if not is_on_floor() and velocity.y <= 0 and (was_on_floor_last_frame or _snapped_to_stairs_last_frame) and floor_below:# and !jumped_last_frame:
+		#var body_test_result = PhysicsTestMotionResult3D.new()
+		#if run_body_test_motion(self.global_transform, Vector3(0, -MAX_STEP_HEIGHT, 0), body_test_result):
+			#var translate_y = body_test_result.get_travel().y
+			#self.position.y += translate_y
+			#apply_floor_snap()
+			#did_snap = true
+	#_snapped_to_stairs_last_frame = did_snap
+
+func snap_up_to_stairs_check(delta) -> bool:
+	#if jumped_last_frame: return false
+	if airborn: return false #just for jumping while climbing
+	if not is_on_floor() and not _snapped_to_stairs_last_frame: return false
+	var expected_move_motion = self.velocity * Vector3(1, 0, 1) * delta
+	var step_pos_with_clearance = self.global_transform.translated(expected_move_motion + Vector3(0, MAX_STEP_HEIGHT * 2, 0))
+	###
+	var down_check_result = PhysicsTestMotionResult3D.new()
+	if (run_body_test_motion(step_pos_with_clearance, Vector3(0, -MAX_STEP_HEIGHT * 2, 0), down_check_result)
+	and (down_check_result.get_collider().is_class("StaticBody3D") or down_check_result.get_collider().is_class("CSGShape3D"))):
+		var step_height = ((step_pos_with_clearance.origin + down_check_result.get_travel()) - self.global_position).y
+		###
+		if step_height > MAX_STEP_HEIGHT or step_height <= 0.01 or (down_check_result.get_collision_point() - self.global_position).y > MAX_STEP_HEIGHT: return false
+		$stairsAheadRaycast.global_position = down_check_result.get_collision_point() + Vector3(0, MAX_STEP_HEIGHT, 0) + expected_move_motion.normalized() * 0.1
+		$stairsAheadRaycast.force_raycast_update()
+		if $stairsAheadRaycast.is_colliding() and not is_surface_to_steep($stairsAheadRaycast.get_collision_normal()):
+			var travel = down_check_result.get_travel()
+			var ocp = cameraHandler.global_position
+			self.global_position = step_pos_with_clearance.origin + travel#down_check_result.get_travel()
+			#print("snapped up to stairs")
+			#camera.position -= travel
+			cameraHandler.global_position.y = ocp.y
+			apply_floor_snap()
+			_snapped_to_stairs_last_frame = true
+			return true
+	return false
 
 func update_player_information() -> void:
 	PlayerInformation.position = position
@@ -293,6 +525,8 @@ func get_look_dir() -> Vector3:
 #health and such
 
 func take_damage(amount : int,type : int)  -> int:
+	if dashing: #invulnerable during dash
+		return 0
 	#Global.indicate_damage(amount,type,global_position)
 	var dealt = amount #calc resists and such here
 	var blood = PlayerInformation.blood

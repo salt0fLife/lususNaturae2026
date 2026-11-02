@@ -22,7 +22,7 @@ var hands_rot_big_motion_vel : Vector3 = Vector3.ZERO
 @onready var last_frame_camera_rot = Vector2(rotation.y, cameraHandler.rotation.x)
 @onready var anim = $cameraHandler/fp_hands_wip/AnimationPlayer
 var first_active_frame = false
-
+var camera_handler_vel = Vector3.ZERO
 
 
 var val = 0.0
@@ -100,6 +100,11 @@ func step_sound(groups = []) -> void:
 
 func _process(delta):
 	camera.position = lerp(camera.position, Vector3.ZERO, delta*4.0)
+	
+	
+	cameraHandler.position += camera_handler_vel * delta
+	camera_handler_vel -= camera_handler_vel*delta*2.0
+	cameraHandler.position = lerp(cameraHandler.position,Vector3.ZERO,delta*8.0)
 	
 	
 	#if wall_run_active:

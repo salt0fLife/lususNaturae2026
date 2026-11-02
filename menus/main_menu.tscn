@@ -1,17 +1,24 @@
-[gd_scene load_steps=22 format=3 uid="uid://cmhfq4uyk05xo"]
+[gd_scene load_steps=25 format=3 uid="uid://cmhfq4uyk05xo"]
 
 [ext_resource type="Theme" uid="uid://calyvxvtcobp0" path="res://menus/menus_theme.tres" id="1_2v8ml"]
 [ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_6vx3b"]
+[ext_resource type="Texture2D" uid="uid://by5177wi5ddtl" path="res://assets/textures/gui/backgrounds/10212026.png" id="3_hlfqe"]
 [ext_resource type="Texture2D" uid="uid://b5beud1fw10k7" path="res://assets/textures/gui/trim/corner_trim.png" id="3_li8xu"]
 [ext_resource type="AudioStream" uid="uid://b7pmiii2rubnw" path="res://assets/sounds/gui_interactions/button_hover_1.ogg" id="3_mk6o1"]
 [ext_resource type="Texture2D" uid="uid://bve4ow0iwqim4" path="res://assets/textures/gui/trim/top_trim.png" id="4_4f544"]
 [ext_resource type="AudioStream" uid="uid://4hbx7b46iamm" path="res://assets/sounds/gui_interactions/button_click_1.ogg" id="4_38fjh"]
+[ext_resource type="Shader" path="res://assets/shaders/canvas_blur.gdshader" id="4_as81l"]
 [ext_resource type="Texture2D" uid="uid://dj26s40sqyxd8" path="res://assets/textures/gui/frames/selection_frame.png" id="5_62mah"]
 [ext_resource type="Texture2D" uid="uid://t0w7asbobqj6" path="res://assets/textures/gui/frames/animated_selector.png" id="6_06hww"]
 [ext_resource type="Texture2D" uid="uid://c3mmor5hfp87t" path="res://assets/textures/gui/cursors/main_menu_cursor.png" id="7_cprci"]
 [ext_resource type="AudioStream" uid="uid://8jyhy5giuecm" path="res://assets/sounds/gui_interactions/player_death.ogg" id="9_5plg4"]
 [ext_resource type="PackedScene" uid="uid://1qwxgkemcxnw" path="res://menus/tooltip_handler.tscn" id="10_j0rjp"]
 [ext_resource type="Texture2D" uid="uid://xb713jqdpa34" path="res://assets/textures/vfx/lens_flare/lens_flare_2.png" id="12_x2kxr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jrdno"]
+shader = ExtResource("4_as81l")
+shader_parameter/amount = 0.43
+shader_parameter/modulation = Color(0.145098, 0.152941, 0.188235, 1)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_53any"]
 blend_mode = 1
@@ -139,6 +146,26 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="TextureRect7" type="TextureRect" parent="control/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_hlfqe")
+expand_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="control/Panel"]
+material = SubResource("ShaderMaterial_jrdno")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.32549, 0.32549, 0.32549, 1)
+
 [node name="VBoxContainer" type="VBoxContainer" parent="control/Panel"]
 layout_mode = 1
 anchors_preset = 8
@@ -190,6 +217,7 @@ text = "Quit"
 layout_mode = 2
 
 [node name="TextureRect" type="TextureRect" parent="control/Panel"]
+visible = false
 layout_mode = 0
 offset_right = 256.0
 offset_bottom = 256.0
@@ -197,6 +225,7 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_li8xu")
 
 [node name="TextureRect2" type="TextureRect" parent="control/Panel"]
+visible = false
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -209,6 +238,7 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_li8xu")
 
 [node name="TextureRect3" type="TextureRect" parent="control/Panel"]
+visible = false
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -224,6 +254,7 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_li8xu")
 
 [node name="TextureRect4" type="TextureRect" parent="control/Panel"]
+visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -236,6 +267,7 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_li8xu")
 
 [node name="TextureRect5" type="TextureRect" parent="control/Panel"]
+visible = false
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -248,6 +280,7 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("4_4f544")
 
 [node name="TextureRect6" type="TextureRect" parent="control/Panel"]
+visible = false
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
