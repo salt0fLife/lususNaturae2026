@@ -1,13 +1,24 @@
-[gd_scene load_steps=16 format=3 uid="uid://cahx8wsh64g0v"]
+[gd_scene load_steps=18 format=3 uid="uid://cahx8wsh64g0v"]
 
 [ext_resource type="Script" path="res://scripts/enemy_01.gd" id="1_02rl3"]
 [ext_resource type="Script" path="res://scripts/hurtbox.gd" id="2_372o4"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_character_material.gdshader" id="2_edxo5"]
 [ext_resource type="Script" path="res://scripts/generic_health_handler.gd" id="3_1loii"]
 [ext_resource type="FontFile" uid="uid://6bbwelw5v73r" path="res://assets/fonts/ANTQUAB.TTF" id="4_0cnss"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xs204"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_m7okk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6d0vf"]
+render_priority = 0
+shader = ExtResource("2_edxo5")
+shader_parameter/albedo_color = Color(0.294118, 0.419608, 0.156863, 1)
+shader_parameter/luminance_shadow_power = 0.8
+shader_parameter/luminance_shadow_cuttoff = 1.0
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_r2k0e"]
 size = Vector3(0.34, 0.415, 0.735)
@@ -308,12 +319,13 @@ _data = {
 "spawn_animation": SubResource("Animation_mkntq")
 }
 
-[node name="enemy_01" type="CharacterBody3D" groups=["entity"]]
+[node name="enemy_01" type="CharacterBody3D" groups=["entity", "team_1"]]
 collision_layer = 4
 script = ExtResource("1_02rl3")
 attack_distance = 3.0
 walking_speed = 5.0
 lunge_speed = 15.0
+team = "team_1"
 
 [node name="physics_collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -328,17 +340,20 @@ transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_m7okk")
 skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_6d0vf")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="graphics/body"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3539, -0.161919)
 mesh = SubResource("BoxMesh_r2k0e")
 skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_6d0vf")
 
 [node name="hurtbox" type="StaticBody3D" parent="graphics/body" node_paths=PackedStringArray("health_handler")]
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("2_372o4")
 health_handler = NodePath("../../../health_handler")
+team = &"team_1"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="graphics/body/hurtbox"]
 transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, 0, 1, 0)
@@ -346,7 +361,7 @@ shape = SubResource("CapsuleShape3D_d3sgs")
 
 [node name="attack_area" type="Area3D" parent="graphics"]
 collision_layer = 0
-collision_mask = 2
+collision_mask = 34
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="graphics/attack_area"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.19568)
@@ -359,6 +374,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.603605, 1.05976, -0.206028)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.724199, 0)
 mesh = SubResource("BoxMesh_qyey6")
 skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_6d0vf")
 
 [node name="animationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

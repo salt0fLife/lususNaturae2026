@@ -1,0 +1,393 @@
+[gd_scene load_steps=18 format=3 uid="uid://bn0ybthtl0vbe"]
+
+[ext_resource type="Script" path="res://scripts/enemy_01.gd" id="1_u5o64"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_character_material.gdshader" id="2_845ki"]
+[ext_resource type="Script" path="res://scripts/hurtbox.gd" id="3_du2aj"]
+[ext_resource type="Script" path="res://scripts/generic_health_handler.gd" id="4_b08nj"]
+[ext_resource type="FontFile" uid="uid://6bbwelw5v73r" path="res://assets/fonts/ANTQUAB.TTF" id="5_gdmfl"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xs204"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_m7okk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_logbt"]
+render_priority = 0
+shader = ExtResource("2_845ki")
+shader_parameter/albedo_color = Color(0.254902, 0.27451, 0.647059, 1)
+shader_parameter/luminance_shadow_power = 0.8
+shader_parameter/luminance_shadow_cuttoff = 1.0
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_r2k0e"]
+size = Vector3(0.34, 0.415, 0.735)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_d3sgs"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_f7ysg"]
+size = Vector3(2, 1.5, 2.39136)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qyey6"]
+size = Vector3(0.13, 1.84, 0.335)
+
+[sub_resource type="Animation" id="Animation_u1pn0"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("graphics/sword:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.603605, 1.05976, -0.206028)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("graphics/body:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("graphics/body:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -0.261799, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("graphics/sword:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("graphics:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_rmlbm"]
+resource_name = "attack_lunge"
+length = 1.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("graphics/body:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8, 1, 1.1, 1.3, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0, 0.251898), Vector3(0, 0, 0.310848), Vector3(0, 0, 0), Vector3(0, 0, -0.0309025), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("graphics/body:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.8, 1, 1.1, 1.3, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.1104, -0.477036, -0.0169409), Vector3(0.116524, -0.418353, -0.0237202), Vector3(-0.199927, 0.142611, 0), Vector3(-0.211692, 0.142964, -0.00172782), Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("graphics/sword:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.8, 1, 1.1, 1.4, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0.603605, 1.05976, -0.206028), Vector3(0.603605, 1.05976, 0.392334), Vector3(0.479466, 1.05976, 0.912173), Vector3(0.336484, 1.22285, -0.948751), Vector3(0.336484, 1.22285, -1.06744), Vector3(0.603605, 1.05976, -0.206028)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("graphics/sword:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.8, 1, 1.1, 1.4, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-1.52716, -0.182422, 0), Vector3(-1.52716, -0.195721, 0), Vector3(-1.50383, 0.0271561, 0.0284916), Vector3(-1.48007, 0.00748914, 0.0311497), Vector3(0, 0, 0)]
+}
+tracks/4/type = "method"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(1, 1.4),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"anim_on_lunge"
+}, {
+"args": [],
+"method": &"anim_on_attack"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_ecyup"]
+resource_name = "attack_standard"
+length = 1.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("graphics/sword:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0.603605, 1.05976, -0.206028), Vector3(0.746064, 1.05976, -0.00122027), Vector3(0.43078, 1.05976, -0.90729), Vector3(-0.155634, 1.05976, -1.16315), Vector3(-0.742048, 1.05976, -0.995049), Vector3(-0.796029, 1.05976, -0.935544), Vector3(-0.647808, 1.05976, -1.04364), Vector3(0.186467, 1.05976, -0.778133), Vector3(0.603605, 1.05976, -0.206028)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("graphics/body:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.4, 0.6, 0.8, 1.2, 1.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0.0340129, 0), Vector3(0, 0, 0), Vector3(-0.0427226, 0, -0.0468273), Vector3(-0.0427226, 0, -0.180655), Vector3(-0.0729412, 0, -0.176324), Vector3(0.00188458, 0, 0.00747657), Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("graphics/body:rotation")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.6, 0.8, 1.2, 1.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.0066129, -0.153098, 0.0428293), Vector3(-0.0217146, -0.305734, -0.0686841), Vector3(-0.204957, 0.133765, 0.0748829), Vector3(-0.21654, 0.17562, 0.0727837), Vector3(0.0101927, 0, 0), Vector3(0, 0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("graphics/sword:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.7, 0.8, 0.9, 1, 1.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.50437, -1.67244, -1.98456), Vector3(-0.152501, 1.53401, -1.60479), Vector3(0.0873779, 2.49352, -2.01919), Vector3(0.0691149, 2.65522, -2.04605), Vector3(0.0753023, 3.09946, -2.00955), Vector3(-0.52018, 2.83991, -1.99731), Vector3(0, 0, 0)]
+}
+tracks/4/type = "method"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.6),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"anim_on_attack"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_mkntq"]
+resource_name = "spawn_animation"
+length = 2.0
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("graphics:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("graphics/body:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.8, 0.86, 0.91, 1, 1.11),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(1.03737e-08, 0.0546462, 0.0584821), Vector3(-0.0208851, 0.123385, -0.0253558), Vector3(0, 0.146186, -0.0100552), Vector3(0.00809467, 0.0929603, 0.038751), Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("graphics/body:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.8, 0.86, 0.91, 1, 1.11),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, -0.261799, 0), Vector3(-0.132191, -1.10737e-10, 0.0102102), Vector3(0.000540898, -1.3002e-05, -0.013823), Vector3(0.0257087, 0, 0), Vector3(-0.0425945, -0.000877139, 0.0205961), Vector3(0, 0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("graphics/sword:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.8, 0.89, 1, 1.1, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0.603605, 0.803223, -0.435119), Vector3(0.558617, 0.9891, -0.290836), Vector3(0.528625, 1.20286, -0.381947), Vector3(0.566115, 1.13131, -0.293988), Vector3(0.603605, 1.05976, -0.206028)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("graphics/sword:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.8, 0.89, 1, 1.1, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.763686, -2.08672, 3.14159), Vector3(-0.658952, -2.1157, 3.05435), Vector3(-0.476913, -2.13575, 3.05196), Vector3(-0.908109, -1.44754, 2.47042), Vector3(0, 0, 0)]
+}
+tracks/5/type = "method"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.79),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"create_spawn_particles"
+}, {
+"args": [],
+"method": &"create_spawn_explosion"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_pyfau"]
+_data = {
+"RESET": SubResource("Animation_u1pn0"),
+"attack_lunge": SubResource("Animation_rmlbm"),
+"attack_standard": SubResource("Animation_ecyup"),
+"spawn_animation": SubResource("Animation_mkntq")
+}
+
+[node name="enemy_01" type="CharacterBody3D" groups=["entity", "team_02"]]
+collision_layer = 4
+script = ExtResource("1_u5o64")
+attack_distance = 3.0
+walking_speed = 5.0
+lunge_speed = 15.0
+team = "team_02"
+entity_tag = "castle_guard"
+
+[node name="physics_collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_xs204")
+
+[node name="graphics" type="Node3D" parent="."]
+
+[node name="body" type="Node3D" parent="graphics"]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="graphics/body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_m7okk")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_logbt")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="graphics/body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3539, -0.161919)
+mesh = SubResource("BoxMesh_r2k0e")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_logbt")
+
+[node name="hurtbox" type="StaticBody3D" parent="graphics/body" node_paths=PackedStringArray("health_handler")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("3_du2aj")
+health_handler = NodePath("../../../health_handler")
+team = &"team_02"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="graphics/body/hurtbox"]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_d3sgs")
+
+[node name="attack_area" type="Area3D" parent="graphics"]
+collision_layer = 0
+collision_mask = 34
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="graphics/attack_area"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.19568)
+shape = SubResource("BoxShape3D_f7ysg")
+
+[node name="sword" type="Node3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.603605, 1.05976, -0.206028)
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="graphics/sword"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.724199, 0)
+mesh = SubResource("BoxMesh_qyey6")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_logbt")
+
+[node name="animationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_pyfau")
+}
+
+[node name="health_handler" type="Node" parent="."]
+script = ExtResource("4_b08nj")
+max_health = 20
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08587, 0)
+billboard = 1
+modulate = Color(0.890196, 0, 0, 1)
+font = ExtResource("5_gdmfl")

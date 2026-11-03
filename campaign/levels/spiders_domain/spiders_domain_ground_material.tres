@@ -25,6 +25,7 @@ shader_parameter/albedo_01 = ExtResource("2_8hqpe")
 shader_parameter/albedo_02 = ExtResource("3_4ypgf")
 shader_parameter/albedo_03 = ExtResource("4_gxj4r")
 shader_parameter/albedo_04 = ExtResource("5_gvjvo")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49

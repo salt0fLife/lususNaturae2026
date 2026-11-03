@@ -1,4 +1,4 @@
-[gd_scene load_steps=244 format=3 uid="uid://cdlwxi6fwcvfr"]
+[gd_scene load_steps=245 format=3 uid="uid://cdlwxi6fwcvfr"]
 
 [ext_resource type="Texture2D" uid="uid://dy7vs6odhks8e" path="res://assets/imported_scenes/spiders_domain/spiders_domain_tb_ground_map_tex.png" id="1_qhw0o"]
 [ext_resource type="Material" uid="uid://cexqhit0cd4vg" path="res://campaign/levels/spiders_domain/spiders_domain_ground_material.tres" id="2_2gjgn"]
@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://b2x2phyjo8bb" path="res://tools/grass_populator.tscn" id="10_4l0uf"]
 [ext_resource type="PackedScene" uid="uid://btqhlme3tqi1f" path="res://assets/environment_effects/dynamic_environment.tscn" id="12_8sh1a"]
 [ext_resource type="ArrayMesh" uid="uid://cd0eb84qmyr3s" path="res://assets/meshes/grass_mesh_02.tres" id="12_n6agy"]
+[ext_resource type="AudioStream" uid="uid://d3ofxge8ugyvk" path="res://assets/sounds/immersion/waterfall.wav" id="18_4h2qj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dq86b"]
 resource_name = "rocks"
@@ -1044,6 +1045,7 @@ shader_parameter/sh_day_power = 0.0
 shader_parameter/foam_texture = SubResource("NoiseTexture2D_3iyc4")
 shader_parameter/normal_tex = SubResource("NoiseTexture2D_ct8m0")
 shader_parameter/foam_normal_texture = SubResource("NoiseTexture2D_1wwse")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
@@ -1108,6 +1110,7 @@ shader_parameter/sh_day_power = 0.0
 shader_parameter/foam_texture = SubResource("NoiseTexture2D_3iyc4")
 shader_parameter/normal_tex = SubResource("NoiseTexture2D_ct8m0")
 shader_parameter/foam_normal_texture = SubResource("NoiseTexture2D_1wwse")
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49
@@ -3219,5 +3222,17 @@ multimesh = SubResource("MultiMesh_xwd7m")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.644324, 0, -0.764753, 0, 1, 0, 0.764753, 0, 0.644324, -241.6, 0, 129.864)
 mesh = SubResource("BoxMesh_ygxim")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -222.605, -2.11098, 111.802)
+stream = ExtResource("18_4h2qj")
+unit_size = 34.25
+autoplay = true
+
+[node name="AudioStreamPlayer3D2" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -71.8731, -13.4271, -149.97)
+stream = ExtResource("18_4h2qj")
+unit_size = 34.25
+autoplay = true
 
 [editable path="grass_populator"]

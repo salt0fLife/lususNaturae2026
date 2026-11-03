@@ -5,6 +5,7 @@ class_name hurtbox
 @export var limb_key : StringName 
 @export var limb_health : int = 1
 @export var damage_multiplier : float = 1.0
+@export var team :StringName 
 
 func _ready():
 	if health_handler != null:

@@ -177,6 +177,7 @@ walk={
 3d_physics/layer_6="hurtbox"
 3d_physics/layer_7="projectile entity"
 3d_physics/layer_8="non_collision_environment"
+3d_physics/layer_9="graphics_only"
 
 [rendering]
 

@@ -250,7 +250,6 @@ func update_sun_sickness(delta) -> void:
 	else:
 		$sunlight_indicator/AudioStreamPlayer.volume_db = lerp($sunlight_indicator/AudioStreamPlayer.volume_db, -80.0 ,delta*8.0)
 
-
 func _process(delta):
 	if counter_attack_window > 0.0:
 		counter_attack_window -= delta
@@ -672,7 +671,6 @@ func _physics_process(delta):
 	else:
 		wall_jump_latency_timer -= delta
 	jumped_last_frame = false #its more like a jumped_this_frame but whatever
-
 
 func run_body_test_motion(from: Transform3D, motion: Vector3, result = null) -> bool:
 	if !result:

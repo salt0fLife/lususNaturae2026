@@ -33,7 +33,6 @@ func _physics_process(delta):
 		#Global.drop_item()
 		var hit = col.get_collider(0)
 		if hit.has_method("take_damage"):
-			
 			emit_signal("hit_target",damage_amount,damage_type,hit)
 		else:
 			var surface_info = Global.get_surface_info(hit.get_groups())
@@ -56,7 +55,13 @@ func _physics_process(delta):
 var ruler = null
 func set_ruler(new_ruler):
 	ruler = new_ruler
-	connect("hit_target",ruler._on_projectile_hit_enemy)
+	if ruler.has_method("_on_projectile_hit_enemy"):
+		connect("hit_target",ruler._on_projectile_hit_enemy)
+	else:
+		connect("hit_target",defaulted_projectile_hit)
+
+func defaulted_projectile_hit(p_dam_amount:int,p_dam_type:int,entity_node): #for if no ruler :(
+	entity_node.take_damage(p_dam_amount,p_dam_type)
 
 func set_arrow_type(key:StringName):
 	var info = Items.list[key]

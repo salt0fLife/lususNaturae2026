@@ -24,6 +24,7 @@ const player_scenes = {
 	00 : ["res://campaign/player/player_character_test_model.tscn"],
 	-1 : ["res://campaign/player/player_combat_test.tscn"],
 	-2 : ["res://campaign/player/emerge_from_ground_player.tscn"],
+	404 : ["res://campaign/player/freecam.tscn"],
 }
 
 var upgrades = [

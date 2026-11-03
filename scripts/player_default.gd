@@ -3,7 +3,7 @@ extends CharacterBody3D
 @onready var camera_base = $camera_base
 @onready var cameraHandler = $camera_base/camera_handler
 @onready var view_handler = $graphics/cameraHandler #decides which direction your character is looking
-@onready var interaction_sightline = $graphics/cameraHandler/interaction_sightline
+@onready var interaction_sightline = $camera_base/camera_handler/camerasOffset/SpringArm3D/Node3D/interaction_sightline
 @onready var weapon_handler = $graphics/cameraHandler/weapon_handler
 @onready var held_item_handler = $graphics/character/Vidica_basic/metarig/Skeleton3D/BoneAttachment3D7/held_item_handler#$graphics/cameraHandler/hands/held_item_handler
 @onready var action_player = $actionPlayer
@@ -43,8 +43,11 @@ var MAX_STEP_HEIGHT: float = 0.55
 var jumped_last_frame : bool = false
 #
 
+var team:StringName = "limbo"
+
 func _ready():
 	PlayerInformation.connect("teleport", tp)
+	PlayerInformation.connect("attempt_to_drop_item", _on_item_drop_attempt)
 	#PlayerInformation.connect("dropped_item", _on_dropped_item)
 	PlayerInformation.connect("update_held_item", update_held_item_graphics)
 	update_held_item_graphics()
@@ -68,7 +71,11 @@ func update_held_item_graphics() -> void:
 	held_item_handler.add_child(m)
 
 var combo_counter: int = 0
+var aiming:bool = false #player aligns with camera for shooting or blocking
 func use_held_item(special:bool = false) -> void:
+	if special:
+		aiming = true
+		return
 	#print("used item")
 	var item_data = PlayerInformation.get_held_item_data()
 	if item_data.is_empty():
@@ -79,22 +86,31 @@ func use_held_item(special:bool = false) -> void:
 			var input_dir = Input.get_vector("left", "right", "up", "down")
 			if !airborn:
 				var key = "atk_swr_f_g_01"
-				if -input_dir.y >= abs(input_dir.x) or input_dir.length() < 0.1: #is forward
-					match combo_counter:
-						1:
-							key = "atk_swr_f_g_02"
-						2:
-							key = "atk_swr_f_g_03"
-						_:
-							key = "atk_swr_f_g_01"
-							combo_counter = 0
-				else: #is to the side or back
-					if abs(input_dir.y) > abs(input_dir.x): #backwards
-						key = "atk_swr_b_g_01"
-					elif input_dir.x > 0.0: #to the right
-						key = "atk_swr_r_g_01"
-					else: #to the left
-						key = "atk_swr_l_g_01"
+				match combo_counter:
+					1:
+						key = "atk_swr_f_g_02"
+					2:
+						key = "atk_swr_f_g_03"
+					_:
+						key = "atk_swr_f_g_01"
+						combo_counter = 0
+				#var key = "atk_swr_f_g_01"
+				#if -input_dir.y >= abs(input_dir.x) or input_dir.length() < 0.1: #is forward
+					#match combo_counter:
+						#1:
+							#key = "atk_swr_f_g_02"
+						#2:
+							#key = "atk_swr_f_g_03"
+						#_:
+							#key = "atk_swr_f_g_01"
+							#combo_counter = 0
+				#else: #is to the side or back
+					#if abs(input_dir.y) > abs(input_dir.x): #backwards
+						#key = "atk_swr_b_g_01"
+					#elif input_dir.x > 0.0: #to the right
+						#key = "atk_swr_r_g_01"
+					#else: #to the left
+						#key = "atk_swr_l_g_01"
 				if play_anim(key):
 					combo_counter += 1
 		Items.type.FOOD:
@@ -102,7 +118,9 @@ func use_held_item(special:bool = false) -> void:
 			PlayerInformation.set_inventory_slot(PlayerInformation.held_item_index,[])
 
 func release_held_item(special:bool = false) -> void:
-	
+	if special:
+		aiming = false
+		return
 	pass
 
 @onready var jog_tree = $graphics/character/Vidica_basic/AnimationTree
@@ -161,6 +179,7 @@ func _input(event):
 
 func initiate_dash():
 	dashing_timer = 0.25
+	set_state("dash_state")
 
 var blood_loss_timer = 0.0
 func _process(delta):
@@ -184,7 +203,9 @@ func get_movement_anim(key:StringName) -> StringName:
 				Items.animation.SWORD_ANIM:return "walk_forward_mw"
 				_:return "walk_forward_empty"
 		"jog":
-			return "jog_forward_empty"
+			match t:
+				Items.animation.SWORD_ANIM:return "jog_forward_mw"
+				_:return "jog_forward_empty"
 		"idle":
 			match t:
 				Items.animation.SWORD_ANIM:return"idle_mw"
@@ -225,6 +246,7 @@ func set_dir_anim_target(val:Vector2) -> void:
 var airborn = false
 var dashing_timer:float = 0.0
 var dashing = false
+var state = "default_state"
 func _physics_process(delta):
 	if action_player.is_playing():
 		#dir_anim.active = false
@@ -234,29 +256,8 @@ func _physics_process(delta):
 			move_and_collide(direction*jogging_speed*delta,false)
 			update_player_information()
 			return
-	
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (camera_base.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	
-	if dashing_timer > 0.0:
-		##do the dashing stuff
-		velocity = direction * dashing_speed
-		var g_rot = Global.dir_to_rot(direction).y + PI
-		graphics.rotation.y = lerp_angle(graphics.rotation.y, g_rot,delta*16.0)
-		##
-		if !dashing:
-			dashing = true
-			set_dashing(true)
-			#start dash
-		dashing_timer -= delta
-		if dashing_timer < 0.0:
-			dashing = false
-			set_dashing(false)
-			#end dash
-			dashing_timer = 0.0
-		end_physics_process(delta)
-		return
-	
 	
 	view_handler.rotation.x = lerp_angle(view_handler.rotation.x,cameraHandler.rotation.x,delta*16.0)
 	
@@ -264,19 +265,17 @@ func _physics_process(delta):
 	if !is_on_floor():
 		velocity += gravity*delta
 		airborn = true
-		#if Input.is_action_just_pressed("jump"):
-			#if !air_jumped:
-				#velocity = direction*tilt_jump_speed
-				#velocity.y = jump_strength
-				#tilt_jumped = true
-				#air_jumped = true
 	else:
 		tilt_jumped = false
 		air_jumped = false
-		airborn = false
+		if airborn:
+			graphics.step_sound(graphics.get_floor_groups(),2)
+			airborn = false
 		if Input.is_action_just_pressed("jump"):
 			velocity.y = jump_strength
+			graphics.step_sound(graphics.get_floor_groups(),2)
 			graphics.camera_handler_vel.y -= jump_strength
+			set_state("falling_state")
 			if randf_range(0.0,1.0) > 0.2:
 				play_anim("jog_jump_empty_02")
 			else:
@@ -288,14 +287,22 @@ func _physics_process(delta):
 				play_anim("sprint_jump_empty")
 			airborn = true
 	
-	#if sprinting: #this is by design
-		#if direction:
-			#var g_rot = Global.dir_to_rot(direction).y + PI
-			#graphics.rotation.y = lerp_angle(graphics.rotation.y, g_rot,delta*8.0)
-	#else:
-		#graphics.rotation.y = lerp_angle(graphics.rotation.y, camera_base.rotation.y,delta*8.0)
+	if has_method(state):
+		call(state,delta)
+	else:
+		set_state("idle_state")
+
+func set_state(val : StringName) -> void:
+	set_dir_anim(false) #just for niceties
+	state = val
+
+##start states
+
+func jogging_state(delta):
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	var direction = (camera_base.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
-	if anim.current_animation == "jog_forward_empty":
+	if aiming:
 		var g_rot = camera_base.rotation.y
 		graphics.rotation.y = lerp_angle(graphics.rotation.y, g_rot,delta*16.0)
 		if direction:
@@ -313,7 +320,6 @@ func _physics_process(delta):
 		graphics.rotation.y = lerp_angle(graphics.rotation.y, g_rot,delta*16.0)
 		#dir_anim.active = false
 		set_dir_anim(false)
-	
 	
 	if direction:
 		#graphics.rotation.y = lerp_angle(graphics.rotation.y,camera_base.rotation.y,delta*16.0)
@@ -338,6 +344,7 @@ func _physics_process(delta):
 				graphics.walking(delta,velocity)
 			else:
 				play_anim(get_movement_anim("jog"))
+				graphics.walking(delta*1.5,velocity)
 		else:
 			if !tilt_jumped:
 				velocity = update_velocity_air(delta, desired_speed, air_acceleration,direction)
@@ -346,15 +353,67 @@ func _physics_process(delta):
 	elif tilt_jumped:
 		velocity = update_velocity_tilt_jump(delta,tilt_jump_speed,air_acceleration_tilt_jump,direction)
 	else:
-		play_anim(get_movement_anim("idle"))
-		if is_on_floor():
-			var s_v = velocity*ground_acceleration*ground_friction
-			s_v = s_v.normalized() * clamp(s_v.length(),0.0,max_friction_decceleration)
-			velocity -= s_v * delta
+		set_state("idle")
 	#move_and_slide()
 	end_physics_process(delta)
 
+func idle_state(delta):
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	var direction = (camera_base.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	if direction:
+		set_state("jogging_state")
+	play_anim(get_movement_anim("idle"))
+	if is_on_floor():
+		var s_v = velocity*ground_acceleration*ground_friction
+		s_v = s_v.normalized() * clamp(s_v.length(),0.0,max_friction_decceleration)
+		velocity -= s_v * delta
+	end_physics_process(delta)
+
+func dash_state(delta):
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	var direction = (camera_base.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	if dashing_timer > 0.0:
+		##do the dashing stuff
+		velocity = direction * dashing_speed
+		var g_rot = Global.dir_to_rot(direction).y + PI
+		graphics.rotation.y = lerp_angle(graphics.rotation.y, g_rot,delta*16.0)
+		##
+		if !dashing:
+			dashing = true
+			set_dashing(true)
+			#start dash
+		dashing_timer -= delta
+		if dashing_timer < 0.0:
+			dashing = false
+			set_dashing(false)
+			#end dash
+			dashing_timer = 0.0
+		end_physics_process(delta)
+	else:
+		set_state("exit_dash_state")
+
+func falling_state(delta):
+	var g_rot = Global.dir_to_rot(velocity).y + PI
+	graphics.rotation.y = lerp_angle(graphics.rotation.y, g_rot,delta*16.0)
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	var direction = (camera_base.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	if direction:
+		if !tilt_jumped:
+			velocity = update_velocity_air(delta, jogging_speed, air_acceleration,direction)
+		else:
+			velocity = update_velocity_tilt_jump(delta,tilt_jump_speed,air_acceleration_tilt_jump,direction)
+	end_physics_process(delta)
+	if !airborn:
+		if direction:
+			set_state("jogging_state")
+		else:
+			set_state("idle_state")
+
+
+##end states
+
 func end_physics_process(delta):
+	cameraHandler.position -= velocity*delta*0.05
 	if not snap_up_to_stairs_check(delta):
 		move_and_slide()
 		snap_down_to_stairs_check()
@@ -467,8 +526,8 @@ func _on_successful_interaction(info : Array) -> void:
 	var data = info[1]
 	match tag:
 		Global.interact_returns.PICKUP_ITEM:
-			#attempt_loose_item_pickup(data)
-			print("pickup item")
+			attempt_loose_item_pickup(data)
+			#print("pickup item")
 		Global.interact_returns.ENTER_DOOR:
 			enter_door(data)
 		Global.interact_returns.SLEEP_IN_BED:
@@ -512,6 +571,13 @@ func attempt_loose_item_pickup(path_to : String) -> void:
 	PlayerInformation.set_inventory_slot(PlayerInformation.held_item_index,data)
 	node.call_deferred("queue_free")
 	print("picked up " + str(data[0]))
+
+func _on_item_drop_attempt(index : int) -> void:
+	var data = PlayerInformation.steal_inventory_slot(index)
+	#PlayerInformation.emit_signal("dropped_item", data, look_dir_reference.global_position)
+	#(data, pos, rotation, stuck, velL , velR) -> void:
+	Global.drop_item(data,held_item_handler.global_position,held_item_handler.global_rotation,false,velocity)
+	PlayerInformation.emit_signal("update_held_item")
 
 func update_tooltip() -> void:
 	var text = interaction_sightline.get_tooltip()

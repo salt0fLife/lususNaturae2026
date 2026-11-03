@@ -47,7 +47,7 @@ func running(delta, velocity) -> void:
 		step += 1.0
 		var c = floor_check.get_collider()
 		if c!= null:
-			step_sound(c.get_groups())
+			step_sound(c.get_groups(),1)
 	
 	camera.position.x += delta * sin(val*PI*2.0) * strength * 0.7
 	camera.position.y += delta * sin((val*PI*4.0)+PI*0.5) * strength * 0.7
@@ -84,16 +84,16 @@ func walking(delta, velocity) -> void:
 	pass
 
 @onready var audio_player = $step_sounds
-func step_sound(groups = []) -> void:
+func step_sound(groups = [], type :int = 0) -> void:
 	for g in groups:
 		if Global.surface_lookup.has(g):
 			var info = Global.surface_lookup[g]
-			var sound = Global.surface_step_sounds[info[Global.STEP_SOUNDS]].pick_random()
+			var sound = Global.surface_step_sounds[info[Global.STEP_SOUNDS]][type].pick_random()
 			audio_player.stream = load(sound)
 			audio_player.play()
 			return
 	#did not find so use default
-	var sound = Global.surface_step_sounds[Global.surface_lookup["default"][Global.STEP_SOUNDS]].pick_random()
+	var sound = Global.surface_step_sounds[Global.surface_lookup["default"][Global.STEP_SOUNDS]][type].pick_random()
 	audio_player.stream = load(sound)
 	audio_player.play()
 	pass
@@ -183,6 +183,11 @@ func _process(delta):
 		#ik_right.stop()
 	
 
+func get_floor_groups() -> Array[StringName]:
+	if floor_check.is_colliding():
+		return floor_check.get_collider().get_groups()
+	else:
+		return []
 
 func speed_appeal(delta : float) -> void:
 	var vel = $"..".velocity

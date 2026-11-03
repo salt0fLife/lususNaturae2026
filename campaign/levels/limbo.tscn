@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://d73l21pjpoog"]
+[gd_scene load_steps=8 format=3 uid="uid://d73l21pjpoog"]
 
 [ext_resource type="Texture2D" uid="uid://dshhwvx4ekhaa" path="res://assets/textures/material/debug_grid_texture.png" id="1_86ojb"]
 [ext_resource type="Script" path="res://scripts/limbo_level.gd" id="1_cuisv"]
 [ext_resource type="PackedScene" uid="uid://dshwkiexhw5ij" path="res://assets/props/limbo_entrance.tscn" id="3_lwrc6"]
 [ext_resource type="PackedScene" uid="uid://drhchp75kxqee" path="res://assets/props/sleeping_bed.tscn" id="4_fru77"]
+[ext_resource type="AudioStream" uid="uid://nh6fb00244le" path="res://assets/sounds/immersion/weary_atmosphere.wav" id="5_7fliq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nsiha"]
 albedo_texture = ExtResource("1_86ojb")
@@ -120,3 +121,7 @@ toolTip = "exit limbo"
 
 [node name="sleeping_bed" parent="." instance=ExtResource("4_fru77")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, -2)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_7fliq")
+autoplay = true

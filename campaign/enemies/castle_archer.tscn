@@ -1,0 +1,108 @@
+[gd_scene load_steps=14 format=3 uid="uid://c2u3ywe4q6ihl"]
+
+[ext_resource type="Script" path="res://scripts/castle_archer.gd" id="1_baita"]
+[ext_resource type="Shader" path="res://assets/shaders/stylized_character_material.gdshader" id="2_vqkwo"]
+[ext_resource type="Script" path="res://scripts/hurtbox.gd" id="3_iga5b"]
+[ext_resource type="Script" path="res://scripts/generic_health_handler.gd" id="4_mtmp6"]
+[ext_resource type="FontFile" uid="uid://6bbwelw5v73r" path="res://assets/fonts/ANTQUAB.TTF" id="5_8soi4"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_huvo3"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_qj8v4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dkj7t"]
+render_priority = 0
+shader = ExtResource("2_vqkwo")
+shader_parameter/albedo_color = Color(0.254902, 0.27451, 0.647059, 1)
+shader_parameter/luminance_shadow_power = 0.8
+shader_parameter/luminance_shadow_cuttoff = 1.0
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_nsjg6"]
+size = Vector3(0.34, 0.415, 0.735)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6p3j2"]
+render_priority = 0
+shader = ExtResource("2_vqkwo")
+shader_parameter/albedo_color = Color(0.254902, 0.27451, 0.647059, 1)
+shader_parameter/luminance_shadow_power = 0.8
+shader_parameter/luminance_shadow_cuttoff = 1.0
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7nqvt"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_84wui"]
+size = Vector3(0.265, 1, 0.7)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_btcw4"]
+render_priority = 0
+shader = ExtResource("2_vqkwo")
+shader_parameter/albedo_color = Color(0.254902, 0.27451, 0.647059, 1)
+shader_parameter/luminance_shadow_power = 0.8
+shader_parameter/luminance_shadow_cuttoff = 1.0
+shader_parameter/specular_power = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic = 0.0
+
+[node name="castle_archer" type="CharacterBody3D" groups=["entity", "team_02"]]
+script = ExtResource("1_baita")
+alerted_distance = 20
+running_speed = 2.0
+arrow_dropoff_adjustment = 0.001
+team = "team_02"
+entity_tag = "castle_archer"
+
+[node name="physics_collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_huvo3")
+
+[node name="graphics" type="Node3D" parent="."]
+
+[node name="body" type="Node3D" parent="graphics"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="graphics/body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qj8v4")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_dkj7t")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="graphics/body"]
+transform = Transform3D(1, 0, 1.49012e-08, 0, 1, 0, -1.49012e-08, 0, 1, -3.72529e-09, 1.3539, -0.421567)
+mesh = SubResource("BoxMesh_nsjg6")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_6p3j2")
+
+[node name="hurtbox" type="StaticBody3D" parent="graphics/body" node_paths=PackedStringArray("health_handler")]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("3_iga5b")
+health_handler = NodePath("../../../health_handler")
+team = &"team_02"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="graphics/body/hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_7nqvt")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="graphics/body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.68131, 0)
+mesh = SubResource("BoxMesh_84wui")
+surface_material_override/0 = SubResource("ShaderMaterial_btcw4")
+
+[node name="look_dir_reference" type="Node3D" parent="graphics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -0.602055)
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.32971, 0)
+billboard = 1
+modulate = Color(0.890196, 0, 0, 1)
+font = ExtResource("5_8soi4")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="health_handler" type="Node" parent="."]
+script = ExtResource("4_mtmp6")
+max_health = 10

@@ -30,7 +30,9 @@ func chase_position(delta : float, pos : Vector3) -> void:
 	var trs = run_speed - run_speed*float(injured)*injured_speed_mult
 	graphics.rotation.y = lerp_angle(graphics.rotation.y, Global.dir_to_rot(wish_dir).y, delta*turn_speed)
 	var dir = Vector3(0.0,0.0,1.0).rotated(Vector3.UP,graphics.rotation.y)
-	velocity = lerp(velocity,dir*run_speed,delta*acceleration)
+	var vel_2 = lerp(velocity,dir*run_speed,delta*acceleration)
+	velocity.x = vel_2.x
+	velocity.z = vel_2.z
 
 @onready var health_handler = $health_handler
 func _ready():

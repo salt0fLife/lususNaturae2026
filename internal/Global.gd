@@ -84,6 +84,8 @@ const entities: Dictionary = {
 	"young_skyfish" : ["res://campaign/entities/young_skyfish.tscn"],
 	"forest_spider" : ["res://campaign/enemies/forest_spider.tscn"],
 	"enemy_01" : ["res://campaign/enemies/enemy_01.tscn"],
+	"castle_guard" : ["res://campaign/enemies/castle_guard.tscn"],
+	"castle_archer" : ["res://campaign/enemies/castle_archer.tscn"]
 }
 
 
@@ -230,33 +232,67 @@ const bullet_hit_effects = {
 }
 
 const surface_step_sounds = {
-	DIRT_KEY : ["res://assets/sounds/footsteps/dirt/footstepDirt1.wav",
-	"res://assets/sounds/footsteps/dirt/footstepStone2.wav"
+	GRASS_KEY:[
+		[#light
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_light_01.ogg",
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_light_02.ogg",
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_light_03.ogg"
+		],
+		[#medium
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_medium_01.ogg",
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_medium_02.ogg",
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_medium_03.ogg"
+		],
+		[#heavy
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_heavy_01.ogg"
+		]
 	],
-	GRASS_KEY : [
-		"res://assets/sounds/footsteps/grassFootsteps/grassFootstep1.ogg",
-		"res://assets/sounds/footsteps/grassFootsteps/grassFootstep2.ogg",
-		"res://assets/sounds/footsteps/grassFootsteps/grassFootstep3.ogg",
-		"res://assets/sounds/footsteps/grassFootsteps/grassFootstep4.ogg",
-		"res://assets/sounds/footsteps/grassFootsteps/grassFootstep5.ogg"
-	],
-	METAL_KEY : [
-		"res://assets/sounds/footsteps/metal/footstepMatal3.wav"
-	],
-	STONE_KEY : [
-		"res://assets/sounds/footsteps/stone/footstepStone1.wav",
-		"res://assets/sounds/footsteps/stone/footstepStone2.wav",
-		"res://assets/sounds/footsteps/stone/footstepStone4.wav"
-	],
-	WOOD_KEY : [
-		"res://assets/sounds/footsteps/wood/footstepWood1.wav",
-		"res://assets/sounds/footsteps/wood/footstepWood2.wav",
-		"res://assets/sounds/footsteps/wood/footstepWood3.wav",
-		"res://assets/sounds/footsteps/wood/footstepWood4.wav",
-		"res://assets/sounds/footsteps/wood/footstepWood5.wav",
-		"res://assets/sounds/footsteps/wood/footstepWood6.wav"
-	],
+	STONE_KEY:[
+		[#light
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_light_01.ogg",
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_light_02.ogg",
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_light_03.ogg"
+		],
+		[#medium
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_medium_01.ogg",
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_medium_02.ogg",
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_medium_03.ogg"
+		],
+		[#heavy
+			"res://assets/sounds/footsteps/dead_grass/dead_grass_heavy_01.ogg"
+		]
+	]
+	
 }
+
+#const surface_step_sounds = { #outdated
+	#DIRT_KEY : ["res://assets/sounds/footsteps/dirt/footstepDirt1.wav",
+	#"res://assets/sounds/footsteps/dirt/footstepStone2.wav"
+	#],
+	#GRASS_KEY : [
+		#"res://assets/sounds/footsteps/grassFootsteps/grassFootstep1.ogg",
+		#"res://assets/sounds/footsteps/grassFootsteps/grassFootstep2.ogg",
+		#"res://assets/sounds/footsteps/grassFootsteps/grassFootstep3.ogg",
+		#"res://assets/sounds/footsteps/grassFootsteps/grassFootstep4.ogg",
+		#"res://assets/sounds/footsteps/grassFootsteps/grassFootstep5.ogg"
+	#],
+	#METAL_KEY : [
+		#"res://assets/sounds/footsteps/metal/footstepMatal3.wav"
+	#],
+	#STONE_KEY : [
+		#"res://assets/sounds/footsteps/stone/footstepStone1.wav",
+		#"res://assets/sounds/footsteps/stone/footstepStone2.wav",
+		#"res://assets/sounds/footsteps/stone/footstepStone4.wav"
+	#],
+	#WOOD_KEY : [
+		#"res://assets/sounds/footsteps/wood/footstepWood1.wav",
+		#"res://assets/sounds/footsteps/wood/footstepWood2.wav",
+		#"res://assets/sounds/footsteps/wood/footstepWood3.wav",
+		#"res://assets/sounds/footsteps/wood/footstepWood4.wav",
+		#"res://assets/sounds/footsteps/wood/footstepWood5.wav",
+		#"res://assets/sounds/footsteps/wood/footstepWood6.wav"
+	#],
+#}
 
 ##
 

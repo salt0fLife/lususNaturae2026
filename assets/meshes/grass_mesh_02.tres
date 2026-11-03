@@ -13,6 +13,7 @@ shader_parameter/color_top = Color(0.25098, 0.270588, 0.168627, 1)
 shader_parameter/specular_highlight = 0.01
 shader_parameter/specular_highlight_day = 0.01
 shader_parameter/sh_day_power = 0.0
+shader_parameter/specular_mult = Color(1, 1, 1, 1)
 shader_parameter/CloudDitherPower = 10.0
 shader_parameter/CloudCutoffAdjust = -0.795
 shader_parameter/CloudDensity = 1.49

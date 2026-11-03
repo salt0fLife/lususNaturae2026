@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bruqwtolfegst"]
+
+[ext_resource type="Script" path="res://scripts/freecam.gd" id="1_26hgx"]
+[ext_resource type="PackedScene" uid="uid://c4woxbpboh1ky" path="res://campaign/player/components/senses_camera.tscn" id="2_66e2n"]
+
+[node name="freecam" type="Node3D"]
+script = ExtResource("1_26hgx")
+damp = 10.0
+
+[node name="cameraBase" type="Node3D" parent="."]
+
+[node name="cameraHandler" type="Node3D" parent="cameraBase"]
+
+[node name="senses_camera" parent="cameraBase/cameraHandler" instance=ExtResource("2_66e2n")]

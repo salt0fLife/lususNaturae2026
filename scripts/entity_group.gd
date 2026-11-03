@@ -80,7 +80,8 @@ func spawn_entities(list:Array, spawn_anim:bool = false) -> void:
 		entity.connect("perished",_on_entity_death)
 		if entity.has_method("_on_alerted"):
 			if start_alerted:
-				entity._on_alerted()
+				var p = get_tree().get_first_node_in_group("player")
+				entity._on_alerted(p)
 			elif group_alert:
 				entity.connect("alerted",_on_entity_alerted)
 		if entity.has_method("spawn_animation") and spawn_anim:
@@ -101,10 +102,10 @@ func _on_entity_death():
 		all_dead = true
 		emit_signal("all_entities_dead")
 
-func _on_entity_alerted():
+func _on_entity_alerted(target):
 	for n in entity_handler.get_children(false):
 		if n.has_method("_on_alerted"):
-			n._on_alerted()
+			n._on_alerted(target)
 
 func is_valid_name(gn : StringName) -> bool:
 	if gn =="":
