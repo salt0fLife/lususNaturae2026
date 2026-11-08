@@ -37,7 +37,7 @@ func sword_slash() -> void:
 	#print("dealing damage")
 	
 	for hit in sword_area.get_overlapping_bodies():
-		if hit.has_method("take_damage"):
+		if hit.has_method("take_damage") and hit != player_main:
 			#print("found hit " + str(hit))
 			var true_amount = hit.take_damage(damage_amount,damage_type)
 			on_dealt_damage(true_amount,damage_type)

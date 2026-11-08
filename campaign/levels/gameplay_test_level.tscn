@@ -1,16 +1,12 @@
-[gd_scene load_steps=21 format=3 uid="uid://dssr5rmva8ai8"]
+[gd_scene load_steps=20 format=3 uid="uid://dssr5rmva8ai8"]
 
 [ext_resource type="Script" path="res://scripts/gameplay_test_level.gd" id="1_pakm2"]
-[ext_resource type="Texture2D" uid="uid://dshhwvx4ekhaa" path="res://assets/textures/material/debug_grid_texture.png" id="2_5fuxp"]
+[ext_resource type="Material" uid="uid://bjqx2vs3ok1xd" path="res://assets/materials/debug_environment_material.tres" id="2_l0ekx"]
 [ext_resource type="Script" path="res://scripts/entity_group.gd" id="2_rskqo"]
 [ext_resource type="PackedScene" uid="uid://drhchp75kxqee" path="res://assets/props/sleeping_bed.tscn" id="3_4mfbm"]
 [ext_resource type="Script" path="res://scripts/entity_spawn_point.gd" id="3_lixva"]
-[ext_resource type="PackedScene" uid="uid://b3c4o86rlwubj" path="res://assets/debug/damage_trigger.tscn" id="6_h8pfj"]
+[ext_resource type="PackedScene" uid="uid://b3c4o86rlwubj" path="res://assets/environment_components/damage_trigger.tscn" id="6_h8pfj"]
 [ext_resource type="FontFile" uid="uid://fj5rtfwees2k" path="res://assets/fonts/ANTQUABI.TTF" id="7_igxdh"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7q6d6"]
-albedo_texture = ExtResource("2_5fuxp")
-uv1_triplanar = true
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_fq75e"]
 
@@ -185,7 +181,7 @@ _data = {
 script = ExtResource("1_pakm2")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
-material_override = SubResource("StandardMaterial3D_7q6d6")
+material_override = ExtResource("2_l0ekx")
 use_collision = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]

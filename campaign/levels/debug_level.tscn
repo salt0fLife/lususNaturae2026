@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://b105kl2nrj3bn" path="res://assets/props/distant_mountain.tscn" id="11_vnxbd"]
 [ext_resource type="PackedScene" uid="uid://b2x2phyjo8bb" path="res://tools/grass_populator.tscn" id="12_prcwh"]
 [ext_resource type="ArrayMesh" uid="uid://crmu3jbhnbe1" path="res://assets/meshes/foliage_01_mesh.tres" id="13_myt3o"]
-[ext_resource type="PackedScene" uid="uid://b3c4o86rlwubj" path="res://assets/debug/damage_trigger.tscn" id="14_xlvcu"]
+[ext_resource type="PackedScene" uid="uid://b3c4o86rlwubj" path="res://assets/environment_components/damage_trigger.tscn" id="14_xlvcu"]
 [ext_resource type="PackedScene" uid="uid://dshwkiexhw5ij" path="res://assets/props/limbo_entrance.tscn" id="15_wd54b"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_e6kvw"]

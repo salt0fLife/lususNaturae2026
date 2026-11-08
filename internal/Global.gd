@@ -52,7 +52,9 @@ const levels: Dictionary = {
 	"laboratory_courtyard" : ["res://campaign/levels/laboratory_courtyard.tscn","res://assets/textures/gui/suits/gilt_obscure_small.png"],
 	"spiders_domain" : ["res://campaign/levels/spiders_domain/spiders_domain.tscn","res://assets/textures/material/DebuggTexture.png"],
 	"gameplay_test" : ["res://campaign/levels/gameplay_test_level.tscn","res://assets/textures/material/DebuggTexture.png"],
-	"limbo" : ["res://campaign/levels/limbo.tscn","res://assets/textures/sky/moon_phases/new.png"]
+	"limbo" : ["res://campaign/levels/limbo.tscn","res://assets/textures/sky/moon_phases/new.png"],
+	"town_cave" : ["res://campaign/levels/town_cave.tscn","res://assets/textures/material/debug_grid_texture.png"],
+	"starting_tunnels" : ["res://campaign/levels/starting_tunnels.tscn","res://assets/textures/material/DebuggTexture.png"]
 }
 
 var levels_persistent_data: Dictionary = {

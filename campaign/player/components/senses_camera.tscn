@@ -45,6 +45,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
+visible = false
 layers = 2
 light_color = Color(1, 0.278431, 0.176471, 1)
 light_energy = 0.5

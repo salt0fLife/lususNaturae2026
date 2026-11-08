@@ -1,0 +1,91 @@
+[gd_scene load_steps=8 format=3 uid="uid://dlbxw1uureh0x"]
+
+[ext_resource type="Script" path="res://scripts/starting_tunnels.gd" id="1_d7xn8"]
+[ext_resource type="Material" uid="uid://bjqx2vs3ok1xd" path="res://assets/materials/debug_environment_material.tres" id="2_sifge"]
+[ext_resource type="Script" path="res://scripts/item_group.gd" id="4_4k4tg"]
+[ext_resource type="Script" path="res://scripts/item_spawn_point.gd" id="5_wquti"]
+[ext_resource type="PackedScene" uid="uid://5v7kljlis4wr" path="res://assets/glb_temp/vidica_test_model_export.glb" id="6_gjk16"]
+[ext_resource type="PackedScene" uid="uid://b1qm7be50g14e" path="res://assets/items/short_sword/short_sword.glb" id="6_ietj2"]
+
+[sub_resource type="Environment" id="Environment_r8hqk"]
+background_mode = 1
+background_color = Color(0.54902, 0.54902, 0.54902, 1)
+
+[node name="starting_tunnels" type="Node3D" groups=["persistent"]]
+script = ExtResource("1_d7xn8")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+material_override = ExtResource("2_sifge")
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -3.75)
+flip_faces = true
+size = Vector3(1, 2, 8.5)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 1.75, -9.75)
+flip_faces = true
+size = Vector3(5.5, 3.5, 7.5)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.25, 1.5, -6.75)
+flip_faces = true
+size = Vector3(5.5, 3, 1.5)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.25, 1.5, -15.75)
+flip_faces = true
+size = Vector3(5.5, 3, 1.5)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+flip_faces = true
+size = Vector3(2, 2.5, 2)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+light_energy = 0.25
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_r8hqk")
+
+[node name="item_group" type="Node" parent="." node_paths=PackedStringArray("item_handler") groups=["persistent"]]
+script = ExtResource("4_4k4tg")
+group_name = &"st_items"
+item_handler = NodePath("../items_handler")
+
+[node name="item_spawn_point" type="Node3D" parent="item_group"]
+transform = Transform3D(-1.0014e-08, -0.970502, -0.241092, 1.02118e-07, -0.241092, 0.970502, -1, -2.98023e-08, 1.19422e-07, -2.3117, 1.2053, -9.20272)
+script = ExtResource("5_wquti")
+item_key = "short_sword"
+stuck = true
+
+[node name="short_sword" parent="item_group/item_spawn_point" instance=ExtResource("6_ietj2")]
+
+[node name="item_spawn_point4" type="Node3D" parent="item_group"]
+transform = Transform3D(1.0123e-07, 0.0183075, 0.999832, -1.67572e-08, 0.999832, -0.0183075, -1, -2.98023e-08, 1.19422e-07, -0.311695, 1.7053, -9.20272)
+script = ExtResource("5_wquti")
+item_key = "short_sword"
+
+[node name="short_sword" parent="item_group/item_spawn_point4" instance=ExtResource("6_ietj2")]
+
+[node name="item_spawn_point2" type="Node3D" parent="item_group"]
+transform = Transform3D(-0.0923532, -0.989286, -0.113065, -0.176277, -0.0955126, 0.979696, -0.979999, 0.110409, -0.165567, -2.27062, 1.09982, -9.28847)
+script = ExtResource("5_wquti")
+item_key = "short_sword"
+stuck = true
+
+[node name="short_sword" parent="item_group/item_spawn_point2" instance=ExtResource("6_ietj2")]
+
+[node name="item_spawn_point3" type="Node3D" parent="item_group"]
+transform = Transform3D(0.0355195, -0.999265, 0.0144229, 0.313937, 0.0248582, 0.949118, -0.948779, -0.0291844, 0.31459, -2.27062, 1.16815, -9.13695)
+script = ExtResource("5_wquti")
+item_key = "short_sword"
+stuck = true
+
+[node name="short_sword" parent="item_group/item_spawn_point3" instance=ExtResource("6_ietj2")]
+
+[node name="items_handler" type="Node3D" parent="."]
+
+[node name="vidica_test_model_export" parent="." instance=ExtResource("6_gjk16")]

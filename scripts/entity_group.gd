@@ -1,6 +1,6 @@
 extends Node
 @export var group_name : StringName
-var subfolder = "entity_groups/"
+var subfolder = "persistent/"
 @export var entity_handler : Node3D #this needs to be empty except for the groups entity nodes
 @export var auto_spawn:bool = true #spawns entities whenever scene is loaded
 @export var group_alert:bool = false
@@ -94,13 +94,15 @@ func spawn_entities(list:Array, spawn_anim:bool = false) -> void:
 		emit_signal("health_pool_changed")
 
 signal all_entities_dead
+var last_reported_entity_count:int = -1
 func _on_entity_death():
 	await  get_tree().process_frame #in case call deferred queue_free
 	var count = entity_handler.get_child_count(false)
 	print("entity_death, new count " + str(count))
-	if count == 0:
+	if count == 0 and count != last_reported_entity_count:
 		all_dead = true
 		emit_signal("all_entities_dead")
+	last_reported_entity_count = count
 
 func _on_entity_alerted(target):
 	for n in entity_handler.get_children(false):

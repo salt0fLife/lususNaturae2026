@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0jny1u4wu8v6"]
+
+[ext_resource type="Script" path="res://scripts/entity_spawn_point.gd" id="1_thdce"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_qesbb"]
+
+[node name="entity_spawn_point" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.1141, 0, 0.831957)
+script = ExtResource("1_thdce")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_qesbb")
+skeleton = NodePath("../../..")

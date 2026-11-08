@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://c1g5gksn61uhx"
+path="res://.godot/imported/empire_now_intro.wav-4afda5c067f9004a7f339918db31b4f5.sample"
+
+[deps]
+
+source_file="res://assets/sounds/music/cant ship with very sad/empire_now_intro.wav"
+dest_files=["res://.godot/imported/empire_now_intro.wav-4afda5c067f9004a7f339918db31b4f5.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

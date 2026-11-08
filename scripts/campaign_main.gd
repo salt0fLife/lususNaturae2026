@@ -734,8 +734,8 @@ func reset_everything_to_last_checkpoint():
 
 func overwrite_entity_groups_from_checkpoint(): ##NOTE this does not work quite right yet
 	#need to make the main entity groups folder identical to the checkpoint entity groups folder
-	var subfolder_path = Global.save_filepath + "entity_groups/"
-	var checkpoint_subfolder_path = Global.save_filepath + "checkpoint/entity_groups/"
+	var subfolder_path = Global.save_filepath + "persistent/"
+	var checkpoint_subfolder_path = Global.save_filepath + "checkpoint/persistent/"
 	print(SaveHandler.savePath + subfolder_path)
 	print(SaveHandler.savePath + checkpoint_subfolder_path)
 	var remove_list = []
@@ -750,7 +750,7 @@ func overwrite_entity_groups_from_checkpoint(): ##NOTE this does not work quite 
 		var absolute_path = SaveHandler.savePath + subfolder_path + fn
 		DirAccess.remove_absolute(absolute_path)
 		print("deleted " + str(fn))
-	print("finished syncing entity_group files")
+	print("finished syncing persistent files")
 
 ##checkpoints and dying
 func _on_player_death() -> void:

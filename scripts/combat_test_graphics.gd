@@ -310,7 +310,7 @@ func step_sound(groups = []) -> void:
 			audio_player.play()
 			return
 	#did not find so use default
-	var sound = Global.surface_step_sounds[Global.surface_lookup["default"][Global.STEP_SOUNDS]].pick_random()
+	var sound = Global.surface_step_sounds[Global.surface_lookup["default"][Global.STEP_SOUNDS]][0].pick_random()
 	audio_player.stream = load(sound)
 	audio_player.play()
 	pass

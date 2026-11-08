@@ -16507,8 +16507,8 @@ bones/41/scale = Vector3(1, 1, 1)
 bones/42/rotation = Quaternion(-0.294507, -0.0283098, 0.882282, 0.366117)
 bones/43/rotation = Quaternion(0.999483, -3.83341e-09, 1.19148e-07, -0.0321569)
 bones/43/scale = Vector3(1, 1, 1)
-bones/44/rotation = Quaternion(0.0132563, 2.63327e-06, -0.00255561, 0.999909)
-bones/45/rotation = Quaternion(0.14058, 1.5937e-06, 0.00109362, 0.990069)
+bones/44/rotation = Quaternion(0.0132563, 2.6333e-06, -0.00255561, 0.999909)
+bones/45/rotation = Quaternion(0.14058, 1.59373e-06, 0.00109362, 0.990069)
 bones/46/rotation = Quaternion(0.945564, 0.0220271, 0.317546, -0.0677383)
 bones/46/scale = Vector3(0.999998, 1, 0.999996)
 bones/47/rotation = Quaternion(0.013767, -0.000229706, -0.0149696, 0.999793)
@@ -16623,7 +16623,7 @@ bones/130/scale = Vector3(1, 1, 1)
 blend_shapes/cutsie_tooth = 1.0
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="graphics/character/Vidica_basic/metarig/Skeleton3D" index="23"]
-transform = Transform3D(1, -7.00013e-15, 2.38419e-07, -1.53258e-08, -0.997932, 0.0642805, 2.37926e-07, -0.0642804, -0.997932, -1.68219e-14, 1.90335, -0.111268)
+transform = Transform3D(1, -2.64184e-13, 2.3842e-07, -1.53264e-08, -0.997932, 0.0642819, 2.37927e-07, -0.0642818, -0.997932, 1.25817e-13, 1.90335, -0.111267)
 bone_name = "hair_base.M"
 bone_idx = 43
 
@@ -16631,7 +16631,7 @@ bone_idx = 43
 transform = Transform3D(1, 3.72529e-09, 1.11759e-08, 4.65661e-10, 0.954177, -0.299241, 3.72529e-09, 0.299241, 0.954178, 0, 0, 0)
 
 [node name="BoneAttachment3D2" type="BoneAttachment3D" parent="graphics/character/Vidica_basic/metarig/Skeleton3D" index="24"]
-transform = Transform3D(0.980161, -0.198204, 1.55344e-06, -0.0526485, -0.260365, -0.964074, 0.191084, 0.944947, -0.265635, -3.28721e-14, 1.91779, 0.112536)
+transform = Transform3D(0.980161, -0.198204, 1.55344e-06, -0.0526487, -0.260366, -0.964073, 0.191084, 0.944947, -0.265636, -7.60251e-14, 1.91779, 0.112536)
 bone_name = "ahoge_01"
 bone_idx = 25
 
@@ -16639,7 +16639,7 @@ bone_idx = 25
 transform = Transform3D(1, 4.09782e-07, -7.45058e-09, 2.90573e-07, 1, -1.19209e-07, 6.33299e-08, 2.98023e-07, 1, 0, 0, 0)
 
 [node name="BoneAttachment3D3" type="BoneAttachment3D" parent="graphics/character/Vidica_basic/metarig/Skeleton3D" index="25"]
-transform = Transform3D(1, 7.10476e-15, 2.38418e-07, -4.61846e-14, 1, 1.49012e-08, -2.38418e-07, -8.9407e-08, 1, -2.2214e-14, 1.83977, -0.0416814)
+transform = Transform3D(1, 3.19744e-13, 2.38418e-07, -1.42102e-14, 1, -1.40071e-06, -2.38418e-07, 1.3113e-06, 1, 4.12145e-14, 1.83977, -0.0416814)
 bone_name = "hair"
 bone_idx = 24
 
@@ -16647,28 +16647,28 @@ bone_idx = 24
 transform = Transform3D(0.999999, -4.19095e-09, -2.6077e-08, 2.32831e-09, 0.999999, 2.23517e-08, -5.58794e-08, 2.6077e-08, 0.999999, 0, 0, 0)
 
 [node name="BoneAttachment3D4" type="BoneAttachment3D" parent="graphics/character/Vidica_basic/metarig/Skeleton3D" index="26"]
-transform = Transform3D(-0.780217, 0.610909, 0.134356, -0.620131, -0.78356, -0.0383581, 0.0818426, -0.113246, 0.99019, 0.137439, 1.63046, -0.0326021)
+transform = Transform3D(-0.780217, 0.610908, 0.134356, -0.620131, -0.78356, -0.038357, 0.0818431, -0.113245, 0.990191, 0.137439, 1.63046, -0.0326024)
 bone_name = "upper_arm.L"
 bone_idx = 65
 
 [node name="arm_left" type="Node3D" parent="graphics/character/Vidica_basic/metarig/Skeleton3D/BoneAttachment3D4"]
 
 [node name="BoneAttachment3D5" type="BoneAttachment3D" parent="graphics/character/Vidica_basic/metarig/Skeleton3D" index="27"]
-transform = Transform3D(-0.780217, -0.610909, -0.134356, 0.620131, -0.78356, -0.0383581, -0.0818427, -0.113246, 0.99019, -0.137439, 1.63046, -0.0326022)
+transform = Transform3D(-0.780217, -0.610909, -0.134355, 0.620131, -0.78356, -0.0383579, -0.0818421, -0.113245, 0.99019, -0.137439, 1.63046, -0.0326023)
 bone_name = "upper_arm.R"
 bone_idx = 89
 
 [node name="arm_right" type="Node3D" parent="graphics/character/Vidica_basic/metarig/Skeleton3D/BoneAttachment3D5"]
 
 [node name="BoneAttachment3D6" type="BoneAttachment3D" parent="graphics/character/Vidica_basic/metarig/Skeleton3D" index="28"]
-transform = Transform3D(1, -7.10543e-15, 2.38418e-07, 5.26445e-08, 0.975317, -0.220807, -2.32534e-07, 0.220807, 0.975317, -1.14538e-14, 1.67208, -0.0384724)
+transform = Transform3D(1, 1.13687e-13, 2.38418e-07, 5.26443e-08, 0.975317, -0.220808, -2.32533e-07, 0.220808, 0.975317, -3.79022e-15, 1.67208, -0.0384726)
 bone_name = "spine.004"
 bone_idx = 5
 
 [node name="chest" type="Node3D" parent="graphics/character/Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6"]
 
 [node name="BoneAttachment3D7" type="BoneAttachment3D" parent="graphics/character/Vidica_basic/metarig/Skeleton3D" index="29"]
-transform = Transform3D(-0.761001, -0.645013, 0.0695349, 0.648325, -0.760003, 0.0454985, 0.0234994, 0.0797054, 0.996541, -0.449231, 1.18822, -0.0271867)
+transform = Transform3D(-0.761001, -0.645013, 0.0695358, 0.648325, -0.760003, 0.0454988, 0.0235, 0.0797062, 0.996541, -0.449231, 1.18822, -0.0271864)
 bone_name = "held_item.R"
 bone_idx = 111
 
@@ -16678,7 +16678,7 @@ transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114
 [node name="blood_sword" parent="graphics/character/Vidica_basic/metarig/Skeleton3D/BoneAttachment3D7/held_item_handler" instance=ExtResource("5_a6ukn")]
 
 [node name="BoneAttachment3D8" type="BoneAttachment3D" parent="graphics/character/Vidica_basic/metarig/Skeleton3D" index="31"]
-transform = Transform3D(1, -3.55271e-15, 2.38418e-07, 6.99239e-08, 0.956026, -0.293282, -2.27934e-07, 0.293282, 0.956026, 0, 1.1764, -0.0552)
+transform = Transform3D(1, -2.20268e-13, 2.38418e-07, 6.99238e-08, 0.956026, -0.293282, -2.27933e-07, 0.293282, 0.956026, 0, 1.1764, -0.0552)
 bone_name = "spine"
 bone_idx = 1
 
@@ -16756,103 +16756,103 @@ ray_pickable = false
 pinned_points = [15, 19, 60, 61, 45, 44, 47, 3, 0, 1, 18, 56, 14, 46, 48, 2, 7, 8, 17, 10, 9, 4, 5, 11, 6, 55, 53, 54, 49, 51, 52, 50, 58]
 attachments/0/point_index = 15
 attachments/0/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/0/offset = Vector3(-1.08767e-05, 0.0152931, -0.0561113)
+attachments/0/offset = Vector3(-8.10623e-06, 1.26813, -0.0670277)
 attachments/1/point_index = 19
 attachments/1/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/1/offset = Vector3(0.0659348, 0.0518888, 0.0260251)
+attachments/1/offset = Vector3(0.0492024, 1.28123, -0.00121804)
 attachments/2/point_index = 60
 attachments/2/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/2/offset = Vector3(-0.0659566, 0.0518888, 0.0260251)
+attachments/2/offset = Vector3(-0.0492187, 1.28123, -0.00121804)
 attachments/3/point_index = 61
 attachments/3/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/3/offset = Vector3(-0.13114, 0.0523059, 0.0207617)
+attachments/3/offset = Vector3(-0.0978606, 1.2824, -0.00498003)
 attachments/4/point_index = 45
 attachments/4/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/4/offset = Vector3(-0.0681119, 0.0469972, 0.0580766)
+attachments/4/offset = Vector3(-0.0508271, 1.27239, 0.0213034)
 attachments/5/point_index = 44
 attachments/5/spatial_attachment_path = NodePath("")
 attachments/5/offset = Vector3(-0.0602519, 0.0276306, 0.0529152)
 attachments/6/point_index = 47
 attachments/6/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/6/offset = Vector3(-0.102032, 0.0337101, 0.0676702)
+attachments/6/offset = Vector3(-0.0761391, 1.26114, 0.0260963)
 attachments/7/point_index = 3
 attachments/7/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/7/offset = Vector3(0.0542, 0.0246683, 0.0888054)
+attachments/7/offset = Vector3(0.0404456, 1.25108, 0.0399889)
 attachments/8/point_index = 0
 attachments/8/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/8/offset = Vector3(0.10201, 0.0337101, 0.0676702)
+attachments/8/offset = Vector3(0.0761228, 1.26114, 0.0260963)
 attachments/9/point_index = 1
 attachments/9/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/9/offset = Vector3(0.0680902, 0.0469972, 0.0580766)
+attachments/9/offset = Vector3(0.0508108, 1.27239, 0.0213034)
 attachments/10/point_index = 18
 attachments/10/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/10/offset = Vector3(0.131119, 0.0523059, 0.0207617)
+attachments/10/offset = Vector3(0.0978444, 1.2824, -0.00498003)
 attachments/11/point_index = 56
 attachments/11/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/11/offset = Vector3(-0.116227, 0.00607073, -0.0469997)
+attachments/11/offset = Vector3(-0.0867318, 1.25992, -0.0619157)
 attachments/12/point_index = 14
 attachments/12/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/12/offset = Vector3(0.116205, 0.00607073, -0.0469997)
+attachments/12/offset = Vector3(0.0867155, 1.25992, -0.0619157)
 attachments/13/point_index = 46
 attachments/13/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/13/offset = Vector3(-0.0792371, -0.0261674, 0.154591)
+attachments/13/offset = Vector3(-0.059129, 1.20324, 0.0794918)
 attachments/14/point_index = 48
 attachments/14/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/14/offset = Vector3(-0.0990274, -0.0394213, 0.174835)
+attachments/14/offset = Vector3(-0.0738971, 1.19026, 0.0920421)
 attachments/15/point_index = 2
 attachments/15/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/15/offset = Vector3(0.0792153, -0.0261674, 0.154591)
+attachments/15/offset = Vector3(0.0591127, 1.20324, 0.0794918)
 attachments/16/point_index = 7
 attachments/16/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D6/chest")
-attachments/16/offset = Vector3(0.0990056, -0.0394213, 0.174835)
+attachments/16/offset = Vector3(0.0738808, 1.19026, 0.0920421)
 attachments/17/point_index = 8
 attachments/17/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D4/arm_left")
-attachments/17/offset = Vector3(-0.0477062, 0.256009, 0.0136807)
+attachments/17/offset = Vector3(0.248417, 1.08869, -0.038768)
 attachments/18/point_index = 17
 attachments/18/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D4/arm_left")
-attachments/18/offset = Vector3(-0.02263, 0.192944, -0.0449379)
+attachments/18/offset = Vector3(0.19919, 1.11564, -0.0752208)
 attachments/19/point_index = 10
 attachments/19/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D4/arm_left")
-attachments/19/offset = Vector3(-0.0157659, 0.109282, 0.063232)
+attachments/19/offset = Vector3(0.167899, 1.15829, 0.012196)
 attachments/20/point_index = 9
 attachments/20/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D4/arm_left")
-attachments/20/offset = Vector3(-0.0662709, 0.108151, 0.0129681)
+attachments/20/offset = Vector3(0.191749, 1.18376, -0.0279333)
 attachments/21/point_index = 4
 attachments/21/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D4/arm_left")
-attachments/21/offset = Vector3(-0.00214267, 0.00505924, 0.0938123)
+attachments/21/offset = Vector3(0.11552, 1.21205, 0.0444317)
 attachments/22/point_index = 5
 attachments/22/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D4/arm_left")
-attachments/22/offset = Vector3(-0.0277487, -0.0169411, 0.073832)
+attachments/22/offset = Vector3(0.118396, 1.23733, 0.0299634)
 attachments/23/point_index = 11
 attachments/23/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D4/arm_left")
-attachments/23/offset = Vector3(-0.0573014, -0.0161268, 0.0446774)
+attachments/23/offset = Vector3(0.13305, 1.25137, 0.00654715)
 attachments/24/point_index = 6
 attachments/24/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D4/arm_left")
-attachments/24/offset = Vector3(0.0573051, 0.0149475, 0.149061)
+attachments/24/offset = Vector3(0.0909559, 1.17717, 0.0880506)
 attachments/25/point_index = 55
 attachments/25/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D5/arm_right")
-attachments/25/offset = Vector3(0.0477229, 0.256022, 0.0136839)
+attachments/25/offset = Vector3(-0.248433, 1.08869, -0.038768)
 attachments/26/point_index = 53
 attachments/26/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D5/arm_right")
-attachments/26/offset = Vector3(0.0662878, 0.108164, 0.0129713)
+attachments/26/offset = Vector3(-0.191765, 1.18376, -0.0279333)
 attachments/27/point_index = 54
 attachments/27/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D5/arm_right")
-attachments/27/offset = Vector3(0.0157827, 0.109296, 0.0632351)
+attachments/27/offset = Vector3(-0.167915, 1.15829, 0.012196)
 attachments/28/point_index = 49
 attachments/28/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D5/arm_right")
-attachments/28/offset = Vector3(0.0277655, -0.0169275, 0.073835)
+attachments/28/offset = Vector3(-0.118412, 1.23733, 0.0299634)
 attachments/29/point_index = 51
 attachments/29/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D5/arm_right")
-attachments/29/offset = Vector3(0.0021596, 0.00507283, 0.0938154)
+attachments/29/offset = Vector3(-0.115537, 1.21205, 0.0444317)
 attachments/30/point_index = 52
 attachments/30/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D5/arm_right")
-attachments/30/offset = Vector3(0.0573181, -0.0161134, 0.0446805)
+attachments/30/offset = Vector3(-0.133067, 1.25137, 0.00654715)
 attachments/31/point_index = 50
 attachments/31/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D5/arm_right")
-attachments/31/offset = Vector3(-0.0572884, 0.014961, 0.149064)
+attachments/31/offset = Vector3(-0.0909721, 1.17717, 0.0880506)
 attachments/32/point_index = 58
 attachments/32/spatial_attachment_path = NodePath("../Vidica_basic/metarig/Skeleton3D/BoneAttachment3D5/arm_right")
-attachments/32/offset = Vector3(0.0226468, 0.192957, -0.0449347)
+attachments/32/offset = Vector3(-0.199206, 1.11564, -0.0752208)
 
 [node name="floor_check" type="RayCast3D" parent="graphics"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.10806, 0)

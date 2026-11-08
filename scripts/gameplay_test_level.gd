@@ -7,19 +7,26 @@ func _ready():
 	$entity_group3.connect("all_entities_dead",spawn_boss)
 	$entity_group4.connect("all_entities_dead",open_gate)
 	$entity_group4.connect("health_pool_changed",_on_health_pool_changed)
+	MusicHandler.play_song("weary_atmosphere")
 
 func spawn_second_wave():
 	print("spawning second wave")
 	$entity_group3.default_spawn()
+	MusicHandler.play_sound("res://assets/sounds/music/cant ship with very sad/empire_now_intro.wav")
 	pass
 
+var boss_spawned = false
 func spawn_boss():
+	if boss_spawned:
+		return
+	boss_spawned = true
 	print("spawning boss")
 	$entity_group4.default_spawn()
 	pass
 
 func open_gate():
 	print("open_gate")
+	$boss_bar.hide()
 	$world_animations.play("wall_collapse")
 	pass
 
